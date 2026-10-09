@@ -18,3 +18,14 @@ async def ocr_pdf(pdf_bytes: bytes) -> str:
         return ""
     except Exception as e:
         raise Exception(f"PDF processing failed: {str(e)}")
+
+class OCRService:
+    @staticmethod
+    def extract_text(file_content: bytes) -> str:
+        try:
+            image = Image.open(io.BytesIO(file_content))
+            return pytesseract.image_to_string(image)
+        except Exception as e:
+            print(f"OCR extract error: {e}")
+            return ""
+
