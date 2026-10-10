@@ -30,6 +30,14 @@ export async function upsertFromCalendarItems(userId, items) {
   return saved;
 }
 
+export async function listUpcomingForUser(userId, { limit = 5, now = new Date() } = {}) {
+  return [...memoryStore.deadlines.values()]
+    .filter((item) => item.userId === userId && item.status === 'pending' && new Date(item.deadlineDate) >= now)
+    .sort((left, right) => new Date(left.deadlineDate) - new Date(right.deadlineDate))
+    .slice(0, limit)
+    .map((item) => structuredClone(item));
+}
+
 export async function removeForUser(userId) {
   let count = 0;
   for (const [key, deadline] of memoryStore.deadlines) {
@@ -41,4 +49,4 @@ export async function removeForUser(userId) {
   return count;
 }
 
-export default { upsertFromCalendarItems, removeForUser };
+export default { upsertFromCalendarItems, listUpcomingForUser, removeForUser };

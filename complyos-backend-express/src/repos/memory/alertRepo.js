@@ -46,6 +46,14 @@ export async function createDigestLedger({ userId, changeId, now = new Date() })
   return { created: true, regulationAlert };
 }
 
+export async function listRecentForUser(userId, { limit = 5 } = {}) {
+  return [...memoryStore.sentinelAlerts.values()]
+    .filter((item) => item.userId === userId)
+    .sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt))
+    .slice(0, limit)
+    .map((item) => structuredClone(item));
+}
+
 export async function removeForUser(userId) {
   let sentinelAlerts = 0;
   let regulationAlerts = 0;
@@ -64,4 +72,4 @@ export async function removeForUser(userId) {
   return { sentinelAlerts, regulationAlerts };
 }
 
-export default { createSentinelAlertWithLedger, createDigestLedger, removeForUser };
+export default { createSentinelAlertWithLedger, createDigestLedger, listRecentForUser, removeForUser };

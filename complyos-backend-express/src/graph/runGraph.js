@@ -3,6 +3,7 @@ import { ariaNode } from './nodes/ariaNode.js';
 import { consentGateNode } from './nodes/consentGate.js';
 import { deleteGuardNode } from './nodes/deleteGuard.js';
 import { menuNode } from './nodes/menuNode.js';
+import { homeNode } from './nodes/homeNode.js';
 import { pathwayStubNode } from './nodes/pathwayStubNode.js';
 import { profileConflictNode } from './nodes/profileConflictNode.js';
 import { scoutNode } from './nodes/scoutNode.js';
@@ -50,7 +51,22 @@ export async function runGraph(initialState) {
 
   const route = routeEvent(state);
   let output;
-  if (route === 'aria') {
+  if (route.startsWith('home:')) {
+    const intent = route.slice('home:'.length);
+    if (intent === 'scout') {
+      output = await scoutNode({ ...state, event: { type: 'SCHEME_REQUEST' } }, 'SCHEME_REQUEST');
+    } else if (intent === 'profile') {
+      output = await ariaNode({
+        ...state,
+        event: { type: 'OPTION_TAP', questionId: 'aria-reveal', optionId: 'edit' },
+      });
+    } else if (intent === 'pathway') {
+      output = pathwayStubNode(state);
+    } else {
+      output = await homeNode(state, intent);
+    }
+    state = combine(state, output);
+  } else if (route === 'aria') {
     output = await ariaNode(state);
     state = combine(state, output);
     if (output.escalate === 'DELETE_REQUEST') {

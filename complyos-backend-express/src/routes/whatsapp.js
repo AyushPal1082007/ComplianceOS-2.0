@@ -8,12 +8,10 @@ import express from 'express';
 
 import config from '../config.js';
 import logger from '../logger.js';
-import prisma from '../db.js';
 import { ariaChat } from '../agents/aria.js';
-import { processDocument } from '../agents/veda.js';
-import { getPathway } from '../agents/pathway.js';
-import { sendTextMessage, sendInteractiveButtons } from '../services/whatsappService.js';
-import { transcribeHindi } from '../services/bhashiniService.js';
+import { handleEvent } from '../orchestrator/handleEvent.js';
+import { parseWhatsAppWebhook } from '../channels/whatsapp.js';
+import { sendRenderedMessages, sendTextMessage } from '../services/whatsappService.js';
 
 const router = express.Router();
 
@@ -29,7 +27,7 @@ router.get('/', (req, res) => {
     return res.status(200).send(challenge);
   }
 
-  logger.warn('WhatsApp webhook verification rejected', { token });
+  logger.warn('WhatsApp webhook verification rejected');
   return res.sendStatus(403);
 });
 
@@ -37,94 +35,17 @@ router.get('/', (req, res) => {
 
 router.post('/', async (req, res) => {
   res.sendStatus(200);
-
-  const body = req.body;
-  if (!body.entry || !body.entry[0]?.changes || !body.entry[0]?.changes[0]?.value) {
-    return;
-  }
-
-  const value = body.entry[0].changes[0].value;
-  const messages = value.messages;
-  if (!messages || messages.length === 0) {
-    return;
-  }
-
-  const msg = messages[0];
-  const fromPhone = msg.from;
-
-  try {
-    let user = await prisma.user.findFirst({
-      where: { phone: fromPhone },
-      include: { businessProfile: true },
-    });
-
-    if (msg.type === 'text') {
-      const userText = msg.text.body;
-      logger.info('Inbound WhatsApp text', { from: fromPhone, text: userText });
-
-      const ariaRes = await ariaChat(
-        [{ role: 'user', content: userText }],
-        user?.businessProfile || {}
-      );
-
-      await sendTextMessage(fromPhone, ariaRes.message);
-      return;
-    }
-
-    if (msg.type === 'interactive' && msg.interactive?.button_reply) {
-      const btnId = msg.interactive.button_reply.id;
-      logger.info('Inbound WhatsApp button click', { from: fromPhone, btnId });
-
-      if (btnId.startsWith('checklist_')) {
-        const pathway = getPathway('gst_monthly_return', user?.businessProfile || {});
-        const stepsText = pathway.steps
-          ? pathway.steps.map((s, idx) => `${idx + 1}. *${s.stepHindi}*\n   🔗 ${s.officialLink}`).join('\n\n')
-          : 'चेकलिस्ट लोड हो रही है...';
-
-        await sendTextMessage(
-          fromPhone,
-          `📋 *${pathway.titleHindi || 'कम्प्लायंस चेकलिस्ट'}*\n\n${stepsText}\n\n_ComplianceOS कभी पोर्टल लॉगिन नहीं मांगता।_`
-        );
-      } else if (btnId.startsWith('ca_')) {
-        await sendTextMessage(
-          fromPhone,
-          `🤝 *CA पार्टनर सहायता*\n\nआपकी कम्प्लायंस फ़ाइल तैयार है।`
-        );
+  const events = parseWhatsAppWebhook(req.body);
+  for (const event of events) {
+    void (async () => {
+      try {
+        const result = await handleEvent(event);
+        await sendRenderedMessages(event.phone, result.messages || []);
+      } catch (error) {
+        logger.error('WhatsApp webhook processing failed', { error: error instanceof Error ? error.name : 'UnknownError' });
+        await sendTextMessage(event.phone, 'माफ़ी, संदेश को प्रोसेस करने में कुछ समस्या आई।');
       }
-      return;
-    }
-
-    if (msg.type === 'audio' || msg.type === 'voice') {
-      logger.info('Inbound WhatsApp voice note received', { from: fromPhone });
-      const fakeBuffer = Buffer.from('mock_voice_note');
-      const bhashiniRes = await transcribeHindi(fakeBuffer, 'audio/ogg');
-
-      const ariaRes = await ariaChat(
-        [{ role: 'user', content: bhashiniRes.transcript }],
-        user?.businessProfile || {}
-      );
-
-      await sendTextMessage(
-        fromPhone,
-        `🎙️ _" ${bhashiniRes.transcript} "_\n\n${ariaRes.message}`
-      );
-      return;
-    }
-
-    if (msg.type === 'image' || msg.type === 'document') {
-      logger.info('Inbound WhatsApp document photo received', { from: fromPhone });
-      await sendTextMessage(
-        fromPhone,
-        `📄 आपका दस्तावेज़ प्राप्त हुआ है।`
-      );
-      return;
-    }
-  } catch (err) {
-    logger.error('WhatsApp webhook processing error', { error: err.message, from: fromPhone });
-    await sendTextMessage(
-      fromPhone,
-      'माफ़ी, संदेश को प्रोसेस करने में कुछ समस्या आई।'
-    );
+    })();
   }
 });
 

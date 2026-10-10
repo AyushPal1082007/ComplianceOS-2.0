@@ -91,6 +91,8 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - `complyos-backend-express/src/jobs/`: Scheduled cron jobs (`cronJobs.js`, `deadlineReminder.js`, `sentinelCrawler.js`).
 - `complyos-backend-express/src/middleware/`: Express middleware (`auth.js` for JWT, `errorHandler.js`).
 - `complyos-backend-express/src/routes/`: Domain route handlers (`auth.js`, `business.js`, `compliance.js`, etc.).
+- `complyos-backend-express/src/channels/`: Channel-neutral event adapters, including WhatsApp webhook parsing and outbound rendering.
+- `complyos-backend-express/src/routes/chat.js`: Authenticated web chat JSON and SSE endpoints.
 - `complyos-backend-express/src/services/`: External integrations (Cloudinary, Razorpay, WhatsApp, Sarvam AI, TinyFish). `bhashiniService.js` is retained but no longer used in active routes.
 - `complyos-backend-express/src/services/sarvamService.js`: Sarvam AI adapter for Hindi ASR (`saarika:v1`), TTS (`bulbul:v1`), and translation (`mayura:v1`). Graceful demo-fallback when `SARVAM_API_KEY` is unset.
 - `complyos-backend-express/src/services/tinyfish.js`: TinyFish adapter for search/fetch/agent calls with rate limits and block detection.
@@ -119,6 +121,8 @@ The repository is currently undergoing a phased migration from a legacy Python/F
   2. Frontend connects to WebSocket (`ariaSocket.js`) or calls `/api/aria`.
   3. `aria.js` processes input with Gemini/Groq prompt constraints and returns structured onboarding or compliance recommendations.
 - **Graph Orchestration Flow**: `handleEvent` validates events, enforces consent, idempotency, and a per-user lock, then routes through graph nodes. ARIA can chain into SCOUT; VEDA refreshes SCOUT only after successful profile changes. The orchestrator does not call LLM services.
+- **Home routing**: When conversation phase is `home`, TEXT/VOICE keywords deterministically route to SCOUT, saved deadlines, upload guidance, ARIA profile editing, recent SENTINEL alerts, or the PATHWAY stub; otherwise show the home card.
+- **Channel flow**: Web chat uses `POST /api/chat/event` and `GET /api/chat/stream`; WhatsApp parses text, interactive replies, audio metadata, and image/document metadata into shared events, then renders channel-neutral outbound messages. Interactive IDs use `<cardId>::<actionId>`. Media download and Cloudinary upload are not part of this adapter.
 - **VEDA resume**: New documents receive `veda:<userId>:<uuid>` thread IDs stored in `ConversationState.pendingVeda`; only the pending thread can resume before its TTL expires.
 - **SCOUT events**: Only `SCHEME_REQUEST`, `TEASER`, and `REFRESH` are accepted. Unknown profile criteria remain `possible`, never `eligible`.
 - **Deletion**: User deletion removes personal records and Cloudinary media, anonymizes the user row, and retains ConsentLog and payment records.
@@ -149,6 +153,9 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **`complyos-backend-express/src/agents/sentinel.js`**: High-level sentinel wrapper and trigger entry point.
 - **`complyos-backend-express/src/agents/sentinel/*`**: Source config, fetch, normalize, diff, classify, profile matching, alert building, review queue helpers, and tests.
 - **`complyos-backend-express/src/orchestrator/handleEvent.js`**: Consent-aware inbound orchestration, user lock, idempotency, graph invocation, and persistence.
+- **`complyos-backend-express/src/channels/whatsapp.js`**: WhatsApp webhook parsing, interactive ID encoding/decoding, centralized `WA_LIMITS` (`TODO(verify)`), and outbound rendering.
+- **`complyos-backend-express/src/routes/chat.js`**: Authenticated web chat POST/SSE endpoints returning shared event results.
+- **`complyos-backend-express/src/middleware/safeHttpLog.js`**: Removes query strings from access-log paths to avoid logging submitted chat text.
 - **`complyos-backend-express/src/graph/`**: Typed graph state, routing, and domain/agent nodes; profile changes use `mergeProfile`.
 - **`complyos-backend-express/src/graph/nodes/sentinelDeliveryNode.js`**: Approved-change delivery, simulated-label checks, per-user/change dedupe, immediate-alert cap, and digest routing.
 - **`complyos-backend-express/src/delete/deleteUserData.js`**: Media cleanup, personal-data removal, and user anonymization.
@@ -195,6 +202,7 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - Agent profile patches go through `mergeProfile`; never spread patches over stored profiles.
 - Option taps do not make LLM calls; neither does the orchestrator itself.
 - On deletion, ConsentLog and payment records are retained; the User row is anonymized.
+- WhatsApp provider media is metadata-only; do not add downloads or Cloudinary handling in this channel stage. Verify `WA_LIMITS` against Meta before production.
 
 ### How to Add a New Regulation Source
 
@@ -240,6 +248,8 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 | `PUT`  | `/api/notifications/:id/read` | `routes/notifications.js` | Mark notification as read                  |
 | `GET`  | `/api/agent-trace`            | `routes/agentTrace.js`    | Multi-agent execution log stream           |
 | `GET`  | `/api/admin/metrics`          | `routes/admin.js`         | System performance and user metrics        |
+| `POST` | `/api/chat/event`             | `routes/chat.js`            | Submit authenticated web chat event         |
+| `GET`  | `/api/chat/stream`            | `routes/chat.js`            | Stream channel-neutral chat messages via SSE |
 ### SENTINEL Safety
 - Skip `TODO_VERIFY_OFFICIAL_URL` sources until official URLs are confirmed.
 - Require source metadata for alerts; code chooses user targeting. Mark simulated alerts in backend output.

@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import config from '../config.js';
 import prisma from '../db.js';
+import * as userRepo from '../repos/userRepo.js';
+import { usesMemoryRepository } from '../repos/memory/store.js';
 
 /**
  * ComplianceOS — JWT Auth Middleware (ES6 Module)
@@ -23,17 +25,19 @@ export async function authenticate(req, res, next) {
     return next(err); // handled by errorHandler
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: payload.sub },
-    select: {
-      id: true,
-      email: true,
-      fullName: true,
-      role: true,
-      plan: true,
-      isActive: true,
-    },
-  });
+  const user = usesMemoryRepository()
+    ? await userRepo.findById(payload.sub)
+    : await prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        role: true,
+        plan: true,
+        isActive: true,
+      },
+    });
 
   if (!user || !user.isActive) {
     return res.status(401).json({ error: 'User not found or inactive.' });

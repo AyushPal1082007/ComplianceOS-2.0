@@ -70,6 +70,15 @@ export async function createDigestLedger({ userId, changeId, now = new Date() })
   }
 }
 
+export async function listRecentForUser(userId, { limit = 5 } = {}) {
+  if (usesMemoryRepository()) return memoryAlertRepo.listRecentForUser(userId, { limit });
+  return prisma.sentinelAlert.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+  });
+}
+
 export async function removeForUser(userId) {
   if (usesMemoryRepository()) return memoryAlertRepo.removeForUser(userId);
   const [sentinelAlerts, regulationAlerts] = await prisma.$transaction([
@@ -79,4 +88,4 @@ export async function removeForUser(userId) {
   return { sentinelAlerts: sentinelAlerts.count, regulationAlerts: regulationAlerts.count };
 }
 
-export default { createSentinelAlertWithLedger, createDigestLedger, removeForUser };
+export default { createSentinelAlertWithLedger, createDigestLedger, listRecentForUser, removeForUser };

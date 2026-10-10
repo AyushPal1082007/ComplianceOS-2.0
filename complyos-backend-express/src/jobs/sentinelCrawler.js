@@ -1,17 +1,16 @@
-'use strict';
 /**
  * ComplianceOS — SENTINEL Crawler Background Job
  * Uses BullMQ if Redis is reachable, otherwise runs graceful in-process timer.
  */
-const { Queue, Worker } = require('bullmq');
-const config = require('../config');
-const logger = require('../logger');
-const { runSentinelCrawl } = require('../agents/sentinel');
+import { Queue, Worker } from 'bullmq';
+import config from '../config.js';
+import logger from '../logger.js';
+import { runSentinelCrawl } from '../agents/sentinel/index.js';
 
 let sentinelWorker = null;
 let intervalId = null;
 
-function startSentinelJob() {
+export function startSentinelJob() {
   try {
     const connection = {
       url: config.redis.url,
@@ -54,12 +53,9 @@ function startSentinelJob() {
   }
 }
 
-function stopSentinelJob() {
+export function stopSentinelJob() {
   if (sentinelWorker) sentinelWorker.close();
   if (intervalId) clearInterval(intervalId);
 }
 
-module.exports = {
-  startSentinelJob,
-  stopSentinelJob,
-};
+export default { startSentinelJob, stopSentinelJob };

@@ -42,9 +42,18 @@ export async function upsertFromCalendarItems(userId, items = []) {
   return results;
 }
 
+export async function listUpcomingForUser(userId, { limit = 5, now = new Date() } = {}) {
+  if (usesMemoryRepository()) return memoryDeadlineRepo.listUpcomingForUser(userId, { limit, now });
+  return prisma.complianceDeadline.findMany({
+    where: { userId, status: 'pending', deadlineDate: { gte: now } },
+    orderBy: { deadlineDate: 'asc' },
+    take: limit,
+  });
+}
+
 export async function removeForUser(userId) {
   if (usesMemoryRepository()) return memoryDeadlineRepo.removeForUser(userId);
   return (await prisma.complianceDeadline.deleteMany({ where: { userId } })).count;
 }
 
-export default { upsertFromCalendarItems, removeForUser };
+export default { upsertFromCalendarItems, listUpcomingForUser, removeForUser };

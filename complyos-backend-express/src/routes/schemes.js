@@ -10,7 +10,7 @@ import { authenticate } from '../middleware/auth.js';
 import prisma from '../db.js';
 import { scoutSchemes } from '../agents/scout.js';
 import { getPathway } from '../agents/pathway.js';
-import schemesData from '../data/schemes.json' assert { type: 'json' };
+import schemesData from '../data/schemes.json' with { type: 'json' };
 
 const router = express.Router();
 

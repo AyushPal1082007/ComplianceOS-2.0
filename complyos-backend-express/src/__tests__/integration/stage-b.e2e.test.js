@@ -8,7 +8,7 @@ import { withUserLock } from '../../orchestrator/userLock.js';
 import { run as runAria } from '../../agents/aria/index.js';
 import { deliverApprovedChange } from '../../graph/nodes/sentinelDeliveryNode.js';
 import { vedaNode } from '../../graph/nodes/vedaNode.js';
-import { isDeleteRequest, routeEvent } from '../../graph/router.js';
+import { homeIntent, isDeleteRequest, routeEvent } from '../../graph/router.js';
 import * as consentRepo from '../../repos/consentRepo.js';
 import * as conversationRepo from '../../repos/conversationRepo.js';
 import * as profileRepo from '../../repos/profileRepo.js';
@@ -92,6 +92,59 @@ function scoutRunner(calls, output = {}) {
     };
   };
 }
+
+test('S10 home routing selects deterministic intents for English, Roman Hindi, and Devanagari', () => {
+  const cases = [
+    ['scout', ['government schemes', 'sarkari yojana', 'सरकारी योजना']],
+    ['deadlines', ['due date', 'aakhri tareekh', 'आखिरी तारीख']],
+    ['upload', ['upload document', 'dastavez bhejna', 'दस्तावेज़ अपलोड']],
+    ['profile', ['profile', 'meri jaankari badlein', 'मेरी प्रोफ़ाइल']],
+    ['alerts', ['recent alerts', 'soochna dikhao', 'अलर्ट दिखाओ']],
+    ['pathway', ['checklist', 'CA ko share karein', 'सीए को साझा करें']],
+  ];
+  for (const [intent, phrases] of cases) {
+    for (const [index, text] of phrases.entries()) {
+      assert.equal(homeIntent(text), intent, `${text} should route to ${intent}`);
+      assert.equal(routeEvent({
+        event: { type: index === 1 ? 'VOICE' : 'TEXT', text },
+        conversation: { phase: 'home' },
+      }), `home:${intent}`);
+    }
+  }
+  assert.equal(routeEvent({ event: { type: 'TEXT', text: 'hello' }, conversation: { phase: 'home' } }), 'home:card');
+});
+
+test('S10 profile home intent opens ARIA profile editing', async () => {
+  reset();
+  const user = createUser();
+  await conversationRepo.save(user.id, {
+    phase: 'home',
+    language: 'en',
+    ariaSession: { phase: 'done', language: 'en' },
+    outstandingCards: {},
+    pendingProfileConflicts: [],
+  });
+  let routedEvent;
+  const result = await handleEvent({
+    userId: user.id, externalId: 's10-profile-edit', type: 'TEXT', text: 'profile',
+  }, {
+    agentRunners: {
+      aria: async (input) => {
+        routedEvent = input.event;
+        return {
+          status: 'OK',
+          profilePatch: {},
+          session: { phase: 'editing', language: 'en' },
+          messages: [{ type: 'list', id: 'aria-edit-list', text: 'Which detail should we change?', rows: [] }],
+          claims: [],
+          trace: [],
+        };
+      },
+    },
+  });
+  assert.deepEqual(routedEvent, { type: 'OPTION_TAP', questionId: 'aria-reveal', optionId: 'edit' });
+  assert.equal(result.messages[0].id, 'aria-edit-list');
+});
 
 test('delete request phrases match without intercepting unrelated invoice questions', () => {
   for (const text of ['mera data hatao', 'डिलीट', 'मेरा डेटा हटाओ', 'मेरा डेटा हटाएँ', 'मेरा डेटा हटाएं']) {
