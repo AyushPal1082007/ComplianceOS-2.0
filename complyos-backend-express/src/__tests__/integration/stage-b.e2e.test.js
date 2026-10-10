@@ -613,12 +613,13 @@ test('S7: free-tier document quota counts only successful VEDA processing', asyn
   assert.equal(vedaCalls, 1);
   assert.equal((await conversationRepo.load(user.id)).state.counters.docsThisMonth.count, 1);
 
+  const callsBeforeQuotaBlock = vedaCalls;
   const limited = await handleEvent({
     userId: user.id, externalId: 's7-doc-2', type: 'DOCUMENT',
     document: { url: 'https://res.cloudinary.com/demo/two.pdf', mime: 'application/pdf' },
   }, { agentRunners: agents });
   assert.match(limited.messages[0].text, /monthly document limit/);
-  assert.equal(vedaCalls, 1);
+  assert.equal(vedaCalls, callsBeforeQuotaBlock, 'VEDA must not run for the quota-blocked second document');
 });
 
 test('S8: thrown agent returns safe apology, retains profile/state and records a privacy-safe error trace', async () => {

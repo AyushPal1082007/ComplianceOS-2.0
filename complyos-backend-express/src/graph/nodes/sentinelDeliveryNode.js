@@ -1,6 +1,7 @@
 import * as alertRepo from '../../repos/alertRepo.js';
 import { buildAlert } from '../../agents/sentinel/buildAlert.js';
 import { matchProfiles } from '../../agents/sentinel/matchProfiles.js';
+import { notify } from '../../services/notify.js';
 
 function missingRequiredField(profile, filters = {}) {
   const stateRequired = Array.isArray(filters.states) && !filters.states.includes('all');
@@ -35,6 +36,7 @@ export async function deliverApprovedChange({
   profiles = [],
   build = buildAlert,
   alerts = alertRepo,
+  notifyUser = notify,
   now = new Date(),
 }) {
   if (!changeId) throw new TypeError('Approved SENTINEL delivery requires a change id');
@@ -75,6 +77,17 @@ export async function deliverApprovedChange({
     const result = await alerts.createSentinelAlertWithLedger({ alert, changeId, now });
     if (result.created) {
       sent++;
+      await notifyUser({
+        userId,
+        user: profile.user,
+        title: alert.title,
+        body: alert.summary,
+        kind: 'sentinel',
+        metadata: { changeId, sourceUrl: alert.sourceUrl, isSimulated: simulated },
+        dedupeKey: `sentinel:${changeId}`,
+        inAppStored: true,
+        now,
+      });
     } else if (result.reason === 'daily_limit') {
       limited++;
       const queued = await alerts.createDigestLedger({ userId, changeId, now });
@@ -112,6 +125,7 @@ export async function sentinelDeliveryNode(state) {
     profiles: state.event.profiles || [],
     build: state.services?.buildAlert || buildAlert,
     alerts: state.services?.alertRepo || alertRepo,
+    notifyUser: state.services?.notify || notify,
     now: state.event.now ? new Date(state.event.now) : new Date(),
   });
 }

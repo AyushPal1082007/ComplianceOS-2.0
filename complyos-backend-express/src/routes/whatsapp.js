@@ -11,6 +11,7 @@ import logger from '../logger.js';
 import { ariaChat } from '../agents/aria.js';
 import { handleEvent } from '../orchestrator/handleEvent.js';
 import { parseWhatsAppWebhook } from '../channels/whatsapp.js';
+import { prepareWhatsAppMediaEvent } from '../channels/whatsappMedia.js';
 import { sendRenderedMessages, sendTextMessage } from '../services/whatsappService.js';
 
 const router = express.Router();
@@ -39,7 +40,8 @@ router.post('/', async (req, res) => {
   for (const event of events) {
     void (async () => {
       try {
-        const result = await handleEvent(event);
+        const preparedEvent = await prepareWhatsAppMediaEvent(event);
+        const result = await handleEvent(preparedEvent);
         await sendRenderedMessages(event.phone, result.messages || []);
       } catch (error) {
         logger.error('WhatsApp webhook processing failed', { error: error instanceof Error ? error.name : 'UnknownError' });

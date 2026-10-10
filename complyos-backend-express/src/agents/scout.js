@@ -9,9 +9,10 @@ import { createRequire } from 'module';
 import Groq from 'groq-sdk';
 import config from '../config.js';
 import logger from '../logger.js';
+import { isVerifiedScheme } from '../channels/schemeVerification.js';
 
 const require = createRequire(import.meta.url);
-const schemesData = require('../data/schemes.json');
+const schemesData = require('../data/schemes.json').filter(isVerifiedScheme);
 
 const groq = new Groq({ apiKey: config.groq.apiKey });
 

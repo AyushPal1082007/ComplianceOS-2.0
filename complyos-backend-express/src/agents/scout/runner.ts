@@ -4,6 +4,7 @@ import { matchSchemes } from './engine/match.ts';
 import { rankMissingFields } from './engine/missingFields.ts';
 import { buildTeaser, CORE_PROFILE_FIELDS } from './engine/teaser.ts';
 import { loadSchemes } from './loadSchemes.ts';
+import { hasSchemeVerificationMetadata } from '../../channels/schemeVerification.js';
 import type { SchemeMatch, SchemeRecord, TeaserLanguage } from './schemas.ts';
 import type {
   AgentInput,
@@ -55,12 +56,10 @@ function knownCoreFieldCount(input: AgentInput): number {
 
 function isVerifiedForDisplay(scheme: SchemeRecord | undefined): scheme is SchemeRecord {
   if (!scheme) return false;
-  const sourceUrl = scheme.sourceUrl.trim();
   const retrievedOn = scheme.retrievedOn.trim();
   return Boolean(
-    sourceUrl &&
+    hasSchemeVerificationMetadata(scheme) &&
       retrievedOn &&
-      !/TODO\s*\(\s*owner\s*\)/i.test(sourceUrl) &&
       !/TODO\s*\(\s*owner\s*\)/i.test(retrievedOn),
   );
 }

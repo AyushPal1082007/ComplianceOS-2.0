@@ -36,6 +36,80 @@ async function sendPayload(toPhone, payload) {
   return { success: true, simulated: true };
 }
 
+export async function downloadWhatsAppMedia(mediaId, {
+  get = axios.get,
+  token = config.whatsapp.token,
+  apiUrl = config.whatsapp.apiUrl,
+} = {}) {
+  if (!mediaId) throw new TypeError('WhatsApp media id is required');
+  if (!token) throw new Error('WhatsApp media download is not configured');
+  const headers = { Authorization: `Bearer ${token}` };
+  const metadata = await get(`${apiUrl}/${encodeURIComponent(mediaId)}`, {
+    headers,
+    timeout: 15000,
+  });
+  const mediaUrl = new URL(metadata.data?.url || '');
+  const allowedHost = ['facebook.com', 'fbcdn.net', 'fbsbx.com'].some(
+    (domain) => mediaUrl.hostname === domain || mediaUrl.hostname.endsWith(`.${domain}`),
+  );
+  if (mediaUrl.protocol !== 'https:' || !allowedHost) {
+    throw new Error('WhatsApp provider returned an invalid media URL');
+  }
+  const response = await get(mediaUrl.toString(), {
+    headers,
+    responseType: 'arraybuffer',
+    maxContentLength: 20 * 1024 * 1024,
+    maxBodyLength: 20 * 1024 * 1024,
+    timeout: 30000,
+  });
+  const buffer = Buffer.from(response.data);
+  if (buffer.length === 0 || buffer.length > 20 * 1024 * 1024) {
+    throw new Error('WhatsApp provider returned empty or oversized media');
+  }
+  return buffer;
+}
+
+export async function sendWhatsAppUtilityTemplate(toPhone, templateName, { title, body }) {
+  if (!templateName) throw new TypeError('Approved WhatsApp utility template name is required');
+  const cleanPhone = String(toPhone).replace(/[^0-9]/g, '');
+  if (!config.whatsapp.token || !config.whatsapp.phoneNumberId) {
+    logger.info('[SIMULATION] WhatsApp utility template dispatched', {
+      to: maskedPhone(cleanPhone),
+      templateName,
+    });
+    return { success: true, simulated: true };
+  }
+  const response = await axios.post(
+    `${config.whatsapp.apiUrl}/${config.whatsapp.phoneNumberId}/messages`,
+    {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: cleanPhone,
+      type: 'template',
+      template: {
+        name: templateName,
+        language: { code: 'hi' },
+        components: [{
+          type: 'body',
+          parameters: [{ type: 'text', text: title }, { type: 'text', text: body }],
+        }],
+      },
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${config.whatsapp.token}`,
+      },
+      timeout: 15000,
+    },
+  );
+  logger.info('WhatsApp utility template sent', {
+    to: maskedPhone(cleanPhone),
+    messageId: response.data?.messages?.[0]?.id,
+  });
+  return { success: true, id: response.data?.messages?.[0]?.id };
+}
+
 export async function sendRenderedMessages(toPhone, messages) {
   const payloads = renderOutbound(messages);
   const results = [];

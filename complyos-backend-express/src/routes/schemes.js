@@ -11,15 +11,17 @@ import prisma from '../db.js';
 import { scoutSchemes } from '../agents/scout.js';
 import { getPathway } from '../agents/pathway.js';
 import schemesData from '../data/schemes.json' with { type: 'json' };
+import { isVerifiedScheme } from '../channels/schemeVerification.js';
 
 const router = express.Router();
+const verifiedSchemes = schemesData.filter(isVerifiedScheme);
 
 // ── GET /api/schemes — List all verified schemes ──────────────────────────────
 
 router.get('/', async (req, res) => {
   const { type, state, search } = req.query;
 
-  let results = [...schemesData];
+  let results = [...verifiedSchemes];
 
   if (type) {
     results = results.filter((s) => s.schemeType?.toLowerCase() === type.toLowerCase());
@@ -49,7 +51,7 @@ router.get('/', async (req, res) => {
     total: results.length,
     schemes: results,
     trustLayer: {
-      sourceCount: schemesData.length,
+      sourceCount: verifiedSchemes.length,
       allHandVerified: true,
       lastVerificationAudit: '2026-06-30',
     },
@@ -131,7 +133,7 @@ router.post('/evaluate-custom', async (req, res) => {
 // ── GET /api/schemes/:id — Single scheme details ─────────────────────────────
 
 router.get('/:id', async (req, res) => {
-  const scheme = schemesData.find((s) => s.id === req.params.id);
+  const scheme = verifiedSchemes.find((s) => s.id === req.params.id);
 
   if (!scheme) {
     return res.status(404).json({ error: 'Scheme not found' });
@@ -151,7 +153,7 @@ router.get('/:id', async (req, res) => {
 // ── GET /api/schemes/:id/pathway — PATHWAY step-by-step checklist ─────────────
 
 router.get('/:id/pathway', authenticate, async (req, res) => {
-  const scheme = schemesData.find((s) => s.id === req.params.id);
+  const scheme = verifiedSchemes.find((s) => s.id === req.params.id);
 
   if (!scheme) {
     return res.status(404).json({ error: 'Scheme not found' });
