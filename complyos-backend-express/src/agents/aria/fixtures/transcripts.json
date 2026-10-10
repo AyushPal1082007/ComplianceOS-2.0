@@ -1,0 +1,5 @@
+{
+  "voice-hi": {"text":"मेरा कारोबार कानपुर में है और मैं कपड़े की दुकान चलाता हूँ।","language":"hi","confidence":0.91},
+  "voice-hinglish": {"text":"Main Kanpur mein kapde ki dukaan chalata hoon, GST registered hai.","language":"hinglish","confidence":0.9},
+  "voice-low-confidence": {"text":"शायद कारोबार कानपुर...","language":"hi","confidence":0.2}
+}

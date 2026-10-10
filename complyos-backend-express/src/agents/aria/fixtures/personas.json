@@ -1,0 +1,12 @@
+[
+  {"id":"tap-01","mode":"tap","language":"hinglish","state":"Uttar Pradesh","sector":"trader","subSector":"textile"},
+  {"id":"tap-02","mode":"tap","language":"hi","state":"Delhi","sector":"service","subSector":"food"},
+  {"id":"text-01","mode":"text","language":"hinglish","utterance":"Main Kanpur mein kapde ki dukaan chalata hoon, GST hai."},
+  {"id":"text-02","mode":"text","language":"hi","utterance":"मेरा कारोबार बिहार में है, Udyam registration है।"},
+  {"id":"text-03","mode":"text","language":"en","utterance":"I run a food business in Gujarat."},
+  {"id":"voice-01","mode":"voice","language":"hi","transcript":"हम राजस्थान में हस्तशिल्प बनाते हैं।"},
+  {"id":"voice-02","mode":"voice","language":"hinglish","transcript":"Main Delhi mein service business chalata hoon."},
+  {"id":"voice-03","mode":"voice","language":"en","transcript":"We manufacture textiles in Maharashtra."},
+  {"id":"voice-04","mode":"voice","language":"hi","transcript":"हम उत्तर प्रदेश में खाना बनाकर बेचते हैं।"},
+  {"id":"voice-05","mode":"voice","language":"hinglish","transcript":"Mera business Gujarat mein hai, textile manufacturing karta hoon."}
+]

@@ -40,6 +40,8 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **Generate Prisma Client**: `npm run prisma:generate` (`npx prisma generate`)
 - **Database Push**: `npx prisma db push`
 - **Manual SENTINEL Run**: `npm run sentinel:run`
+- **ARIA Tests**: `npm run test:aria`
+- **ARIA Evals**: `npm run eval:aria:turns`, `npm run eval:aria:slots`, `npm run eval:aria:wer`, `npm run eval:aria:taps`
 - **Seed DB**: `node src/data/seed.js`
 - **Run Tests**: `npm test` (`node tests/testSuite.js && node src/agents/sentinel/__tests__/sentinel.test.js`)
 
@@ -119,6 +121,10 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **CA Workflow**:
   1. Business user requests CA review via `/api/ca/request`.
   2. CA views queue in `CAApprovalRequests.jsx` and runs audit checks using `CAFraudShield.jsx`.
+- **Backend**: `src/server.js` initializes Express, HTTP/WebSocket, Prisma and cron jobs. Frontend starts at `complyos-frontend/src/main.jsx`.
+- **ARIA**: Route callers still use legacy `src/agents/aria.js`; new per-turn `src/agents/aria/index.js` is exposed through `src/graph/nodes/aria.node.js`. Parent owns persistence.
+- **VEDA**: `/api/documents/upload` still calls legacy `src/agents/veda.js`; the new subgraph is `src/agents/veda/`. Migration/persistence gaps are in `VEDA_CONTRACT_REQUESTS.md`.
+- **CA**: `/api/ca/request` creates engagements consumed by CA portal pages.
 
 ---
 
@@ -217,6 +223,18 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 | `PUT`  | `/api/notifications/:id/read` | `routes/notifications.js` | Mark notification as read                  |
 | `GET`  | `/api/agent-trace`            | `routes/agentTrace.js`    | Multi-agent execution log stream           |
 | `GET`  | `/api/admin/metrics`          | `routes/admin.js`         | System performance and user metrics        |
+### SENTINEL Safety
+- Skip `TODO_VERIFY_OFFICIAL_URL` sources until official URLs are confirmed.
+- Require source metadata for alerts; code chooses user targeting. Mark simulated alerts in backend output.
+
+### Core Prisma Models
+`User`, `BusinessProfile`, `Document`, `ComplianceDeadline`, `Scheme`, `SchemeMatch`, `SentinelAlert`, `RegulationSource`, `RegulationSnapshot`, `RegulationChange`, `Alert`, `TinyFishCall`, `Notification`, `Subscription`, `ARIASession`.
+
+### Key Express Endpoints
+- Auth: `/api/auth/register`, `/api/auth/login`, `/api/auth/me`.
+- Business/compliance: `/api/business/profile`, `/api/compliance/status`, `/api/compliance/calendar`, `/api/compliance/calculate`.
+- Documents/CA: `/api/documents/upload`, `/api/documents`, `/api/ca/directory`, `/api/ca/request`.
+- Operations: `/api/notifications`, `/api/agent-trace`, `/api/admin/metrics`.
 
 ---
 
@@ -277,6 +295,7 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **Migration Status**: Follow `MIGRATION_PLAN.md`. All active development must happen in `complyos-backend-express`. Do not add new features to `complyos-backend` (Python).
 - **Prisma Generation**: Always run `npm run prisma:generate` after updating `schema.prisma`.
 - **Ground Truth Numbers**: AI agents must never hallucinate tax penalties or interest calculations. Always delegate math to `complianceCalculators.js`.
+- **ARIA Safety**: Keep option taps deterministic; redact Aadhaar/PAN/OTP/password text before Groq; require verbatim evidence quotes; derive numeric bands in code; never overwrite `VERIFIED` fields. Do not enable live Sarvam calls until verified.
 - **Protected Files**: Do not manually modify `package-lock.json` or `.prisma` client builds.
 - SCOUT hides schemes with missing or placeholder source data from user-facing output.
 - SCOUT matching is code-owned; never call a `possible` match eligible when criteria are unknown.
@@ -290,3 +309,8 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 Read this file first. Do not scan the whole repo. Use `.ai/file_index.json` and `.ai/project_graph.json` only via grep/jq lookups, never load them in full. Open source files only when needed for the task. After major changes (new routes, models, modules, commands), update this file.
 
 SCOUT details: .ai/agents/scout.md
+## 10. Agent Workflow and Context Maintenance
+- Before starting work, read `.ai/AI_CONTEXT.md`. Explore only the files needed for the task; do not scan the whole repository.
+- Use `.ai/file_index.json` and `.ai/project_graph.json` only for targeted `rg`/`jq` lookups; never load either file in full.
+- If a task changes a route, model, module, component, command, environment variable, or dependency, update this file and add one dated line to `.ai/CHANGELOG.md` in the same change.
+- Replace outdated context instead of only appending. Keep this file under approximately 4,000 tokens. Never put secrets or `.env` values here, and do not paste large code blocks.

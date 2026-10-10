@@ -1,0 +1,7 @@
+{
+  "welcome": {"hi":"नमस्ते! आपके कारोबार की जानकारी समझने में मदद करूँ?","en":"Hello! May I ask a few questions about your business?","hinglish":"Namaste! Aapke business ki kuch jaankari samajh loon?"},
+  "progress": {"hi":"अब तक {n} बातें समझीं।","en":"I have understood {n} details so far.","hinglish":"Maine ab tak {n} baatein samjhi."},
+  "thanks": {"hi":"धन्यवाद, यह जानकारी मददगार है।","en":"Thanks, that helps.","hinglish":"Shukriya, yeh jaankari helpful hai."},
+  "correction": {"hi":"ठीक है, बदल दिया।","en":"All right, updated.","hinglish":"Theek hai, badal diya."},
+  "teaser": {"hi":"अब तक {n} योजनाएँ आपके लिए possible हो सकती हैं।","en":"So far, {n} schemes may be possible for you.","hinglish":"Abhi tak {n} yojnaayein aapke liye possible ho sakti hain."}
+}
