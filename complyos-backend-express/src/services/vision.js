@@ -11,21 +11,35 @@ const pdf = pdfParse;
 import logger from '../logger.js';
 
 let tesseractWorker = null;
+let workerInitFailed = false;
 
 /**
  * Initialize Tesseract worker for better performance
  */
 async function getTesseractWorker() {
   if (tesseractWorker) return tesseractWorker;
+  if (workerInitFailed) {
+    logger.warn('Tesseract worker init previously failed, skipping');
+    return null;
+  }
 
-  tesseractWorker = await Tesseract.createWorker('eng+hin', 1, {
-    logger: m => {
-      if (m.status === 'recognizing text') {
-        logger.debug('Tesseract OCR progress', { progress: m.progress });
-      }
-    },
-  });
-  return tesseractWorker;
+  try {
+    logger.info('Initializing Tesseract worker with eng+hin languages');
+    tesseractWorker = await Tesseract.createWorker('eng+hin', 1, {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          logger.debug('Tesseract OCR progress', { progress: m.progress });
+        }
+      },
+    });
+    logger.info('Tesseract worker initialized successfully');
+    return tesseractWorker;
+  } catch (err) {
+    logger.error('Failed to initialize Tesseract worker', { error: err.message, stack: err.stack });
+    workerInitFailed = true;
+    tesseractWorker = null;
+    return null;
+  }
 }
 
 /**
@@ -66,6 +80,10 @@ export async function ocr(imageUrl) {
 
   try {
     const worker = await getTesseractWorker();
+    if (!worker) {
+      throw new Error('Tesseract worker not available - check installation');
+    }
+    
     const result = await worker.recognize(imageUrl);
 
     const blocks = result.data.lines.map(line => ({
@@ -102,6 +120,10 @@ export async function ocrFromBuffer(imageBuffer) {
 
   try {
     const worker = await getTesseractWorker();
+    if (!worker) {
+      throw new Error('Tesseract worker not available - check installation');
+    }
+    
     const result = await worker.recognize(imageBuffer);
 
     const blocks = result.data.lines.map(line => ({
@@ -161,9 +183,6 @@ export async function extractText(fileBuffer, mimeType) {
   }
 
   // Scanned PDF - use Tesseract.js OCR
-  // Note: Tesseract works with images, not PDFs directly
-  // For scanned PDFs, you would need pdf2image to convert pages to images first
-  // For now, try pdf-parse as fallback
   logger.info('Processing scanned PDF');
   
   try {
