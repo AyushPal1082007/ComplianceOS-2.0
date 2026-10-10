@@ -17,7 +17,7 @@ import prisma from '../db.js';
 import { ariaChat, ariaSummarizeNotice } from '../agents/aria.js';
 import { calculateHealthScore, calculatePenaltyAtRisk, gstLateFee } from '../utils/complianceCalculators.js';
 import { scoutSchemes } from '../agents/scout.js';
-import bhashiniService from '../services/bhashiniService.js';
+import sarvamService from '../services/sarvamService.js';
 import logger from '../logger.js';
 
 const router = express.Router();
@@ -231,11 +231,11 @@ router.post('/aria/voice', authenticate, upload.single('audio'), async (req, res
   let transcribedText;
 
   try {
-    // Step 1: Bhashini ASR
-    const bhashiniResult = await bhashiniService.transcribeHindi(req.file.buffer, req.file.mimetype);
-    transcribedText = bhashiniResult.transcript;
-  } catch (bhashiniErr) {
-    logger.warn('Bhashini ASR failed, returning error', { error: bhashiniErr.message });
+    // Step 1: Sarvam AI ASR (replaces Bhashini)
+    const sarvamResult = await sarvamService.transcribeHindi(req.file.buffer, req.file.mimetype);
+    transcribedText = sarvamResult.transcript;
+  } catch (sarvamErr) {
+    logger.warn('Sarvam ASR failed, returning error', { error: sarvamErr.message });
     return res.status(503).json({
       error: 'Speech recognition unavailable. Please type your message.',
       fallback: 'text_input',
@@ -281,7 +281,7 @@ router.post('/aria/voice', authenticate, upload.single('audio'), async (req, res
     message: ariaResponse.message,
     sessionId: session.sessionId,
     profileComplete: ariaResponse.profile_complete || false,
-    trace: { agent: 'ARIA', speechSource: 'Bhashini ASR (government-funded, free)', model: 'llama3-70b-8192' },
+    trace: { agent: 'ARIA', speechSource: 'Sarvam AI ASR (Indian sovereign AI)', model: 'llama3-70b-8192' },
   });
 });
 
