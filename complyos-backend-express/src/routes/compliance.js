@@ -7,12 +7,12 @@
  * GET  /api/compliance/gst-calculator — Deterministic GST late fee
  * GET  /api/compliance/due-dates     — GST return due dates
  */
-const express = require('express');
-const { v4: uuidv4 } = require('uuid');
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
-const { authenticate } = require('../middleware/auth');
-const prisma = require('../db');
-const { gstLateFee, getGSTDueDates } = require('../utils/complianceCalculators');
+import { authenticate } from '../middleware/auth.js';
+import prisma from '../db.js';
+import { gstLateFee, getGSTDueDates } from '../utils/complianceCalculators.js';
 
 const router = express.Router();
 
@@ -130,4 +130,4 @@ router.get('/due-dates', authenticate, async (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

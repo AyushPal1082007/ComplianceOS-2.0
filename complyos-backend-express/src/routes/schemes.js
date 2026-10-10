@@ -4,12 +4,13 @@
  * Hand-verified government schemes database (ODOP, CM YUVA, PMEGP, CGTMSE, Mudra, etc.)
  * Strictly deterministic rules engine for eligibility decisions; LLM strictly for vernacular explanation.
  */
-const express = require('express');
-const { authenticate } = require('../middleware/auth');
-const prisma = require('../db');
-const { scoutSchemes } = require('../agents/scout');
-const { getPathway } = require('../agents/pathway');
-const schemesData = require('../data/schemes.json');
+import express from 'express';
+
+import { authenticate } from '../middleware/auth.js';
+import prisma from '../db.js';
+import { scoutSchemes } from '../agents/scout.js';
+import { getPathway } from '../agents/pathway.js';
+import schemesData from '../data/schemes.json' assert { type: 'json' };
 
 const router = express.Router();
 
@@ -177,4 +178,4 @@ router.get('/:id/pathway', authenticate, async (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

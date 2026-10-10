@@ -3,10 +3,11 @@
  * ComplianceOS — Admin & Operational Telemetry Routes
  * System monitoring, MSME metrics, and administrative controls.
  */
-const express = require('express');
-const { authenticate } = require('../middleware/auth');
-const prisma = require('../db');
-const { runSentinelCrawl } = require('../agents/sentinel');
+import express from 'express';
+
+import { authenticate } from '../middleware/auth.js';
+import prisma from '../db.js';
+import { runSentinelCrawl } from '../agents/sentinel.js';
 
 const router = express.Router();
 
@@ -118,4 +119,4 @@ router.post('/trigger-crawler', authenticate, requireAdmin, async (req, res) => 
   res.json({ message: 'SENTINEL crawler finished', results });
 });
 
-module.exports = router;
+export default router;

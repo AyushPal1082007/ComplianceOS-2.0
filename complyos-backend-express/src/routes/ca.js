@@ -7,12 +7,12 @@
  * - Objective factual badges only — NO star ratings or commercial rankings
  * - Read-only collaboration sandbox for CA verification of client filings
  */
-const express = require('express');
-const { v4: uuidv4 } = require('uuid');
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
-const { authenticate } = require('../middleware/auth');
-const prisma = require('../db');
-const { calculateHealthScore, calculatePenaltyAtRisk } = require('../utils/complianceCalculators');
+import { authenticate } from '../middleware/auth.js';
+import prisma from '../db.js';
+import { calculateHealthScore, calculatePenaltyAtRisk } from '../utils/complianceCalculators.js';
 
 const router = express.Router();
 
@@ -26,7 +26,7 @@ const CA_DIRECTORY = [
     city: 'Kanpur',
     state: 'Uttar Pradesh',
     specializations: ['GST Audit', 'MSME Schemes & Subsidies', 'Direct Tax'],
-    verifiedCOP: true, // Certificate of Practice verified
+    verifiedCOP: true,
     responseTimeHours: 4,
     consultationModel: 'Direct client billing (zero platform commission)',
   },
@@ -182,7 +182,7 @@ router.get('/clients/:id', authenticate, async (req, res) => {
 
 router.post('/share', authenticate, async (req, res) => {
   const shareToken = uuidv4();
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   res.json({
     shareToken,
@@ -245,4 +245,4 @@ router.post('/connect', authenticate, async (req, res) => {
   res.status(201).json({ message: 'Connected to CA partner successfully', map });
 });
 
-module.exports = router;
+export default router;

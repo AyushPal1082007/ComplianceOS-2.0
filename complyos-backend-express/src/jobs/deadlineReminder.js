@@ -4,15 +4,16 @@
  * Uses BullMQ if Redis is available, or in-process interval fallback.
  * Checks for upcoming deadlines at 7, 3, and 1-day intervals and triggers notifications.
  */
-const { Queue, Worker } = require('bullmq');
-const config = require('../config');
-const logger = require('../logger');
-const { checkDailyDeadlines } = require('./cronJobs');
+import { Queue, Worker } from 'bullmq';
+
+import config from '../config.js';
+import logger from '../logger.js';
+import { checkDailyDeadlines } from './cronJobs.js';
 
 let reminderWorker = null;
 let intervalId = null;
 
-function startDeadlineReminderJob() {
+export function startDeadlineReminderJob() {
   try {
     const connection = {
       url: config.redis.url,
@@ -25,7 +26,7 @@ function startDeadlineReminderJob() {
       'check-deadlines',
       {},
       {
-        repeat: { pattern: '0 8 * * *' }, // 8:00 AM daily
+        repeat: { pattern: '0 8 * * *' },
         removeOnComplete: true,
       }
     ).catch(() => {});
@@ -53,12 +54,7 @@ function startDeadlineReminderJob() {
   }
 }
 
-function stopDeadlineReminderJob() {
+export function stopDeadlineReminderJob() {
   if (reminderWorker) reminderWorker.close();
   if (intervalId) clearInterval(intervalId);
 }
-
-module.exports = {
-  startDeadlineReminderJob,
-  stopDeadlineReminderJob,
-};

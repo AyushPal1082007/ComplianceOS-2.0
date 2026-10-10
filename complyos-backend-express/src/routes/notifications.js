@@ -3,10 +3,11 @@
  * ComplianceOS — Notification Routes
  * Fetches user alerts, manages read status, and tests multi-channel dispatches.
  */
-const express = require('express');
-const { authenticate } = require('../middleware/auth');
-const prisma = require('../db');
-const { sendNotification } = require('../services/notificationService');
+import express from 'express';
+
+import { authenticate } from '../middleware/auth.js';
+import prisma from '../db.js';
+import { sendNotification } from '../services/notificationService.js';
 
 const router = express.Router();
 
@@ -78,4 +79,4 @@ router.post('/test', authenticate, async (req, res) => {
   res.json({ message: 'Test notification triggered', result });
 });
 
-module.exports = router;
+export default router;
