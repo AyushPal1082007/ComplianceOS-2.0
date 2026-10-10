@@ -31,7 +31,7 @@ function getGraph(checkpointer = defaultCheckpointer) {
  */
 export async function run(input = {}, options = {}) {
   // Feature flag check
-  if (process.env.VEDA_REAL === 'false') {
+  if (process.env.VEDA_REAL !== 'true') {
     return runMock(input);
   }
 

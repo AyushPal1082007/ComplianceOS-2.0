@@ -44,6 +44,8 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **ARIA Evals**: `npm run eval:aria:turns`, `npm run eval:aria:slots`, `npm run eval:aria:wer`, `npm run eval:aria:taps`
 - **Seed DB**: `node src/data/seed.js`
 - **Run Tests**: `npm test` (`node tests/testSuite.js && node src/agents/sentinel/__tests__/sentinel.test.js`)
+- **Test All Suites**: `npm run test:all` (ARIA, VEDA, SCOUT, integration, and legacy/SENTINEL suites).
+- **Integration Tests**: `npm run test:integration`
 
 #### Frontend (`complyos-frontend`)
 
@@ -74,6 +76,9 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - `complyos-backend-express/prisma/`: Prisma schema definition (`schema.prisma`) for PostgreSQL.
 - `complyos-backend-express/src/agents/`: JavaScript multi-agent modules (ARIA, VEDA, SCOUT, SENTINEL, PATHWAY).
 - `complyos-backend-express/src/agents/sentinel/`: SENTINEL source config, fetch, normalize, diff, classify, matcher, alert builder, review and test fixtures.
+- `complyos-backend-express/src/graph/`: Event state/router and ARIA, VEDA, SCOUT, PATHWAY, consent, quota, deletion, profile-conflict, and SENTINEL delivery nodes.
+- `complyos-backend-express/src/orchestrator/`: Inbound event validation, per-user lock, idempotency, graph execution, persistence, and safe error handling.
+- `complyos-backend-express/src/delete/`: User data deletion and anonymization with retained consent and payment records.
 - `complyos-backend-express/src/agents/scout/`: TypeScript SCOUT matcher, runner, schemas, mock, and fixtures.
 - `complyos-backend-express/src/agents/scout/engine/`: deterministic matching, ARIA feedback, messages, and checked explanations.
 - `complyos-backend-express/src/agents/scout/schemes/`: scheme records loaded by SCOUT.
@@ -86,9 +91,14 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - `complyos-backend-express/src/jobs/`: Scheduled cron jobs (`cronJobs.js`, `deadlineReminder.js`, `sentinelCrawler.js`).
 - `complyos-backend-express/src/middleware/`: Express middleware (`auth.js` for JWT, `errorHandler.js`).
 - `complyos-backend-express/src/routes/`: Domain route handlers (`auth.js`, `business.js`, `compliance.js`, etc.).
+- `complyos-backend-express/src/channels/`: Channel-neutral event adapters, including WhatsApp webhook parsing and outbound rendering.
+- `complyos-backend-express/src/channels/whatsappMedia.js`: WhatsApp provider-media download, live Sarvam audio transcription, and Cloudinary document upload before graph dispatch.
+- `complyos-backend-express/src/channels/schemeVerification.js`: Read-time scheme verification and official-host allowlist (`.gov.in`, `.nic.in`, plus `odopup.in`).
+- `complyos-backend-express/src/routes/chat.js`: Authenticated web chat JSON and SSE endpoints.
 - `complyos-backend-express/src/services/`: External integrations (Cloudinary, Razorpay, WhatsApp, Sarvam AI, TinyFish). `bhashiniService.js` is retained but no longer used in active routes.
-- `complyos-backend-express/src/services/sarvamService.js`: Sarvam AI adapter for Hindi ASR (`saarika:v1`), TTS (`bulbul:v1`), and translation (`mayura:v1`). Graceful demo-fallback when `SARVAM_API_KEY` is unset.
+- `complyos-backend-express/src/services/sarvamService.js`: Sarvam API adapter; WhatsApp media rejects demo-fallback transcripts. Sarvam models/formats are not verified.
 - `complyos-backend-express/src/services/tinyfish.js`: TinyFish adapter for search/fetch/agent calls with rate limits and block detection.
+- `complyos-backend-express/src/services/notify.js`: In-app-first notifications, 24-hour WhatsApp session-window handling, approved utility-template gate, and reminder deduplication.
 - `complyos-backend-express/src/utils/`: Deterministic compliance score and penalty formulas (`complianceCalculators.js`).
 - `complyos-backend-express/tests/`: Integration test suite (`testSuite.js`).
 - `complyos-frontend/`: React 18 + Vite client application.
@@ -113,6 +123,14 @@ The repository is currently undergoing a phased migration from a legacy Python/F
   1. User triggers ARIA chat via `ComplianceChatbot.jsx` or `/onboarding`.
   2. Frontend connects to WebSocket (`ariaSocket.js`) or calls `/api/aria`.
   3. `aria.js` processes input with Gemini/Groq prompt constraints and returns structured onboarding or compliance recommendations.
+- **Graph Orchestration Flow**: `handleEvent` validates events, enforces consent, idempotency, and a per-user lock, then routes through graph nodes. ARIA can chain into SCOUT; VEDA refreshes SCOUT only after successful profile changes. The orchestrator does not call LLM services.
+- **Home routing**: When conversation phase is `home`, TEXT/VOICE keywords deterministically route to SCOUT, saved deadlines, upload guidance, ARIA profile editing, recent SENTINEL alerts, or the PATHWAY stub; otherwise show the home card.
+- **Channel flow**: Web chat uses `POST /api/chat/event` and `GET /api/chat/stream`; WhatsApp parses messages into shared events. Audio is downloaded by provider media ID and transcribed with Sarvam; documents/images are downloaded, uploaded to Cloudinary, and passed to VEDA as an HTTPS URL. Interactive IDs use `<cardId>::<actionId>`.
+- **VEDA resume**: New documents receive `veda:<userId>:<uuid>` thread IDs stored in `ConversationState.pendingVeda`; only the pending thread can resume before its TTL expires.
+- **SCOUT events**: Only `SCHEME_REQUEST`, `TEASER`, and `REFRESH` are accepted. Unknown profile criteria remain `possible`, never `eligible`.
+- **Scheme visibility**: Read paths hide source/checker placeholders. Legacy sources must be HTTPS `.gov.in`/`.nic.in`, with the official `odopup.in` domain explicitly allowed. Deactivation SQL is review-only; the app does not execute it.
+- **Notification jobs**: Deadline reminders and newly created immediate SENTINEL alerts use `services/notify.js`. Free-form WhatsApp is limited to the 24-hour user window. Outside it, only `TEMPLATE_MODE` plus a verified utility `SENTINEL_TEMPLATE_NAME` enables a template; otherwise keep the notification in-app. Never send marketing templates.
+- **Deletion**: User deletion removes personal records and Cloudinary media, anonymizes the user row, and retains ConsentLog and payment records.
 - **Document & OCR Flow**:
   1. User drops document in `VEDAUploader.jsx` (`/documents`).
   2. File uploads to `/api/documents/upload`, persisted to Cloudinary/storage.
@@ -139,7 +157,18 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **`complyos-backend-express/src/agents/scout/verify/runDiscovery.ts`**: Injected discovery/draft pipeline; persists generated JSON only under SCOUT `drafts/`.
 - **`complyos-backend-express/src/agents/sentinel.js`**: High-level sentinel wrapper and trigger entry point.
 - **`complyos-backend-express/src/agents/sentinel/*`**: Source config, fetch, normalize, diff, classify, profile matching, alert building, review queue helpers, and tests.
-- **`complyos-backend-express/src/services/sarvamService.js`**: Sarvam AI — Hindi/Indic speech-to-text, TTS, and translation. Used by `routes/business.js` `/aria/voice` endpoint. Key: `SARVAM_API_KEY`. No separate npm package — calls `api.sarvam.ai` via axios.
+- **`complyos-backend-express/src/orchestrator/handleEvent.js`**: Consent-aware inbound orchestration, user lock, idempotency, graph invocation, and persistence.
+- **`complyos-backend-express/src/channels/whatsapp.js`**: WhatsApp webhook parsing, interactive ID encoding/decoding, centralized `WA_LIMITS` (not verified), and outbound rendering.
+- **`complyos-backend-express/src/channels/whatsappMedia.js`**: Provider media download and audio/document processing before graph dispatch; no synthetic media buffers.
+- **`complyos-backend-express/src/channels/schemeVerification.js`**: Scheme metadata checks and official-host filtering, including the `odopup.in` exception.
+- **`complyos-backend-express/src/services/notify.js`**: Shared delivery window/template policy and in-app idempotency for reminders.
+- **`complyos-backend-express/src/jobs/cronJobs.js`**: SENTINEL/deadline job entry paths; deadline reminders use the shared notifier.
+- **`complyos-backend-express/src/routes/chat.js`**: Authenticated web chat POST/SSE endpoints returning shared event results.
+- **`complyos-backend-express/src/middleware/safeHttpLog.js`**: Removes query strings from access-log paths to avoid logging submitted chat text.
+- **`complyos-backend-express/src/graph/`**: Typed graph state, routing, and domain/agent nodes; profile changes use `mergeProfile`.
+- **`complyos-backend-express/src/graph/nodes/sentinelDeliveryNode.js`**: Approved-change delivery, simulated-label checks, per-user/change dedupe, immediate-alert cap, and digest routing.
+- **`complyos-backend-express/src/delete/deleteUserData.js`**: Media cleanup, personal-data removal, and user anonymization.
+- **`complyos-backend-express/src/services/sarvamService.js`**: Sarvam speech/language adapter. Provider-specific behavior and supported formats are not verified; WhatsApp rejects its demo transcript fallback.
 - **`complyos-backend-express/src/services/tinyfish.js`**: Search/fetch/agent adapter with block checks, retry logic, rate limits, and daily agent cap control.
 
 ### Prisma Data Models: Alert Routing
@@ -160,6 +189,8 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - `TINYFISH_API_KEY`
 - `TINYFISH_AGENT_DAILY_CAP`
 - `SARVAM_API_KEY` — Sarvam AI subscription key (get from dashboard.sarvam.ai). Used in `sarvamService.js` for ASR/TTS/translate. Omitting activates demo fallback.
+- `TEMPLATE_MODE`
+- `SENTINEL_TEMPLATE_NAME` — must name a verified, approved utility template; never configure a marketing template.
 
 ### SENTINEL Flow
 
@@ -170,6 +201,7 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 5. A change is classified, then reviewed for confidence and quote validity.
 6. `matchProfiles()` decides which active profiles are in scope, based on explicit fields only.
 7. `buildAlert()` creates the alert only when sourceUrl, lastVerified, quote, and confidence gates pass.
+8. Delivery targets profiles in code, deduplicates `(userId, changeId)`, and allows at most one immediate alert per user per day; other qualifying changes are digested.
 
 ### Safety Warnings
 
@@ -178,6 +210,10 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - The LLM never decides user targeting; code in `matchProfiles.js` and `buildAlert.js` decides that.
 - Only official sources are allowed in production; simulated alerts must be labeled as such.
 - Simulated alerts are labeled in backend code, not frontend.
+- Agent profile patches go through `mergeProfile`; never spread patches over stored profiles.
+- Option taps do not make LLM calls; neither does the orchestrator itself.
+- On deletion, ConsentLog and payment records are retained; the User row is anonymized.
+- Verify `WA_LIMITS` against Meta before production. Sarvam, Groq, and TinyFish provider-specific behavior, supported formats/models, contracts, and rate-limit details are not verified.
 
 ### How to Add a New Regulation Source
 
@@ -223,6 +259,8 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 | `PUT`  | `/api/notifications/:id/read` | `routes/notifications.js` | Mark notification as read                  |
 | `GET`  | `/api/agent-trace`            | `routes/agentTrace.js`    | Multi-agent execution log stream           |
 | `GET`  | `/api/admin/metrics`          | `routes/admin.js`         | System performance and user metrics        |
+| `POST` | `/api/chat/event`             | `routes/chat.js`            | Submit authenticated web chat event         |
+| `GET`  | `/api/chat/stream`            | `routes/chat.js`            | Stream channel-neutral chat messages via SSE |
 ### SENTINEL Safety
 - Skip `TODO_VERIFY_OFFICIAL_URL` sources until official URLs are confirmed.
 - Require source metadata for alerts; code chooses user targeting. Mark simulated alerts in backend output.
@@ -296,6 +334,7 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **Prisma Generation**: Always run `npm run prisma:generate` after updating `schema.prisma`.
 - **Ground Truth Numbers**: AI agents must never hallucinate tax penalties or interest calculations. Always delegate math to `complianceCalculators.js`.
 - **ARIA Safety**: Keep option taps deterministic; redact Aadhaar/PAN/OTP/password text before Groq; require verbatim evidence quotes; derive numeric bands in code; never overwrite `VERIFIED` fields. Do not enable live Sarvam calls until verified.
+- **Graph Safety**: Resume VEDA only with the stored pending thread ID; unknown or expired threads ask the user to upload the document again.
 - **Protected Files**: Do not manually modify `package-lock.json` or `.prisma` client builds.
 - SCOUT hides schemes with missing or placeholder source data from user-facing output.
 - SCOUT matching is code-owned; never call a `possible` match eligible when criteria are unknown.

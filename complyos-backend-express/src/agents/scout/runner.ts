@@ -4,6 +4,7 @@ import { matchSchemes } from './engine/match.ts';
 import { rankMissingFields } from './engine/missingFields.ts';
 import { buildTeaser, CORE_PROFILE_FIELDS } from './engine/teaser.ts';
 import { loadSchemes } from './loadSchemes.ts';
+import { hasSchemeVerificationMetadata } from '../../channels/schemeVerification.js';
 import type { SchemeMatch, SchemeRecord, TeaserLanguage } from './schemas.ts';
 import type {
   AgentInput,
@@ -55,12 +56,10 @@ function knownCoreFieldCount(input: AgentInput): number {
 
 function isVerifiedForDisplay(scheme: SchemeRecord | undefined): scheme is SchemeRecord {
   if (!scheme) return false;
-  const sourceUrl = scheme.sourceUrl.trim();
   const retrievedOn = scheme.retrievedOn.trim();
   return Boolean(
-    sourceUrl &&
+    hasSchemeVerificationMetadata(scheme) &&
       retrievedOn &&
-      !/TODO\s*\(\s*owner\s*\)/i.test(sourceUrl) &&
       !/TODO\s*\(\s*owner\s*\)/i.test(retrievedOn),
   );
 }
@@ -85,7 +84,9 @@ function claimsFor(
     const result = match.result === 'possible' ? 'possible' : 'likely eligible';
     const explanation = explanations.get(match.schemeId);
     return [{
-      text: explanation?.text ?? `${name}: ${result} based on the recorded criteria.`,
+      text: match.result === 'possible'
+        ? `${name}: possible based on the recorded criteria; some details are unknown.`
+        : explanation?.text ?? `${name}: ${result} based on the recorded criteria.`,
       sourceUrl: scheme.sourceUrl,
       lastVerified: scheme.retrievedOn,
       basis: explanation?.basis ?? 'code_rule',
@@ -141,13 +142,14 @@ export function createScoutRunner(
     try {
       const eventType = input.event.type;
       if (!['SCHEME_REQUEST', 'TEASER', 'REFRESH'].includes(eventType)) {
-        return emptyOutput('OK', [], [makeTrace(
+        return emptyOutput('FAILED', [{ type: 'text', text: apologyMessages[getLanguage(input)] }], [makeTrace(
           input,
           'run',
           runStartedAt,
           runStartedMs,
           `event=${eventType}`,
-          'ignored event; no messages',
+          'unsupported event',
+          'FAILED',
         )]);
       }
 
@@ -242,8 +244,15 @@ export function createScoutRunner(
         `listRows=${displayMatches.length}`,
       ));
 
+      const status = explanationFailed ? 'DEGRADED' : 'OK';
+      if (status === 'OK' && messages.length === 0) {
+        return emptyOutput('FAILED', [{ type: 'text', text: apologyMessages[lang] }], [
+          ...traces,
+          makeTrace(input, 'run', runStartedAt, runStartedMs, `event=${eventType}`, 'empty successful output', 'FAILED'),
+        ]);
+      }
       return AgentOutputSchema.parse({
-        status: explanationFailed ? 'DEGRADED' : 'OK',
+        status,
         messages,
         claims: claimsFor(displayMatches, schemes, lang, explanations),
         trace: traces,

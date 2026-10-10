@@ -113,8 +113,20 @@ test('scheme with placeholder sourceUrl is not displayed or claimed', async () =
     input('SCHEME_REQUEST'),
   );
 
-  assert.deepEqual(output.messages, []);
+  assert.equal(output.status, 'FAILED');
+  assert.equal(output.messages.length, 1);
+  assert.doesNotMatch(output.messages[0]?.type === 'text' ? output.messages[0].text : '', /TODO|scheme/i);
   assert.deepEqual(output.claims, []);
+});
+
+test('scheme without checker metadata is not displayed or claimed', async () => {
+  const output = await createScoutRunner(async () => [scheme({ checkedBy: '' })])(
+    input('SCHEME_REQUEST'),
+  );
+
+  assert.equal(output.status, 'FAILED');
+  assert.deepEqual(output.claims, []);
+  assert.doesNotMatch(JSON.stringify(output.messages), /Verified Scheme/);
 });
 
 test('stale scheme is tagged as being re-verified', async () => {

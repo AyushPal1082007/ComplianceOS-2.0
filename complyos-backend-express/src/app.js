@@ -14,6 +14,7 @@ import { rateLimit } from 'express-rate-limit';
 import config from './config.js';
 import logger from './logger.js';
 import errorHandler from './middleware/errorHandler.js';
+import { safeHttpLogPath } from './middleware/safeHttpLog.js';
 
 import authRoutes from './routes/auth.js';
 import businessRoutes from './routes/business.js';
@@ -27,6 +28,7 @@ import whatsappRoutes from './routes/whatsapp.js';
 import paymentRoutes from './routes/payments.js';
 import adminRoutes from './routes/admin.js';
 import agentTraceRoutes from './routes/agentTrace.js';
+import chatRoutes from './routes/chat.js';
 
 const app = express();
 
@@ -64,7 +66,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ── HTTP logging ─────────────────────────────────────────────────────────
-app.use(morgan(config.env === 'production' ? 'combined' : 'dev'));
+morgan.token('safe-url', safeHttpLogPath);
+app.use(morgan(':remote-addr :method :safe-url :status :res[content-length] - :response-time ms'));
 
 // ── Health check (no auth, no rate limit) ────────────────────────────────────
 app.get('/health', (req, res) => {
@@ -89,6 +92,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/agent-trace', agentTraceRoutes);
+app.use('/api/chat', aiLimiter, chatRoutes);
 
 // WhatsApp webhook (no rate limit — Meta sends bursts)
 app.use('/webhook/whatsapp', whatsappRoutes);

@@ -32,6 +32,7 @@
     ],
     "confidence": 1.0
   },
+  "scout_files": [
   {
     "id": "file:complyos-backend-express/src/agents/scout/entry.ts",
     "type": "file",
@@ -240,6 +241,7 @@
     "summary": "Computes matching metrics, confusion matrix, and dangerous errors from supplied labels.",
     "tags": ["agents", "backend", "scout", "eval", "typescript"],
     "confidence": 1.0
+  }],
   "commands": {
     "express_backend": {
       "install": "npm install",
@@ -1277,6 +1279,42 @@
       "language": "JSON",
       "loc": 7,
       "summary": "Lockfile pinning 0 package dependencies."
+    },
+    {
+      "path": "complyos-backend-express/src/orchestrator/handleEvent.js",
+      "language": "JavaScript",
+      "loc": 195,
+      "summary": "Validates and orchestrates inbound events with consent, per-user locking, idempotency, graph execution, and persistence."
+    },
+    {
+      "path": "complyos-backend-express/src/graph/runGraph.js",
+      "language": "JavaScript",
+      "loc": 87,
+      "summary": "Routes event state through consent, deletion, ARIA, VEDA, SCOUT, PATHWAY, and delivery nodes."
+    },
+    {
+      "path": "complyos-backend-express/src/graph/nodes/vedaNode.js",
+      "language": "JavaScript",
+      "loc": 281,
+      "summary": "Runs VEDA processing, profile merge, pending-thread resume, quota accounting, and SCOUT refresh."
+    },
+    {
+      "path": "complyos-backend-express/src/graph/nodes/sentinelDeliveryNode.js",
+      "language": "JavaScript",
+      "loc": 120,
+      "summary": "Delivers approved SENTINEL changes with label validation, deduplication, daily cap, and digest routing."
+    },
+    {
+      "path": "complyos-backend-express/src/delete/deleteUserData.js",
+      "language": "JavaScript",
+      "loc": 104,
+      "summary": "Deletes user-owned data and media while anonymizing the user and retaining consent/payment records."
+    },
+    {
+      "path": "complyos-backend-express/src/agents/sentinel/pipeline.js",
+      "language": "JavaScript",
+      "loc": 210,
+      "summary": "Runs SENTINEL crawling, review, matching, and guarded delivery."
     }
   ],
   "nodes": [
@@ -7265,6 +7303,72 @@
         "service",
         "frontend"
       ],
+      "confidence": 1.0
+    },
+    {
+      "id": "file:complyos-backend-express/src/orchestrator/handleEvent.js",
+      "type": "file",
+      "name": "handleEvent.js",
+      "file": "complyos-backend-express/src/orchestrator/handleEvent.js",
+      "line": 1,
+      "signature": "handleEvent(input, options)",
+      "summary": "Validates and orchestrates inbound events with consent, per-user locking, idempotency, graph execution, and persistence.",
+      "tags": ["backend", "express", "orchestrator"],
+      "confidence": 1.0
+    },
+    {
+      "id": "file:complyos-backend-express/src/graph/runGraph.js",
+      "type": "file",
+      "name": "runGraph.js",
+      "file": "complyos-backend-express/src/graph/runGraph.js",
+      "line": 1,
+      "signature": "runGraph(initialState)",
+      "summary": "Routes event state through consent, deletion, ARIA, VEDA, SCOUT, PATHWAY, and delivery nodes.",
+      "tags": ["backend", "express", "graph", "orchestration"],
+      "confidence": 1.0
+    },
+    {
+      "id": "file:complyos-backend-express/src/graph/nodes/vedaNode.js",
+      "type": "file",
+      "name": "vedaNode.js",
+      "file": "complyos-backend-express/src/graph/nodes/vedaNode.js",
+      "line": 1,
+      "signature": "vedaNode(state)",
+      "summary": "Runs VEDA processing, profile merge, pending-thread resume, quota accounting, and SCOUT refresh.",
+      "tags": ["backend", "express", "graph", "veda"],
+      "confidence": 1.0
+    },
+    {
+      "id": "file:complyos-backend-express/src/graph/nodes/sentinelDeliveryNode.js",
+      "type": "file",
+      "name": "sentinelDeliveryNode.js",
+      "file": "complyos-backend-express/src/graph/nodes/sentinelDeliveryNode.js",
+      "line": 1,
+      "signature": "sentinelDeliveryNode(state)",
+      "summary": "Delivers approved SENTINEL changes with label validation, deduplication, daily cap, and digest routing.",
+      "tags": ["backend", "express", "graph", "sentinel"],
+      "confidence": 1.0
+    },
+    {
+      "id": "file:complyos-backend-express/src/delete/deleteUserData.js",
+      "type": "file",
+      "name": "deleteUserData.js",
+      "file": "complyos-backend-express/src/delete/deleteUserData.js",
+      "line": 1,
+      "signature": "deleteUserData(userId, options)",
+      "summary": "Deletes user-owned data and media while anonymizing the user and retaining consent/payment records.",
+      "tags": ["backend", "express", "deletion", "privacy"],
+      "confidence": 1.0
+    },
+    {
+      "id": "file:complyos-backend-express/src/agents/sentinel/pipeline.js",
+      "type": "file",
+      "name": "pipeline.js",
+      "file": "complyos-backend-express/src/agents/sentinel/pipeline.js",
+      "line": 1,
+      "signature": "runSentinelCrawl()",
+      "summary": "Runs SENTINEL crawling, review, matching, and guarded delivery.",
+      "tags": ["backend", "express", "sentinel", "pipeline"],
       "confidence": 1.0
     }
   ],

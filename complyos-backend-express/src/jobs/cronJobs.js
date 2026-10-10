@@ -7,8 +7,7 @@
  */
 import prisma from '../db.js';
 import logger from '../logger.js';
-import { sendDeadlineReminder } from '../services/whatsappService.js';
-import { sendNotification } from '../services/notificationService.js';
+import { notify } from '../services/notify.js';
 import { runSentinelCrawl } from '../agents/sentinel.js';
 
 let cronInterval = null;
@@ -16,14 +15,16 @@ let cronInterval = null;
 /**
  * Check deadlines and dispatch 7-3-1 day reminders
  */
-export async function checkDailyDeadlines() {
+export async function checkDailyDeadlines({
+  now = new Date(),
+  findUpcomingDeadlines,
+  notifyUser = notify,
+  notifyDependencies,
+} = {}) {
   logger.info('Running daily compliance deadline check');
-  const now = new Date();
-  const next7Days = new Date();
+  const next7Days = new Date(now);
   next7Days.setDate(now.getDate() + 8);
-
-  try {
-    const upcomingDeadlines = await prisma.complianceDeadline.findMany({
+  const queryUpcomingDeadlines = findUpcomingDeadlines || (() => prisma.complianceDeadline.findMany({
       where: {
         status: 'pending',
         deadlineDate: {
@@ -41,39 +42,34 @@ export async function checkDailyDeadlines() {
           },
         },
       },
-    });
+    }));
+  const upcomingDeadlines = await queryUpcomingDeadlines({
+    now,
+    next7Days,
+  });
 
-    for (const d of upcomingDeadlines) {
-      const diffTime = new Date(d.deadlineDate) - now;
-      const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  let notified = 0;
+  let skipped = 0;
+  for (const deadline of upcomingDeadlines) {
+    const diffTime = new Date(deadline.deadlineDate) - now;
+    const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if (![1, 3, 7].includes(daysRemaining)) continue;
 
-      if ([1, 3, 7].includes(daysRemaining)) {
-        logger.info(`Dispatching ${daysRemaining}-day reminder for ${d.title} to user ${d.userId}`);
-
-        await sendNotification({
-          userId: d.userId,
-          title: `समय सीमा सूचना: ${d.title}`,
-          body: `यह कार्य ${daysRemaining} दिन में समाप्त हो रहा है (${new Date(d.deadlineDate).toLocaleDateString('hi-IN')})। समय पर कार्य करें।`,
-          channels: ['in_app', 'whatsapp'],
-          metadata: { deadlineId: d.id, daysRemaining },
-        });
-
-        if (d.user?.phone) {
-          await sendDeadlineReminder(d.user.phone, {
-            id: d.id,
-            title: d.title,
-            deadlineDate: d.deadlineDate,
-            complianceType: d.complianceType,
-            penaltyEstimate: d.penaltyEstimate,
-            daysRemaining,
-            sourceUrl: d.sourceUrl,
-          });
-        }
-      }
-    }
-  } catch (err) {
-    logger.error('Error during daily deadline check', { error: err.message });
+    const dateKey = new Date(deadline.deadlineDate).toISOString().slice(0, 10);
+    const result = await notifyUser({
+      userId: deadline.userId,
+      user: deadline.user,
+      title: `समय सीमा सूचना: ${deadline.title}`,
+      body: `यह कार्य ${daysRemaining} दिन में समाप्त हो रहा है (${new Date(deadline.deadlineDate).toLocaleDateString('hi-IN')})। समय पर कार्य करें।`,
+      kind: 'deadline_reminder',
+      metadata: { deadlineId: deadline.id, daysRemaining },
+      dedupeKey: `deadline-reminder:${deadline.id}:${dateKey}:${daysRemaining}`,
+      now,
+    }, notifyDependencies);
+    if (result?.in_app?.duplicate) skipped++;
+    else notified++;
   }
+  return { checked: upcomingDeadlines.length, notified, skipped };
 }
 
 /**

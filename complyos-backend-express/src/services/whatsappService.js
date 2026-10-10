@@ -1,6 +1,121 @@
 import axios from 'axios';
 import config from '../config.js';
 import logger from '../logger.js';
+import { renderOutbound, WA_LIMITS } from '../channels/whatsapp.js';
+
+function maskedPhone(phone) {
+  const digits = String(phone || '').replace(/\D/g, '');
+  return digits.length < 4 ? '[REDACTED PHONE]' : `***${digits.slice(-4)}`;
+}
+
+async function sendPayload(toPhone, payload) {
+  const cleanPhone = String(toPhone).replace(/[^0-9]/g, '');
+  if (config.whatsapp.token && config.whatsapp.phoneNumberId) {
+    const url = `${config.whatsapp.apiUrl}/${config.whatsapp.phoneNumberId}/messages`;
+    const response = await axios.post(url, {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: cleanPhone,
+      ...payload,
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${config.whatsapp.token}`,
+      },
+    });
+    logger.info('WhatsApp outbound message sent', {
+      to: maskedPhone(cleanPhone),
+      messageId: response.data?.messages?.[0]?.id,
+    });
+    return response.data;
+  }
+  logger.info('[SIMULATION] WhatsApp message dispatched', {
+    to: maskedPhone(cleanPhone),
+    type: payload.type,
+  });
+  return { success: true, simulated: true };
+}
+
+export async function downloadWhatsAppMedia(mediaId, {
+  get = axios.get,
+  token = config.whatsapp.token,
+  apiUrl = config.whatsapp.apiUrl,
+} = {}) {
+  if (!mediaId) throw new TypeError('WhatsApp media id is required');
+  if (!token) throw new Error('WhatsApp media download is not configured');
+  const headers = { Authorization: `Bearer ${token}` };
+  const metadata = await get(`${apiUrl}/${encodeURIComponent(mediaId)}`, {
+    headers,
+    timeout: 15000,
+  });
+  const mediaUrl = new URL(metadata.data?.url || '');
+  const allowedHost = ['facebook.com', 'fbcdn.net', 'fbsbx.com'].some(
+    (domain) => mediaUrl.hostname === domain || mediaUrl.hostname.endsWith(`.${domain}`),
+  );
+  if (mediaUrl.protocol !== 'https:' || !allowedHost) {
+    throw new Error('WhatsApp provider returned an invalid media URL');
+  }
+  const response = await get(mediaUrl.toString(), {
+    headers,
+    responseType: 'arraybuffer',
+    maxContentLength: 20 * 1024 * 1024,
+    maxBodyLength: 20 * 1024 * 1024,
+    timeout: 30000,
+  });
+  const buffer = Buffer.from(response.data);
+  if (buffer.length === 0 || buffer.length > 20 * 1024 * 1024) {
+    throw new Error('WhatsApp provider returned empty or oversized media');
+  }
+  return buffer;
+}
+
+export async function sendWhatsAppUtilityTemplate(toPhone, templateName, { title, body }) {
+  if (!templateName) throw new TypeError('Approved WhatsApp utility template name is required');
+  const cleanPhone = String(toPhone).replace(/[^0-9]/g, '');
+  if (!config.whatsapp.token || !config.whatsapp.phoneNumberId) {
+    logger.info('[SIMULATION] WhatsApp utility template dispatched', {
+      to: maskedPhone(cleanPhone),
+      templateName,
+    });
+    return { success: true, simulated: true };
+  }
+  const response = await axios.post(
+    `${config.whatsapp.apiUrl}/${config.whatsapp.phoneNumberId}/messages`,
+    {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: cleanPhone,
+      type: 'template',
+      template: {
+        name: templateName,
+        language: { code: 'hi' },
+        components: [{
+          type: 'body',
+          parameters: [{ type: 'text', text: title }, { type: 'text', text: body }],
+        }],
+      },
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${config.whatsapp.token}`,
+      },
+      timeout: 15000,
+    },
+  );
+  logger.info('WhatsApp utility template sent', {
+    to: maskedPhone(cleanPhone),
+    messageId: response.data?.messages?.[0]?.id,
+  });
+  return { success: true, id: response.data?.messages?.[0]?.id };
+}
+
+export async function sendRenderedMessages(toPhone, messages) {
+  const payloads = renderOutbound(messages);
+  const results = [];
+  for (const payload of payloads) results.push(await sendPayload(toPhone, payload));
+  return results;
+}
 
 /**
  * ComplianceOS — WhatsApp Service (WhatsApp Cloud API / Meta Graph API, ES6 Module)
@@ -35,19 +150,18 @@ export async function sendTextMessage(toPhone, text) {
           },
         }
       );
-      logger.info('WhatsApp text message sent', { to: cleanPhone, messageId: res.data?.messages?.[0]?.id });
+      logger.info('WhatsApp text message sent', { to: maskedPhone(cleanPhone), messageId: res.data?.messages?.[0]?.id });
       return res.data;
     } catch (err) {
-      logger.error('WhatsApp send text failed', { error: err.response?.data || err.message, to: cleanPhone });
+      logger.error('WhatsApp send text failed', { error: err.message, to: maskedPhone(cleanPhone) });
       return { success: false, error: err.message };
     }
   }
 
   // Simulation mode
   logger.info('[SIMULATION] WhatsApp message dispatched', {
-    to: cleanPhone,
+    to: maskedPhone(cleanPhone),
     length: text.length,
-    preview: text.substring(0, 80),
   });
   return { success: true, simulated: true, to: cleanPhone };
 }
@@ -75,9 +189,9 @@ export async function sendInteractiveButtons(toPhone, bodyText, buttons) {
             type: 'button',
             body: { text: bodyText },
             action: {
-              buttons: buttons.slice(0, 3).map((btn) => ({
+              buttons: buttons.slice(0, WA_LIMITS.buttons).map((btn) => ({
                 type: 'reply',
-                reply: { id: btn.id, title: btn.title.substring(0, 20) },
+                reply: { id: btn.id, title: btn.title.substring(0, WA_LIMITS.buttonTitle) },
               })),
             },
           },
@@ -91,12 +205,15 @@ export async function sendInteractiveButtons(toPhone, bodyText, buttons) {
       );
       return res.data;
     } catch (err) {
-      logger.error('WhatsApp interactive button send failed', { error: err.response?.data || err.message });
+      logger.error('WhatsApp interactive button send failed', { error: err.message, to: maskedPhone(cleanPhone) });
       return sendTextMessage(cleanPhone, `${bodyText}\n\n${buttons.map(b => `👉 ${b.title}`).join('\n')}`);
     }
   }
 
-  logger.info('[SIMULATION] WhatsApp interactive buttons dispatched', { to: cleanPhone, buttons });
+  logger.info('[SIMULATION] WhatsApp interactive buttons dispatched', {
+    to: maskedPhone(cleanPhone),
+    buttonCount: Math.min(buttons.length, WA_LIMITS.buttons),
+  });
   return { success: true, simulated: true };
 }
 
@@ -129,4 +246,5 @@ export default {
   sendTextMessage,
   sendInteractiveButtons,
   sendDeadlineReminder,
+  sendRenderedMessages,
 };

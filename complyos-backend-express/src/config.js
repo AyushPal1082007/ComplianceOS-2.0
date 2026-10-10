@@ -59,6 +59,7 @@ const config = {
     token: process.env.WHATSAPP_TOKEN || '',
     phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || '',
     webhookVerifyToken: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN || 'complyos_verify_2024',
+    sentinelTemplateName: process.env.SENTINEL_TEMPLATE_NAME || '',
     apiUrl: 'https://graph.facebook.com/v18.0',
   },
 
