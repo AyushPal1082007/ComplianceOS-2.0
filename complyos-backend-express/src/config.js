@@ -24,12 +24,14 @@ const config = {
     rateLimitDelay: 2100, // ms between calls to stay under 30 RPM
   },
 
-  bhashini: {
-    userId: process.env.BHASHINI_USER_ID || '',
-    apiKey: process.env.BHASHINI_API_KEY || '',
-    pipelineId: process.env.BHASHINI_PIPELINE_ID || '',
-    inferenceUrl: 'https://dhruva-api.bhashini.gov.in/services/inference/pipeline',
-    configUrl: 'https://meity-auth.ulcacontrib.org/ulca/apis/v0/model/getModelsPipeline',
+  // Sarvam AI — Indian sovereign speech & language APIs (replaces Bhashini)
+  // Docs: https://docs.sarvam.ai  |  Get key: https://dashboard.sarvam.ai
+  sarvam: {
+    apiKey: process.env.SARVAM_API_KEY || '',
+    baseUrl: 'https://api.sarvam.ai',
+    asrModel: 'saarika:v1',    // Hindi ASR model
+    ttsModel: 'bulbul:v1',     // Hindi TTS model
+    translateModel: 'mayura:v1', // Translation model
   },
 
   gcp: {
