@@ -1,0 +1,3990 @@
+[
+  {
+    "path": ".gitignore",
+    "language": "Gitignore",
+    "lines_of_code": 8,
+    "hash": "25f36f9aa4b91f625f02ae6f64e2dd4374100e98",
+    "summary": "File .gitignore in project.",
+    "summary_confidence": 0.9,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "root"
+    ]
+  },
+  {
+    "path": "MIGRATION_PLAN.md",
+    "language": "Markdown",
+    "lines_of_code": 220,
+    "hash": "80145ea9158b7b7f346ad1d4c2bf5aaa929b0b4c",
+    "summary": "Documentation file MIGRATION_PLAN.md.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "root"
+    ]
+  },
+  {
+    "path": "README.md",
+    "language": "Markdown",
+    "lines_of_code": 427,
+    "hash": "55bd9075e24ee7c77f4c6187d250d1f13970a8d2",
+    "summary": "Documentation file README.md.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "root"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/.env.example",
+    "language": "Env",
+    "lines_of_code": 53,
+    "hash": "dbe6960d7324d7d75e4757f5ee2d7665fd9d4183",
+    "summary": "Environment variable template/configuration (names only).",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/package-lock.json",
+    "language": "JSON",
+    "lines_of_code": 3521,
+    "hash": "90af19cda9b432f50cfafec4da85963d41532ddb",
+    "summary": "Lockfile pinning 304 package dependencies.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "lockfile"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/package.json",
+    "language": "JSON",
+    "lines_of_code": 46,
+    "hash": "b9fa2518b369dfd728189e16881c002012a62c17",
+    "summary": "NPM package manifest for complyos-backend-express v1.0.0.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "start",
+      "dev",
+      "prisma:generate",
+      "test"
+    ],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/prisma/schema.prisma",
+    "language": "Prisma",
+    "lines_of_code": 299,
+    "hash": "7011aafd4b31649bc71a7f833f7fd9106be0195c",
+    "summary": "Prisma ORM schema defining database models (User, BusinessProfile, Document, ComplianceDeadline, Scheme).",
+    "summary_confidence": 1.0,
+    "exports": [
+      "User",
+      "BusinessProfile",
+      "Document",
+      "ComplianceDeadline",
+      "Scheme",
+      "SchemeMatch",
+      "SentinelAlert",
+      "CAClientMap",
+      "Notification",
+      "Subscription",
+      "ARIASession"
+    ],
+    "imports": [],
+    "key_symbols": [
+      "User",
+      "BusinessProfile",
+      "Document",
+      "ComplianceDeadline",
+      "Scheme",
+      "SchemeMatch",
+      "SentinelAlert",
+      "CAClientMap",
+      "Notification",
+      "Subscription",
+      "ARIASession"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "prisma"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/agents/aria.js",
+    "language": "JavaScript",
+    "lines_of_code": 194,
+    "hash": "619366a40eeb68401ffbf5fde28d9246a6c73003",
+    "summary": "AI Agent module implementing ARIA reasoning and execution.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "../config.js",
+      "../logger.js",
+      "groq-sdk"
+    ],
+    "key_symbols": [
+      "ariaChat",
+      "ariaSummarizeNotice",
+      "getMissingSlots",
+      "getNextSlot"
+    ],
+    "tags": [
+      "agents",
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/agents/pathway.js",
+    "language": "JavaScript",
+    "lines_of_code": 248,
+    "hash": "88c4ae4049b9a7da19576d5374277bee44a4c3e2",
+    "summary": "AI Agent module implementing PATHWAY reasoning and execution.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [
+      "getPathway",
+      "listPathways"
+    ],
+    "tags": [
+      "agents",
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/agents/scout.js",
+    "language": "JavaScript",
+    "lines_of_code": 297,
+    "hash": "8524248c8552c6e82f2111bf86fb56d55451f992",
+    "summary": "AI Agent module implementing SCOUT reasoning and execution.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "../config.js",
+      "../logger.js",
+      "groq-sdk",
+      "module"
+    ],
+    "key_symbols": [
+      "evaluateCriterion",
+      "generateHindiExplanation",
+      "matchScheme",
+      "scoutSchemes"
+    ],
+    "tags": [
+      "agents",
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/agents/sentinel.js",
+    "language": "JavaScript",
+    "lines_of_code": 250,
+    "hash": "21593c9a370f00c18e941adc95ce66cd8073a1ef",
+    "summary": "AI Agent module implementing SENTINEL reasoning and execution.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "../config.js",
+      "../db.js",
+      "../logger.js",
+      "axios",
+      "crypto",
+      "groq-sdk",
+      "uuid"
+    ],
+    "key_symbols": [
+      "classifyChange",
+      "fetchPageText",
+      "hashContent",
+      "injectSimulatedAlert",
+      "runSentinelCrawl",
+      "sendTargetedAlerts"
+    ],
+    "tags": [
+      "agents",
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/agents/veda.js",
+    "language": "JavaScript",
+    "lines_of_code": 304,
+    "hash": "371c0d53245405b8bdd4250cfb5d37f17ec13056",
+    "summary": "AI Agent module implementing VEDA reasoning and execution.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "../config.js",
+      "../db.js",
+      "../logger.js",
+      "../services/cloudinaryService.js",
+      "@google-cloud/vision",
+      "groq-sdk",
+      "uuid"
+    ],
+    "key_symbols": [
+      "extractStructuredData",
+      "extractTextFromImage",
+      "processDocument"
+    ],
+    "tags": [
+      "agents",
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/app.js",
+    "language": "JavaScript",
+    "lines_of_code": 105,
+    "hash": "db4fb371d71fbf381036bedc1ff09ca69d550460",
+    "summary": "JavaScript module defining app.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "app"
+    ],
+    "imports": [
+      "./config.js",
+      "./logger.js",
+      "./middleware/errorHandler.js",
+      "./routes/admin.js",
+      "./routes/agentTrace.js",
+      "./routes/auth.js",
+      "./routes/business.js",
+      "./routes/ca.js",
+      "./routes/compliance.js",
+      "./routes/documents.js",
+      "./routes/notifications.js",
+      "./routes/payments.js",
+      "./routes/schemes.js",
+      "./routes/sentinel.js",
+      "./routes/whatsapp.js",
+      "cors",
+      "express",
+      "express-async-errors",
+      "express-rate-limit",
+      "helmet",
+      "morgan"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/config.js",
+    "language": "JavaScript",
+    "lines_of_code": 95,
+    "hash": "7d29898278b32fa616b138eb5adb7fb6a027f14c",
+    "summary": "JavaScript module defining config.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "config"
+    ],
+    "imports": [
+      "dotenv/config"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/data/schemes.json",
+    "language": "JSON",
+    "lines_of_code": 310,
+    "hash": "5c01fac4a36e88e1017002020ec40a437c9e8be1",
+    "summary": "Static database of government MSME subsidy and loan schemes.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/data/seed.js",
+    "language": "JavaScript",
+    "lines_of_code": 205,
+    "hash": "faa142d56814048ec9d4890c14c8a1d00803bc8e",
+    "summary": "JavaScript module defining application logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [
+      "seed"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/db.js",
+    "language": "JavaScript",
+    "lines_of_code": 26,
+    "hash": "f77a4c7b17c1b88f121759d512633df7b1ce0702",
+    "summary": "JavaScript module defining prisma.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "prisma"
+    ],
+    "imports": [
+      "./logger.js",
+      "@prisma/client"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/jobs/cronJobs.js",
+    "language": "JavaScript",
+    "lines_of_code": 99,
+    "hash": "776721b130adae19a7bfcc1a278234dd170da128",
+    "summary": "JavaScript module defining startBackgroundJobs, stopBackgroundJobs.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "startBackgroundJobs",
+      "stopBackgroundJobs"
+    ],
+    "imports": [
+      "../agents/sentinel.js",
+      "../db.js",
+      "../logger.js",
+      "../services/notificationService.js",
+      "../services/whatsappService.js"
+    ],
+    "key_symbols": [
+      "checkDailyDeadlines",
+      "startBackgroundJobs",
+      "stopBackgroundJobs"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "jobs",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/jobs/deadlineReminder.js",
+    "language": "JavaScript",
+    "lines_of_code": 61,
+    "hash": "84c8d646c28cf9bd2dc7e9e50953e66dcfc0556a",
+    "summary": "JavaScript module defining startDeadlineReminderJob, stopDeadlineReminderJob.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "startDeadlineReminderJob",
+      "stopDeadlineReminderJob"
+    ],
+    "imports": [
+      "../config.js",
+      "../logger.js",
+      "./cronJobs.js",
+      "bullmq"
+    ],
+    "key_symbols": [
+      "startDeadlineReminderJob",
+      "stopDeadlineReminderJob"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "jobs",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/jobs/sentinelCrawler.js",
+    "language": "JavaScript",
+    "lines_of_code": 66,
+    "hash": "6b64b888bc6c3cb556e58aba31936854e02ecbd4",
+    "summary": "JavaScript module defining application logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [
+      "startSentinelJob",
+      "stopSentinelJob"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "jobs",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/logger.js",
+    "language": "JavaScript",
+    "lines_of_code": 30,
+    "hash": "7d109f3790d21d8251bcd55331ba666d5e8426af",
+    "summary": "JavaScript module defining logger.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "logger"
+    ],
+    "imports": [
+      "./config.js",
+      "winston"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/middleware/auth.js",
+    "language": "JavaScript",
+    "lines_of_code": 67,
+    "hash": "56ade40d5353cfea2e594d3d78e6ddf2cf533a39",
+    "summary": "Express middleware for auth processing.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "requireAdmin",
+      "requireCA"
+    ],
+    "imports": [
+      "../config.js",
+      "../db.js",
+      "jsonwebtoken"
+    ],
+    "key_symbols": [
+      "authenticate",
+      "requireAdmin",
+      "requireCA"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "middleware",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/middleware/errorHandler.js",
+    "language": "JavaScript",
+    "lines_of_code": 45,
+    "hash": "5912188b353a7c76cdd28019cd6dea88cf8593fb",
+    "summary": "Express middleware for errorHandler processing.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "errorHandler"
+    ],
+    "imports": [
+      "../logger.js"
+    ],
+    "key_symbols": [
+      "errorHandler"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "middleware",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/admin.js",
+    "language": "JavaScript",
+    "lines_of_code": 123,
+    "hash": "3275462fa69a9f8524d5847825d972c9f9e2ebbd",
+    "summary": "Express route module handling endpoints for admin.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../agents/sentinel.js",
+      "../db.js",
+      "../middleware/auth.js",
+      "express"
+    ],
+    "key_symbols": [
+      "requireAdmin"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/agentTrace.js",
+    "language": "JavaScript",
+    "lines_of_code": 121,
+    "hash": "65cafb6007cc62cd160fc43ea18a16b5ae9ac4cf",
+    "summary": "Express route module handling endpoints for agentTrace.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../config.js",
+      "../db.js",
+      "../middleware/auth.js",
+      "express"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/auth.js",
+    "language": "JavaScript",
+    "lines_of_code": 150,
+    "hash": "1d35d70b2323a2d38b43c40891f9f22e618ade54",
+    "summary": "Express route module handling endpoints for auth.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../config.js",
+      "../db.js",
+      "../middleware/auth.js",
+      "bcryptjs",
+      "express",
+      "jsonwebtoken",
+      "uuid"
+    ],
+    "key_symbols": [
+      "safeUser",
+      "signToken"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/business.js",
+    "language": "JavaScript",
+    "lines_of_code": 310,
+    "hash": "ab9a6d2786c407deee5b3d0fadf4d630926797ed",
+    "summary": "Express route module handling endpoints for business.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../agents/aria.js",
+      "../agents/scout.js",
+      "../db.js",
+      "../logger.js",
+      "../middleware/auth.js",
+      "../services/bhashiniService.js",
+      "../utils/complianceCalculators.js",
+      "express",
+      "multer",
+      "uuid"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/ca.js",
+    "language": "JavaScript",
+    "lines_of_code": 249,
+    "hash": "9f64b20cf5ac1abf00ddca25b4aa6ad858de0c7e",
+    "summary": "Express route module handling endpoints for ca.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../db.js",
+      "../middleware/auth.js",
+      "../utils/complianceCalculators.js",
+      "express",
+      "uuid"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/compliance.js",
+    "language": "JavaScript",
+    "lines_of_code": 134,
+    "hash": "c73eaf84bbfdffca72cf0a7381a04a503ea8e934",
+    "summary": "Express route module handling endpoints for compliance.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../db.js",
+      "../middleware/auth.js",
+      "../utils/complianceCalculators.js",
+      "express",
+      "uuid"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/documents.js",
+    "language": "JavaScript",
+    "lines_of_code": 151,
+    "hash": "fb4b6b408b279eb05d2178a6c600ede5727e2857",
+    "summary": "Express route module handling endpoints for documents.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../agents/veda.js",
+      "../db.js",
+      "../middleware/auth.js",
+      "express",
+      "multer"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/notifications.js",
+    "language": "JavaScript",
+    "lines_of_code": 83,
+    "hash": "b2fed2e16c57e0cfa137208834c0ba3822ba00f8",
+    "summary": "Express route module handling endpoints for notifications.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../db.js",
+      "../middleware/auth.js",
+      "../services/notificationService.js",
+      "express"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/payments.js",
+    "language": "JavaScript",
+    "lines_of_code": 188,
+    "hash": "d70226bbc08ea1386b30b2946585cedae5b9b21c",
+    "summary": "Express route module handling endpoints for payments.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../config.js",
+      "../db.js",
+      "../middleware/auth.js",
+      "../services/razorpayService.js",
+      "express",
+      "uuid"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/schemes.js",
+    "language": "JavaScript",
+    "lines_of_code": 182,
+    "hash": "99128a12532d266330d2f63bed1bb30b0ff89be6",
+    "summary": "Express route module handling endpoints for schemes.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../agents/pathway.js",
+      "../agents/scout.js",
+      "../data/schemes.json",
+      "../db.js",
+      "../middleware/auth.js",
+      "express"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/sentinel.js",
+    "language": "JavaScript",
+    "lines_of_code": 110,
+    "hash": "395ad3d0aa6c8f6d29be35f25d0036f517552a7d",
+    "summary": "Express route module handling endpoints for sentinel.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../agents/sentinel.js",
+      "../db.js",
+      "../middleware/auth.js",
+      "express"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/routes/whatsapp.js",
+    "language": "JavaScript",
+    "lines_of_code": 153,
+    "hash": "42da88194105096a68b3cd70cd97964297c29938",
+    "summary": "Express route module handling endpoints for whatsapp.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "router"
+    ],
+    "imports": [
+      "../agents/aria.js",
+      "../agents/pathway.js",
+      "../agents/veda.js",
+      "../config.js",
+      "../db.js",
+      "../logger.js",
+      "../services/bhashiniService.js",
+      "../services/whatsappService.js",
+      "express"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "routes"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/server.js",
+    "language": "JavaScript",
+    "lines_of_code": 54,
+    "hash": "8d07c458c69a79881ec05a4c1bee1f0974befd36",
+    "summary": "JavaScript module defining application logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "./app.js",
+      "./config.js",
+      "./db.js",
+      "./jobs/deadlineReminder.js",
+      "./jobs/sentinelCrawler.js",
+      "./logger.js"
+    ],
+    "key_symbols": [
+      "main",
+      "shutdown"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/services/bhashiniService.js",
+    "language": "JavaScript",
+    "lines_of_code": 176,
+    "hash": "2b25b33f8bcd3de9b4517c710f8f09d84b2a0f0a",
+    "summary": "Service module providing bhashiniService client integrations.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "../config.js",
+      "../logger.js",
+      "axios"
+    ],
+    "key_symbols": [
+      "synthesizeHindi",
+      "transcribeHindi",
+      "translateText"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/services/cloudinaryService.js",
+    "language": "JavaScript",
+    "lines_of_code": 95,
+    "hash": "0e8b1670ecf4e0eba4f428548390b601db0691d8",
+    "summary": "Service module providing cloudinaryService client integrations.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "../config.js",
+      "../logger.js",
+      "cloudinary"
+    ],
+    "key_symbols": [
+      "deleteFile",
+      "uploadBuffer"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/services/notificationService.js",
+    "language": "JavaScript",
+    "lines_of_code": 127,
+    "hash": "9af618527b1306b6504b5e9df3d524c0a9cf09c5",
+    "summary": "Service module providing notificationService client integrations.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "../config.js",
+      "../db.js",
+      "../logger.js",
+      "./whatsappService.js",
+      "axios",
+      "resend",
+      "uuid"
+    ],
+    "key_symbols": [
+      "sendNotification"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/services/razorpayService.js",
+    "language": "JavaScript",
+    "lines_of_code": 127,
+    "hash": "60874ea8f67345e75238bac2e8dbf478bc3bf026",
+    "summary": "Service module providing razorpayService client integrations.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "calculatePlanAmount",
+      "verifyPaymentSignature",
+      "verifyWebhookSignature"
+    ],
+    "imports": [
+      "../config.js",
+      "../logger.js",
+      "crypto",
+      "razorpay"
+    ],
+    "key_symbols": [
+      "calculatePlanAmount",
+      "createOrder",
+      "verifyPaymentSignature",
+      "verifyWebhookSignature"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/services/whatsappService.js",
+    "language": "JavaScript",
+    "lines_of_code": 133,
+    "hash": "5d47dbea6e8dc5e2d8295a92dd08ed507cfd53f1",
+    "summary": "Service module providing whatsappService client integrations.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "../config.js",
+      "../logger.js",
+      "axios"
+    ],
+    "key_symbols": [
+      "sendDeadlineReminder",
+      "sendInteractiveButtons",
+      "sendTextMessage"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/utils/complianceCalculators.js",
+    "language": "JavaScript",
+    "lines_of_code": 169,
+    "hash": "d70872abcc12ef69931e331d9f080e634bb908a6",
+    "summary": "JavaScript module defining application logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [
+      "calculateHealthScore",
+      "calculatePenaltyAtRisk",
+      "getGSTDueDates",
+      "gstLateFee"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "utils"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/tests/testSuite.js",
+    "language": "JavaScript",
+    "lines_of_code": 172,
+    "hash": "7f7e6ceee3f62c89bbe09482013663fb4a58e2d8",
+    "summary": "JavaScript module defining application logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [
+      "runTests",
+      "test"
+    ],
+    "tags": [
+      "backend",
+      "express",
+      "node",
+      "tests"
+    ]
+  },
+  {
+    "path": "complyos-backend/Dockerfile",
+    "language": "Docker",
+    "lines_of_code": 24,
+    "hash": "1d863e9c2b67dd94d539c859d4b70bee716ec574",
+    "summary": "Docker container configuration for complyos-backend.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/README.md",
+    "language": "Markdown",
+    "lines_of_code": 71,
+    "hash": "2e3f5458811e243acaae09a832f564d356e949bb",
+    "summary": "Documentation file README.md.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/__init__.py",
+    "language": "Python",
+    "lines_of_code": 1,
+    "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "summary": "Python module defining backend logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/agents/__init__.py",
+    "language": "Python",
+    "lines_of_code": 1,
+    "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "summary": "Python multi-agent module implementing __INIT__.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "agents",
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/agents/aria.py",
+    "language": "Python",
+    "lines_of_code": 37,
+    "hash": "cf7c55f557931df30f5e9740375bb11f61d1c724",
+    "summary": "Python multi-agent module implementing ARIA.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.config",
+      "groq",
+      "typing"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "agents",
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/agents/pathway.py",
+    "language": "Python",
+    "lines_of_code": 28,
+    "hash": "f9d34cd8e67d8d8cf3a111038740f1ba3eb35d15",
+    "summary": "Python multi-agent module implementing PATHWAY.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "agents",
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/agents/scout.py",
+    "language": "Python",
+    "lines_of_code": 27,
+    "hash": "8020eb371a06c1b7804be51e75ac2f0534af7ded",
+    "summary": "Python multi-agent module implementing SCOUT.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "agents",
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/agents/sentinel.py",
+    "language": "Python",
+    "lines_of_code": 26,
+    "hash": "1a276da0953cfbd36f87c210bbb505f09700745b",
+    "summary": "Python multi-agent module implementing SENTINEL.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "agents",
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/agents/veda.py",
+    "language": "Python",
+    "lines_of_code": 117,
+    "hash": "5565f10b1a897e49875dcb59c32e8fb59ab20d5c",
+    "summary": "Python multi-agent module implementing VEDA.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "VedAgent"
+    ],
+    "imports": [
+      "app.config",
+      "app.database",
+      "app.models.business",
+      "app.models.compliance",
+      "app.services.ocr_service",
+      "datetime",
+      "json",
+      "langchain_groq",
+      "sqlalchemy",
+      "sqlalchemy.ext.asyncio",
+      "uuid"
+    ],
+    "key_symbols": [
+      "VedAgent"
+    ],
+    "tags": [
+      "agents",
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/config.py",
+    "language": "Python",
+    "lines_of_code": 30,
+    "hash": "884e496dad64cd435224ef76e2a2b82d16fdbdea",
+    "summary": "Python module defining Settings.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Settings"
+    ],
+    "imports": [
+      "pydantic_settings",
+      "typing"
+    ],
+    "key_symbols": [
+      "Settings"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/database.py",
+    "language": "Python",
+    "lines_of_code": 31,
+    "hash": "0d628a569bedfda7bb25078eb03cdc1b93adeef4",
+    "summary": "Python module defining Base.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Base"
+    ],
+    "imports": [
+      "app.config",
+      "sqlalchemy.ext.asyncio",
+      "sqlalchemy.orm"
+    ],
+    "key_symbols": [
+      "Base"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/main.py",
+    "language": "Python",
+    "lines_of_code": 40,
+    "hash": "a26c14641380ee11b5fe5d525b257446594fe156",
+    "summary": "Python module defining backend logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.database",
+      "app.routers",
+      "fastapi",
+      "fastapi.middleware.cors"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/models/__init__.py",
+    "language": "Python",
+    "lines_of_code": 1,
+    "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "summary": "SQLAlchemy data models for __init__.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "models",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/models/business.py",
+    "language": "Python",
+    "lines_of_code": 36,
+    "hash": "632ce989083f644721e1f55e92ae5a1f2fa693c4",
+    "summary": "SQLAlchemy data models for business.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Business"
+    ],
+    "imports": [
+      "datetime",
+      "typing"
+    ],
+    "key_symbols": [
+      "Business"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "models",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/models/ca.py",
+    "language": "Python",
+    "lines_of_code": 33,
+    "hash": "7d76abb4e435310c4b620b01c96855cfc6eb65cc",
+    "summary": "SQLAlchemy data models for ca.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "CA"
+    ],
+    "imports": [
+      "datetime",
+      "typing"
+    ],
+    "key_symbols": [
+      "CA"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "models",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/models/compliance.py",
+    "language": "Python",
+    "lines_of_code": 33,
+    "hash": "af9f41f30e39ea61105b1f7c77679809e90d9ea1",
+    "summary": "SQLAlchemy data models for compliance.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Compliance"
+    ],
+    "imports": [
+      "datetime",
+      "typing"
+    ],
+    "key_symbols": [
+      "Compliance"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "models",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/models/document.py",
+    "language": "Python",
+    "lines_of_code": 33,
+    "hash": "41772a072d0e907902d0d09ba093bcd61f0b2998",
+    "summary": "SQLAlchemy data models for document.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Document"
+    ],
+    "imports": [
+      "datetime",
+      "typing"
+    ],
+    "key_symbols": [
+      "Document"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "models",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/models/notification.py",
+    "language": "Python",
+    "lines_of_code": 33,
+    "hash": "7677abcb4eabcf54aa1386a23d48e9e35f1a334b",
+    "summary": "SQLAlchemy data models for notification.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Notification"
+    ],
+    "imports": [
+      "datetime",
+      "typing"
+    ],
+    "key_symbols": [
+      "Notification"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "models",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/models/scheme.py",
+    "language": "Python",
+    "lines_of_code": 33,
+    "hash": "b1e41182113883f3e7281086665c235ce6d4088e",
+    "summary": "SQLAlchemy data models for scheme.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Scheme"
+    ],
+    "imports": [
+      "datetime",
+      "typing"
+    ],
+    "key_symbols": [
+      "Scheme"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "models",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/models/user.py",
+    "language": "Python",
+    "lines_of_code": 36,
+    "hash": "47124740df57aa9c2e7459cd400070abfd189554",
+    "summary": "SQLAlchemy data models for user.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "User"
+    ],
+    "imports": [
+      "datetime",
+      "typing"
+    ],
+    "key_symbols": [
+      "User"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "models",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/__init__.py",
+    "language": "Python",
+    "lines_of_code": 1,
+    "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "summary": "FastAPI router handling __init__ endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/admin.py",
+    "language": "Python",
+    "lines_of_code": 26,
+    "hash": "d000d33df7eaaaf6550943fe6430768a257a7a06",
+    "summary": "FastAPI router handling admin endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/auth.py",
+    "language": "Python",
+    "lines_of_code": 47,
+    "hash": "892153a225648d37d6d83d591b5c7662ad671159",
+    "summary": "FastAPI router handling auth endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.config",
+      "app.schemas.user",
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/business.py",
+    "language": "Python",
+    "lines_of_code": 41,
+    "hash": "6ab942b546e0690589592a64f3b68c0e5567cd5b",
+    "summary": "FastAPI router handling business endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.schemas.business",
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/ca.py",
+    "language": "Python",
+    "lines_of_code": 40,
+    "hash": "6855721bc569f504a87ef6be90ecc4eda7c54ec5",
+    "summary": "FastAPI router handling ca endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.schemas.ca",
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/compliance.py",
+    "language": "Python",
+    "lines_of_code": 27,
+    "hash": "558451882730f0d75dce062a7c2f1ebffb72140d",
+    "summary": "FastAPI router handling compliance endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "datetime",
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/dashboard.py",
+    "language": "Python",
+    "lines_of_code": 29,
+    "hash": "f4ffb5a13f912b682437d5887ded519fdb943b7b",
+    "summary": "FastAPI router handling dashboard endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/documents.py",
+    "language": "Python",
+    "lines_of_code": 32,
+    "hash": "74685954dcc318fa86790e428392fc2520ccdeb3",
+    "summary": "FastAPI router handling documents endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.agents",
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/freelancers.py",
+    "language": "Python",
+    "lines_of_code": 22,
+    "hash": "5203025926c9a212c897dbddc1dfaf944e43e461",
+    "summary": "FastAPI router handling freelancers endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/loans.py",
+    "language": "Python",
+    "lines_of_code": 23,
+    "hash": "5d253757a7c140802c4e99c6a089043fb0f34c1e",
+    "summary": "FastAPI router handling loans endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/notifications.py",
+    "language": "Python",
+    "lines_of_code": 22,
+    "hash": "a8a4af2b16047468aa978b2b6eacdf03b8167d70",
+    "summary": "FastAPI router handling notifications endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/registration.py",
+    "language": "Python",
+    "lines_of_code": 23,
+    "hash": "44cae2307a9e31fc03ce56df12272db1ba8edb8a",
+    "summary": "FastAPI router handling registration endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.agents",
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/schemes.py",
+    "language": "Python",
+    "lines_of_code": 32,
+    "hash": "8c6b9810f36f890e695e5788643c74dabf7a5aa6",
+    "summary": "FastAPI router handling schemes endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.agents",
+      "fastapi"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/routers/ws_aria.py",
+    "language": "Python",
+    "lines_of_code": 31,
+    "hash": "2869556dfe7e1d59d62407f4fdcf95470fb53e5b",
+    "summary": "FastAPI router handling ws_aria endpoints.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.agents",
+      "fastapi",
+      "json"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "routers"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/schemas/__init__.py",
+    "language": "Python",
+    "lines_of_code": 1,
+    "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "summary": "Python module defining backend logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "schemas"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/schemas/business.py",
+    "language": "Python",
+    "lines_of_code": 22,
+    "hash": "edc12e2860904e672efd77a1cab5ff80aeb18697",
+    "summary": "Python module defining Business, BusinessBase, BusinessCreate.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Business",
+      "BusinessBase",
+      "BusinessCreate"
+    ],
+    "imports": [
+      "datetime",
+      "pydantic",
+      "typing"
+    ],
+    "key_symbols": [
+      "Business",
+      "BusinessBase",
+      "BusinessCreate"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "schemas"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/schemas/ca.py",
+    "language": "Python",
+    "lines_of_code": 21,
+    "hash": "a4816a93b38a6792228e009acccdd6dc114072ac",
+    "summary": "Python module defining CA, CABase, CACreate.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "CA",
+      "CABase",
+      "CACreate"
+    ],
+    "imports": [
+      "datetime",
+      "pydantic",
+      "typing"
+    ],
+    "key_symbols": [
+      "CA",
+      "CABase",
+      "CACreate"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "schemas"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/schemas/compliance.py",
+    "language": "Python",
+    "lines_of_code": 21,
+    "hash": "88c3bf217488ccbf0d0345406144e644dfd6f29f",
+    "summary": "Python module defining Compliance, ComplianceBase, ComplianceCreate.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Compliance",
+      "ComplianceBase",
+      "ComplianceCreate"
+    ],
+    "imports": [
+      "datetime",
+      "pydantic",
+      "typing"
+    ],
+    "key_symbols": [
+      "Compliance",
+      "ComplianceBase",
+      "ComplianceCreate"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "schemas"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/schemas/document.py",
+    "language": "Python",
+    "lines_of_code": 20,
+    "hash": "570c4ac34eea0913f87d06ea7706344090b9510d",
+    "summary": "Python module defining Document, DocumentBase, DocumentCreate.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Document",
+      "DocumentBase",
+      "DocumentCreate"
+    ],
+    "imports": [
+      "datetime",
+      "pydantic"
+    ],
+    "key_symbols": [
+      "Document",
+      "DocumentBase",
+      "DocumentCreate"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "schemas"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/schemas/scheme.py",
+    "language": "Python",
+    "lines_of_code": 142,
+    "hash": "14e64d50d372b1437ed1b7d1ec1352188dd861a4",
+    "summary": "Python module defining backend logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.database",
+      "app.models.business",
+      "app.models.scheme",
+      "app.models.user",
+      "app.utils.auth",
+      "fastapi",
+      "sqlalchemy",
+      "sqlalchemy.ext.asyncio",
+      "uuid"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "schemas"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/schemas/user.py",
+    "language": "Python",
+    "lines_of_code": 25,
+    "hash": "94b7c1d4bc763604c560a5f6801fcf99fe25d818",
+    "summary": "Python module defining User, UserBase, UserCreate.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "User",
+      "UserBase",
+      "UserCreate",
+      "UserUpdate"
+    ],
+    "imports": [
+      "datetime",
+      "pydantic",
+      "typing"
+    ],
+    "key_symbols": [
+      "User",
+      "UserBase",
+      "UserCreate",
+      "UserUpdate"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "schemas"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/services/__init__.py",
+    "language": "Python",
+    "lines_of_code": 1,
+    "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "summary": "Service module providing __init__ integration.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/services/calendar_service.py",
+    "language": "Python",
+    "lines_of_code": 12,
+    "hash": "1383c04ca8ffb7752a536cf9ca9acd85e8007c5f",
+    "summary": "Service module providing calendar_service integration.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "datetime"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/services/notification_service.py",
+    "language": "Python",
+    "lines_of_code": 10,
+    "hash": "565472e60bb60b23e617131e66ad6122ccbdb99c",
+    "summary": "Service module providing notification_service integration.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/services/ocr_service.py",
+    "language": "Python",
+    "lines_of_code": 32,
+    "hash": "7ded8f1fd9763e90a2dcca60738ffece5d760653",
+    "summary": "Service module providing ocr_service integration.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "OCRService"
+    ],
+    "imports": [
+      "PIL",
+      "io",
+      "pytesseract"
+    ],
+    "key_symbols": [
+      "OCRService"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/services/r2_service.py",
+    "language": "Python",
+    "lines_of_code": 35,
+    "hash": "f97cfac0045eff805fc9f013cdf224924863f4f5",
+    "summary": "Service module providing r2_service integration.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.config",
+      "boto3"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/services/rag_service.py",
+    "language": "Python",
+    "lines_of_code": 17,
+    "hash": "140406f9c36c5e7e94b9401ecd327f94bafa324b",
+    "summary": "Service module providing rag_service integration.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/services/udyam_service.py",
+    "language": "Python",
+    "lines_of_code": 22,
+    "hash": "0abf1c61acc80de1e7945bbb1ba5447d8b02bf70",
+    "summary": "Service module providing udyam_service integration.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "httpx"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "services"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/tasks/__init__.py",
+    "language": "Python",
+    "lines_of_code": 1,
+    "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "summary": "Celery background task definitions for __init__.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "tasks"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/tasks/celery_app.py",
+    "language": "Python",
+    "lines_of_code": 17,
+    "hash": "47f6285ac0bfe097cb2a1660621da0c4184c8757",
+    "summary": "Celery background task definitions for celery_app.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.config",
+      "celery"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "tasks"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/tasks/deadline_tasks.py",
+    "language": "Python",
+    "lines_of_code": 20,
+    "hash": "dde45921e34153638cbf77cb464ce32efbdf6c90",
+    "summary": "Celery background task definitions for deadline_tasks.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "check_upcoming_deadlines",
+      "send_deadline_reminder"
+    ],
+    "imports": [
+      "app.tasks.celery_app"
+    ],
+    "key_symbols": [
+      "check_upcoming_deadlines",
+      "send_deadline_reminder"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "tasks"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/tasks/portal_tasks.py",
+    "language": "Python",
+    "lines_of_code": 20,
+    "hash": "c38c0a15b944f0a02caeb6a071b1aaa644d3f574",
+    "summary": "Celery background task definitions for portal_tasks.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "sync_portal_data",
+      "update_scheme_information"
+    ],
+    "imports": [
+      "app.tasks.celery_app"
+    ],
+    "key_symbols": [
+      "sync_portal_data",
+      "update_scheme_information"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "tasks"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/tasks/sentinel_tasks.py",
+    "language": "Python",
+    "lines_of_code": 20,
+    "hash": "a90c396a6c10cd3e0a5ce9f40febddfae6053d81",
+    "summary": "Celery background task definitions for sentinel_tasks.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "generate_fraud_alerts",
+      "run_sentinel_checks"
+    ],
+    "imports": [
+      "app.tasks.celery_app"
+    ],
+    "key_symbols": [
+      "generate_fraud_alerts",
+      "run_sentinel_checks"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "tasks"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/utils/__init__.py",
+    "language": "Python",
+    "lines_of_code": 1,
+    "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "summary": "Python module defining backend logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "utils"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/utils/auth.py",
+    "language": "Python",
+    "lines_of_code": 12,
+    "hash": "bb2df8abb30617903d15e1598265cd922b5251a2",
+    "summary": "Python module defining hash_password, verify_password.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "hash_password",
+      "verify_password"
+    ],
+    "imports": [
+      "passlib.context"
+    ],
+    "key_symbols": [
+      "hash_password",
+      "verify_password"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "utils"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/utils/dependencies.py",
+    "language": "Python",
+    "lines_of_code": 17,
+    "hash": "5e89c0873c42010e76073374a2e5cf73816dad04",
+    "summary": "Python module defining backend logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "app.config",
+      "fastapi",
+      "jose"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "utils"
+    ]
+  },
+  {
+    "path": "complyos-backend/app/utils/helpers.py",
+    "language": "Python",
+    "lines_of_code": 16,
+    "hash": "dd3021c43c146c1ce30b1727e6fce13b080ca3c0",
+    "summary": "Python module defining calculate_days_until_deadline, format_date, generate_id.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "calculate_days_until_deadline",
+      "format_date",
+      "generate_id"
+    ],
+    "imports": [],
+    "key_symbols": [
+      "calculate_days_until_deadline",
+      "format_date",
+      "generate_id"
+    ],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python",
+      "utils"
+    ]
+  },
+  {
+    "path": "complyos-backend/docker-compose.yml",
+    "language": "YAML",
+    "lines_of_code": 52,
+    "hash": "9e5db21fd5cb8da7bd04a88ab38fdaa4735d3dc6",
+    "summary": "File docker-compose.yml in project.",
+    "summary_confidence": 0.9,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-backend/requirements.txt",
+    "language": "unknown",
+    "lines_of_code": 27,
+    "hash": "73b3a83c2b350421f09672f88dbcbda615dbcc9e",
+    "summary": "File requirements.txt in project.",
+    "summary_confidence": 0.9,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "backend",
+      "fastapi",
+      "python"
+    ]
+  },
+  {
+    "path": "complyos-frontend/.DS_Store",
+    "language": "unknown",
+    "lines_of_code": 4,
+    "hash": "b2be3a339d4f5108ea4a5df7dcbfbf0230e4486f",
+    "summary": "File .DS_Store in project.",
+    "summary_confidence": 0.9,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/.gitignore",
+    "language": "Gitignore",
+    "lines_of_code": 2,
+    "hash": "3d35b41569fdc1b2a1c4207ac24c8fa7208937d8",
+    "summary": "File .gitignore in project.",
+    "summary_confidence": 0.9,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/README.md",
+    "language": "Markdown",
+    "lines_of_code": 1,
+    "hash": "5bbfc773d96da11276f892040159abe66deae3e2",
+    "summary": "Documentation file README.md.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/index.html",
+    "language": "HTML",
+    "lines_of_code": 14,
+    "hash": "854b8248abf7cfbd9457741028fc76915944a3e2",
+    "summary": "File index.html in project.",
+    "summary_confidence": 0.9,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/package-lock.json",
+    "language": "JSON",
+    "lines_of_code": 6322,
+    "hash": "337231a4c35bc8fd14c906dbe2fbfd4ae0bae717",
+    "summary": "Lockfile pinning 440 package dependencies.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite",
+      "lockfile"
+    ]
+  },
+  {
+    "path": "complyos-frontend/package.json",
+    "language": "JSON",
+    "lines_of_code": 37,
+    "hash": "781ac8e0ab7eb7a99746827db6cfe89f3be3cff9",
+    "summary": "NPM package manifest for complyos-frontend v0.0.0.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "dev",
+      "build",
+      "lint",
+      "preview"
+    ],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/postcss.config.js",
+    "language": "JavaScript",
+    "lines_of_code": 7,
+    "hash": "d81f6023fc07196029b1c879d8e04502d9b33f2f",
+    "summary": "JavaScript module defining application logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/.DS_Store",
+    "language": "unknown",
+    "lines_of_code": 7,
+    "hash": "a2b981cee321ded5b9dbd4b8223f8ac2484fba48",
+    "summary": "File .DS_Store in project.",
+    "summary_confidence": 0.9,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/App.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 69,
+    "hash": "00f4e18224f5dca9af3a64be90442b66b630514c",
+    "summary": "React UI component rendering App view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "App"
+    ],
+    "imports": [
+      "./pages/CAConnect",
+      "./pages/Calendar",
+      "./pages/Dashboard",
+      "./pages/Documents",
+      "./pages/Landing",
+      "./pages/Loans",
+      "./pages/Notices",
+      "./pages/Onboarding",
+      "./pages/Profile",
+      "./pages/Registration",
+      "./pages/Schemes",
+      "./pages/ca/CAApprovalRequests",
+      "./pages/ca/CADashboard",
+      "./pages/ca/CAFraudShield",
+      "./utils/helpers",
+      "framer-motion",
+      "react",
+      "react-router-dom"
+    ],
+    "key_symbols": [
+      "App",
+      "ProtectedRoute"
+    ],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/agents/SCOUTResults.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 48,
+    "hash": "004277eb9d8c0a73e79ae2f11b5a0163df3c1722",
+    "summary": "React UI component rendering SCOUTResults view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "SCOUTResults"
+    ],
+    "imports": [
+      "../ui/SchemeCard",
+      "framer-motion",
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "SCOUTResults"
+    ],
+    "tags": [
+      "agents",
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/agents/SENTINELAlert.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 39,
+    "hash": "dc92965d4bd3a82592911c6ed24921ef9404e8ca",
+    "summary": "React UI component rendering SENTINELAlert view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "SentinelAlert"
+    ],
+    "imports": [
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "SentinelAlert"
+    ],
+    "tags": [
+      "agents",
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/agents/VEDAUploader.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 60,
+    "hash": "c60388bc4aeaa4267a75799f9c77b1df2b545463",
+    "summary": "React UI component rendering VEDAUploader view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "VEDAUploader"
+    ],
+    "imports": [
+      "../../hooks/useVEDA",
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "VEDAUploader",
+      "handleFile"
+    ],
+    "tags": [
+      "agents",
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/aria/ARIAInput.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 38,
+    "hash": "9a184bbd3f617c39e2a244cc80ab24c1522a0739",
+    "summary": "React UI component rendering ARIAInput view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "ARIAInput"
+    ],
+    "imports": [
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "ARIAInput",
+      "handleSubmit"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/aria/ChatBubble.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 28,
+    "hash": "7679df15786433d53f4b2ae384389dca37b2d673",
+    "summary": "React UI component rendering ChatBubble view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "ChatBubble"
+    ],
+    "imports": [
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "ChatBubble"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/aria/QuickReply.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 22,
+    "hash": "510b5b5f33d131b474b4f314e4e4a7dff65cf1c2",
+    "summary": "React UI component rendering QuickReply view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "QuickReply"
+    ],
+    "imports": [
+      "react"
+    ],
+    "key_symbols": [
+      "QuickReply"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/layout/CASidebar.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 71,
+    "hash": "3c8df1abf82068153b5c97572b7ebbde8dab45e1",
+    "summary": "React UI component rendering CASidebar view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "CASidebar"
+    ],
+    "imports": [
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "CASidebar"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/layout/ComplianceChatbot.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 327,
+    "hash": "2990d117e887428193d039007c4598da4e15813a",
+    "summary": "React UI component rendering ComplianceChatbot view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "ComplianceChatbot"
+    ],
+    "imports": [
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "ComplianceChatbot",
+      "FormattedMessage",
+      "MessageBubble",
+      "reset",
+      "sendMessage"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/layout/DashboardLayout.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 20,
+    "hash": "6e0fa8f54df807befc5f203620cf76f2e3d62e0c",
+    "summary": "React UI component rendering DashboardLayout view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "DashboardLayout"
+    ],
+    "imports": [
+      "./Sidebar",
+      "./Topbar"
+    ],
+    "key_symbols": [
+      "DashboardLayout"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/layout/Footer.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 38,
+    "hash": "3e2427ea20e802cf91629f3b5667d320b63e1738",
+    "summary": "React UI component rendering Footer view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Footer"
+    ],
+    "imports": [
+      "react"
+    ],
+    "key_symbols": [
+      "Footer"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/layout/Sidebar.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 111,
+    "hash": "7b7bfd9967f9abcc497b060f101c520f6693f6a5",
+    "summary": "React UI component rendering Sidebar view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Sidebar"
+    ],
+    "imports": [
+      "../../utils/helpers",
+      "framer-motion",
+      "lucide-react",
+      "react",
+      "react-router-dom"
+    ],
+    "key_symbols": [
+      "Sidebar",
+      "SidebarContent",
+      "handleLogout"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/layout/Topbar.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 43,
+    "hash": "33d8f70a7154fc6b795bd92933302914d3c420c4",
+    "summary": "React UI component rendering Topbar view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Topbar"
+    ],
+    "imports": [
+      "../../store/notificationStore",
+      "../../utils/helpers",
+      "framer-motion",
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "Topbar"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/ui/CACard.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 69,
+    "hash": "3b5e873ea32bacc604e88ff39d492887a4122b4f",
+    "summary": "React UI component rendering CACard view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "CACard"
+    ],
+    "imports": [
+      "framer-motion",
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "CACard"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/ui/Common.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 240,
+    "hash": "7e45582894a262c860d90ed78ce367f43b2a9ba3",
+    "summary": "React UI component rendering Common view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Avatar",
+      "Badge",
+      "Button",
+      "Divider",
+      "EmptyState",
+      "Modal",
+      "Spinner",
+      "Tooltip"
+    ],
+    "imports": [
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "Avatar",
+      "Badge",
+      "Button",
+      "Divider",
+      "EmptyState",
+      "Modal",
+      "Spinner",
+      "Tooltip"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/ui/DocumentCard.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 74,
+    "hash": "d5067940422c7d703acb148f17cbf6d46027569e",
+    "summary": "React UI component rendering DocumentCard view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "DocumentCard"
+    ],
+    "imports": [
+      "../../utils/helpers",
+      "./StatusBadge",
+      "framer-motion",
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "DocumentCard"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/ui/FreelancerCard.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 101,
+    "hash": "11b362a655186f42bef194bf3efc0edbccd811c0",
+    "summary": "React UI component rendering FreelancerCard view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "FreelancerCard"
+    ],
+    "imports": [
+      "./Common",
+      "framer-motion",
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "FreelancerCard"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/ui/LoanCard.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 88,
+    "hash": "61d4c173ef2feff1184a8c1ce854fc87b900e43b",
+    "summary": "React UI component rendering LoanCard view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "LoanCard"
+    ],
+    "imports": [
+      "framer-motion",
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "LoanCard"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/ui/MetricCard.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 36,
+    "hash": "a1c2c1fd871f2df5614dbc49375c6e37e15d27b8",
+    "summary": "React UI component rendering MetricCard view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "MetricCard"
+    ],
+    "imports": [
+      "framer-motion",
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "MetricCard"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/ui/NoticeRow.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 92,
+    "hash": "f96e02a743c4bd1598b92d4fce036f6540b70573",
+    "summary": "React UI component rendering NoticeRow view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "NoticeRow"
+    ],
+    "imports": [
+      "../../utils/helpers",
+      "framer-motion",
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "NoticeRow"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/ui/ProgressBar.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 56,
+    "hash": "fcd0f9a4c9196484142c88cd98caac253db80c2f",
+    "summary": "React UI component rendering ProgressBar view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "ProgressBar"
+    ],
+    "imports": [
+      "framer-motion",
+      "react"
+    ],
+    "key_symbols": [
+      "ProgressBar"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/ui/SchemeCard.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 55,
+    "hash": "d2eec8699b2b3ce43fb8e04bd8be595eaf001f77",
+    "summary": "React UI component rendering SchemeCard view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "SchemeCard"
+    ],
+    "imports": [
+      "./StatusBadge",
+      "framer-motion",
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "SchemeCard"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/components/ui/StatusBadge.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 26,
+    "hash": "5049f6b3f3d17b5b6ba6f5dabbeb731b36701572",
+    "summary": "React UI component rendering StatusBadge view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "StatusBadge"
+    ],
+    "imports": [
+      "react"
+    ],
+    "key_symbols": [
+      "StatusBadge"
+    ],
+    "tags": [
+      "components",
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/hooks/useARIA.js",
+    "language": "JavaScript",
+    "lines_of_code": 50,
+    "hash": "eeb15e189c864ac9c76c36eba1f0c8227c9d5369",
+    "summary": "JavaScript module defining useARIA.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "useARIA"
+    ],
+    "imports": [
+      "react"
+    ],
+    "key_symbols": [
+      "sendMessage",
+      "useARIA"
+    ],
+    "tags": [
+      "frontend",
+      "hooks",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/hooks/useSCOUT.js",
+    "language": "JavaScript",
+    "lines_of_code": 33,
+    "hash": "a7358e68943db81db68d4e4bb0c55b59dcfa698d",
+    "summary": "JavaScript module defining useSCOUT.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "useSCOUT"
+    ],
+    "imports": [
+      "../services/api",
+      "react"
+    ],
+    "key_symbols": [
+      "applyForScheme",
+      "fetchSchemes",
+      "useSCOUT"
+    ],
+    "tags": [
+      "frontend",
+      "hooks",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/hooks/useVEDA.js",
+    "language": "JavaScript",
+    "lines_of_code": 27,
+    "hash": "d2731140db6ada798e3ed310205c2334eb68914f",
+    "summary": "JavaScript module defining useVEDA.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "useVEDA"
+    ],
+    "imports": [
+      "../services/api",
+      "react"
+    ],
+    "key_symbols": [
+      "processDocument",
+      "useVEDA"
+    ],
+    "tags": [
+      "frontend",
+      "hooks",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/index.css",
+    "language": "CSS",
+    "lines_of_code": 21,
+    "hash": "86b84e3e745e357fd00a8b74b2c5df208ed55e58",
+    "summary": "File index.css in project.",
+    "summary_confidence": 0.9,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/main.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 14,
+    "hash": "ed131662fa0f2e539d0b2802193d206cc8dc0a5a",
+    "summary": "React UI component rendering main view logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "./App.jsx",
+      "./index.css",
+      "react",
+      "react-dom/client",
+      "react-router-dom"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/CAConnect.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 515,
+    "hash": "6b8be2323cd9b7840eaf1b4c1b04e795f5142bc1",
+    "summary": "React UI component rendering CAConnect view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "CAConnectPage"
+    ],
+    "imports": [
+      "../components/layout/DashboardLayout",
+      "../components/layout/Footer",
+      "../components/ui/Common",
+      "../utils/caDirectory",
+      "../utils/profileStore",
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "BookingModal",
+      "CAConnectPage",
+      "CAListCard",
+      "StarRating",
+      "handleConfirm",
+      "resetFilters",
+      "toggleSpec"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/Calendar.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 281,
+    "hash": "7debcf5b635a5eac8501665623c6c76cb39a5edd",
+    "summary": "React UI component rendering Calendar view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "CalendarPage"
+    ],
+    "imports": [
+      "../components/layout/DashboardLayout",
+      "../components/ui/StatusBadge",
+      "../services/api",
+      "../utils/helpers",
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "Button",
+      "CalendarPage"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/Dashboard.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 601,
+    "hash": "fe18fd9c0c05a167db12ce61decddff2211e18ea",
+    "summary": "React UI component rendering Dashboard view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Dashboard"
+    ],
+    "imports": [
+      "../components/agents/SENTINELAlert",
+      "../components/layout/DashboardLayout",
+      "../components/ui/MetricCard",
+      "../components/ui/ProgressBar",
+      "../services/groqService",
+      "../utils/profileStore",
+      "framer-motion",
+      "lucide-react",
+      "react-router-dom",
+      "recharts"
+    ],
+    "key_symbols": [
+      "CAModal",
+      "Dashboard",
+      "buildChartData",
+      "buildMetrics",
+      "buildNotices",
+      "buildSavings",
+      "fetchInsight"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/Documents.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 766,
+    "hash": "647ac1acf49e0058288891b92f73ee731d067178",
+    "summary": "React UI component rendering Documents view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "DocumentsPage"
+    ],
+    "imports": [
+      "../components/layout/DashboardLayout",
+      "../components/layout/Footer",
+      "../components/ui/Common",
+      "../services/groqService",
+      "../utils/profileStore",
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "DocCard",
+      "DocumentsPage",
+      "StatusBadge",
+      "VedaPanel",
+      "deleteDoc",
+      "extractPdfText",
+      "handleFile",
+      "inferCategory",
+      "openPanel",
+      "readFileAsBase64",
+      "readFileAsText",
+      "reanalyse",
+      "vedaExtract"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/Landing.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 1078,
+    "hash": "f933b3aa08ae2530795cccf47ad1362ebd851148",
+    "summary": "React UI component rendering Landing view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Landing"
+    ],
+    "imports": [
+      "../components/layout/Footer",
+      "../components/ui/Common",
+      "../utils/helpers",
+      "framer-motion",
+      "lucide-react",
+      "react-router-dom"
+    ],
+    "key_symbols": [
+      "Landing",
+      "LoginModal",
+      "PricingSection",
+      "demoLogin",
+      "openModal"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/Loans.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 861,
+    "hash": "2eac1b306ce32aac4dd0f2f4fe6a4d9d67425661",
+    "summary": "React UI component rendering Loans view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "LoansPage"
+    ],
+    "imports": [
+      "../components/layout/DashboardLayout",
+      "../components/layout/Footer",
+      "../components/ui/Common",
+      "../components/ui/ProgressBar",
+      "../services/groqService",
+      "../utils/profileStore",
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "LoanCard",
+      "LoanDetailModal",
+      "LoansPage",
+      "computeEligibilityScore",
+      "fetch",
+      "fetchAIScores",
+      "matchSchemes",
+      "scoreLabel"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/Notices.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 545,
+    "hash": "638824f54d6d062ab26004d71300d03002f5f9a5",
+    "summary": "React UI component rendering Notices view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "NoticesPage"
+    ],
+    "imports": [
+      "../components/layout/DashboardLayout",
+      "../components/layout/Footer",
+      "../services/groqService",
+      "../utils/profileStore",
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "ExpertCard",
+      "FALLBACK_NOTICES",
+      "NoticeDetailModal",
+      "NoticeRow",
+      "NoticesPage",
+      "fetchDetail",
+      "fetchNotices",
+      "inferPortal"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/Onboarding.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 421,
+    "hash": "0236f1b8394d9a295c9c18781f02046f54c84dcf",
+    "summary": "React UI component rendering Onboarding view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "Onboarding"
+    ],
+    "imports": [
+      "../components/ui/ProgressBar",
+      "../services/groqService",
+      "../utils/helpers",
+      "../utils/profileStore",
+      "framer-motion",
+      "lucide-react",
+      "react-router-dom"
+    ],
+    "key_symbols": [
+      "Onboarding",
+      "Pill",
+      "askAria",
+      "detectChipStage",
+      "looksLikeGibberish",
+      "send",
+      "sniffProfile",
+      "startConvo"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/Profile.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 273,
+    "hash": "a17317e769b087cefd73cc32f15561369869823d",
+    "summary": "React UI component rendering Profile view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "ProfilePage"
+    ],
+    "imports": [
+      "../components/layout/DashboardLayout",
+      "../components/ui/Common",
+      "../utils/profileStore",
+      "framer-motion"
+    ],
+    "key_symbols": [
+      "ProfilePage",
+      "save",
+      "toggleReg",
+      "update"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/Registration.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 849,
+    "hash": "c9c6bfc0e098015f0ba64d9f95fcbecb93950db6",
+    "summary": "React UI component rendering Registration view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "RegistrationPage"
+    ],
+    "imports": [
+      "../components/layout/DashboardLayout",
+      "../components/layout/Footer",
+      "../components/ui/ProgressBar",
+      "../services/groqService",
+      "../utils/profileStore",
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "CAHelpModal",
+      "RegRow",
+      "RegistrationPage",
+      "StepGuide",
+      "buildFallback",
+      "fetchRegistrations",
+      "getPortalUrl",
+      "getYoutubeVideo",
+      "has",
+      "loadSteps",
+      "resolveStatus"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/Schemes.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 477,
+    "hash": "05da608f478c6c177815c6213724ed503c63a322",
+    "summary": "React UI component rendering Schemes view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "SchemesPage"
+    ],
+    "imports": [
+      "../components/layout/DashboardLayout",
+      "../components/layout/Footer",
+      "../components/ui/Common",
+      "../components/ui/SchemeCard",
+      "../services/groqService",
+      "../utils/profileStore",
+      "framer-motion",
+      "lucide-react"
+    ],
+    "key_symbols": [
+      "SchemesPage",
+      "buildFallbackSchemes",
+      "fetchAISchemes",
+      "mergeWithRealData"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/ca/CAApprovalRequests.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 949,
+    "hash": "3f8010c84d9b5041054172373091e0784244f271",
+    "summary": "React UI component rendering CAApprovalRequests view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "CAApprovalRequests"
+    ],
+    "imports": [
+      "framer-motion",
+      "lucide-react",
+      "react"
+    ],
+    "key_symbols": [
+      "CAApprovalRequests",
+      "CheckRow",
+      "DetailPage",
+      "ListView",
+      "MetricBar",
+      "RequestCard",
+      "ReviewTimeChart",
+      "VerificationPage",
+      "buildChecks",
+      "computeRiskScore",
+      "formatSeconds",
+      "getCleanSignals",
+      "getFraudDescription",
+      "getFraudSignals",
+      "getPlatformAction",
+      "getSafeMinimum",
+      "goBack",
+      "goVerify",
+      "selectRequest"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/ca/CADashboard.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 190,
+    "hash": "b5c9576c4be57f7aff7bde5882e907e8aa144029",
+    "summary": "React UI component rendering CADashboard view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "CADashboard"
+    ],
+    "imports": [
+      "../../components/ui/Common",
+      "../../components/ui/MetricCard",
+      "../../components/ui/StatusBadge",
+      "../../utils/constants",
+      "../../utils/helpers",
+      "framer-motion",
+      "lucide-react",
+      "react-router-dom"
+    ],
+    "key_symbols": [
+      "CADashboard",
+      "handleLogout"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/pages/ca/CAFraudShield.jsx",
+    "language": "JavaScript (JSX)",
+    "lines_of_code": 670,
+    "hash": "0099afe5843f7c3825563b2342c507906aad29e5",
+    "summary": "React UI component rendering CAFraudShield view logic.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "CAFraudShield"
+    ],
+    "imports": [
+      "framer-motion",
+      "lucide-react",
+      "react-router-dom"
+    ],
+    "key_symbols": [
+      "BookingDetector",
+      "CAFraudShield",
+      "Card",
+      "Flag",
+      "Good",
+      "InputField",
+      "PresetBar",
+      "RiskBadge",
+      "RunButton",
+      "SafeguardAction",
+      "ScanSteps",
+      "Select",
+      "VelocityChecker",
+      "WorkloadGuard",
+      "delay",
+      "groq",
+      "run",
+      "set"
+    ],
+    "tags": [
+      "frontend",
+      "pages",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/services/api.js",
+    "language": "JavaScript",
+    "lines_of_code": 41,
+    "hash": "acb777ffd679142e92f5d069a85dd01b250cf187",
+    "summary": "Service module providing api client integrations.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [
+      "../utils/helpers"
+    ],
+    "key_symbols": [
+      "apiFetch",
+      "uploadDocument"
+    ],
+    "tags": [
+      "frontend",
+      "react",
+      "services",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/services/ariaSocket.js",
+    "language": "JavaScript",
+    "lines_of_code": 62,
+    "hash": "8fcd2d193c28708039602bd9dbe1fe141b5d4766",
+    "summary": "Service module providing ariaSocket client integrations.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "disconnectAriaSocket",
+      "getAriaSocket",
+      "initializeAriaSocket",
+      "onAriaError",
+      "onAriaResponse",
+      "sendAriaMessage"
+    ],
+    "imports": [
+      "socket.io-client"
+    ],
+    "key_symbols": [
+      "disconnectAriaSocket",
+      "getAriaSocket",
+      "initializeAriaSocket",
+      "onAriaError",
+      "onAriaResponse",
+      "sendAriaMessage"
+    ],
+    "tags": [
+      "frontend",
+      "react",
+      "services",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/services/groqService.js",
+    "language": "JavaScript",
+    "lines_of_code": 108,
+    "hash": "82e857b976b71b1aa1a9e671fc591cfa6d1f9495",
+    "summary": "Service module providing groqService client integrations.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [
+      "getKey",
+      "groqChat",
+      "requestPromise",
+      "sleep"
+    ],
+    "tags": [
+      "frontend",
+      "react",
+      "services",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/store/authStore.js",
+    "language": "JavaScript",
+    "lines_of_code": 24,
+    "hash": "f44bb4ac012c1c4ce9f3470ca4ab6152f84a75a9",
+    "summary": "Zustand state management store for authStore.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "useAuthStore"
+    ],
+    "imports": [
+      "../utils/helpers",
+      "zustand"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "store",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/store/businessStore.js",
+    "language": "JavaScript",
+    "lines_of_code": 20,
+    "hash": "926210406f31b72104ae4b3653dd8a127576d0a5",
+    "summary": "Zustand state management store for businessStore.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "useBusinessStore"
+    ],
+    "imports": [
+      "zustand"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "store",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/store/notificationStore.js",
+    "language": "JavaScript",
+    "lines_of_code": 24,
+    "hash": "3ca94c7acbb72ef0bf9bbc40c38c3f44ac686c58",
+    "summary": "Zustand state management store for notificationStore.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "useNotificationStore"
+    ],
+    "imports": [
+      "zustand"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "store",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/utils/caDirectory.js",
+    "language": "JavaScript",
+    "lines_of_code": 152,
+    "hash": "5a92547e96be63d5e01c3981188550e85764d411",
+    "summary": "JavaScript module defining CA_DIRECTORY, getAssignedCA.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "CA_DIRECTORY",
+      "getAssignedCA"
+    ],
+    "imports": [],
+    "key_symbols": [
+      "getAssignedCA"
+    ],
+    "tags": [
+      "frontend",
+      "react",
+      "utils",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/utils/constants.js",
+    "language": "JavaScript",
+    "lines_of_code": 247,
+    "hash": "ac969863f967407591f3e47e4f9fad5da10d0f65",
+    "summary": "JavaScript module defining BUSINESS_TYPES, COMPLIANCE_TYPES, INDIAN_STATES.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "BUSINESS_TYPES",
+      "COMPLIANCE_TYPES",
+      "INDIAN_STATES",
+      "TIER_FEATURES",
+      "banks",
+      "caList",
+      "dashboardSummary",
+      "deadlines",
+      "documents",
+      "freelancers",
+      "loans",
+      "notifications",
+      "registrations"
+    ],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "utils",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/utils/helpers.js",
+    "language": "JavaScript",
+    "lines_of_code": 58,
+    "hash": "7d7b2a1040d4436cf92e7f87dd70f0197cfa30ea",
+    "summary": "JavaScript module defining clearAuth, clearToken, formatCurrency.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "clearAuth",
+      "clearToken",
+      "formatCurrency",
+      "formatDate",
+      "getInitials",
+      "getRole",
+      "getToken",
+      "getUrgencyColor",
+      "getUserId",
+      "isAuthenticated",
+      "isBusiness",
+      "isCA",
+      "isEnterprise",
+      "isIndividual",
+      "isMSME",
+      "setRole",
+      "setToken",
+      "setUserId"
+    ],
+    "imports": [],
+    "key_symbols": [
+      "clearAuth",
+      "clearToken",
+      "formatCurrency",
+      "formatDate",
+      "getInitials",
+      "getRole",
+      "getToken",
+      "getUrgencyColor",
+      "getUserId",
+      "isAuthenticated",
+      "isBusiness",
+      "isCA",
+      "isEnterprise",
+      "isIndividual",
+      "isMSME",
+      "setRole",
+      "setToken",
+      "setUserId"
+    ],
+    "tags": [
+      "frontend",
+      "react",
+      "utils",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/src/utils/profileStore.js",
+    "language": "JavaScript",
+    "lines_of_code": 39,
+    "hash": "8cfe28892943bded1ac194400cae644cb6f0b274",
+    "summary": "JavaScript module defining DEFAULT_PROFILE, PROFILE_KEY, clearProfile.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "DEFAULT_PROFILE",
+      "PROFILE_KEY",
+      "clearProfile",
+      "getProfile",
+      "setProfile"
+    ],
+    "imports": [],
+    "key_symbols": [
+      "clearProfile",
+      "getProfile",
+      "setProfile"
+    ],
+    "tags": [
+      "frontend",
+      "react",
+      "utils",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/tailwind.config.js",
+    "language": "JavaScript",
+    "lines_of_code": 31,
+    "hash": "921316d1349e4944644363483571d2917323e579",
+    "summary": "JavaScript module defining application logic.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "complyos-frontend/vite.config.js",
+    "language": "JavaScript",
+    "lines_of_code": 8,
+    "hash": "59212a09d3cf44eac6d7677d5a246db7530c1963",
+    "summary": "JavaScript module defining defineConfig.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "defineConfig"
+    ],
+    "imports": [
+      "@vitejs/plugin-react",
+      "vite"
+    ],
+    "key_symbols": [],
+    "tags": [
+      "frontend",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "package-lock.json",
+    "language": "JSON",
+    "lines_of_code": 7,
+    "hash": "999bf89d146cf0beb4f2059033bf85e27d3b5d02",
+    "summary": "Lockfile pinning 0 package dependencies.",
+    "summary_confidence": 1.0,
+    "exports": [],
+    "imports": [],
+    "key_symbols": [],
+    "tags": [
+      "root",
+      "lockfile"
+    ]
+  }
+]
