@@ -4,7 +4,7 @@ export const WA_LIMITS = {
 };
 
 export const CORE_FIELDS = [
-  'state', 'sector', 'subSector', 'gstRegistered', 'turnoverBand', 'udyamRegistered',
+  'name', 'businessName', 'state', 'sector', 'subSector', 'gstRegistered', 'turnoverBand', 'udyamRegistered',
   'employeesBand', 'womenLed', 'ownerAgeBand', 'goal',
 ];
 

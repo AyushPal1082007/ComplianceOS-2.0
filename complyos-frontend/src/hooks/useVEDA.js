@@ -22,5 +22,7 @@ export function useVEDA() {
     }
   };
 
-  return { uploading, result, error, processDocument };
+  const clearResult = () => setResult(null);
+
+  return { uploading, result, error, processDocument, clearResult };
 }
