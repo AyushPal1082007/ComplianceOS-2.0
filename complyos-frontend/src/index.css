@@ -18,3 +18,56 @@
   .card-hover:hover { box-shadow: 0 8px 32px rgba(21,27,30,0.10); }
   .gradient-hero { background: linear-gradient(135deg, #2b363b 0%, #405159 50%, #566d76 100%); }
 }
+
+/* ── AI Orb Keyframes (Apple Intelligence / Siri style) ── */
+@keyframes orb-spin-cw {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.08); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes orb-spin-ccw {
+  0% { transform: rotate(360deg) scale(1.05); }
+  50% { transform: rotate(180deg) scale(0.95); }
+  100% { transform: rotate(0deg) scale(1.05); }
+}
+
+@keyframes orb-wobble {
+  0%, 100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+  33% { border-radius: 70% 30% 46% 54% / 30% 29% 71% 70%; }
+  66% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
+}
+
+@keyframes orb-glow-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.15); }
+}
+
+@keyframes orb-ripple-expand {
+  0% { transform: scale(0.85); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.animate-orb-spin-cw {
+  animation: orb-spin-cw 12s linear infinite;
+}
+
+.animate-orb-spin-fast {
+  animation: orb-spin-cw 3s linear infinite;
+}
+
+.animate-orb-spin-ccw {
+  animation: orb-spin-ccw 16s linear infinite;
+}
+
+.animate-orb-wobble {
+  animation: orb-wobble 8s ease-in-out infinite;
+}
+
+.animate-orb-glow {
+  animation: orb-glow-pulse 4s ease-in-out infinite;
+}
+
+.animate-orb-ripple {
+  animation: orb-ripple-expand 2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}

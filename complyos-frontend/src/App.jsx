@@ -15,6 +15,7 @@ import CAConnectPage from "./pages/CAConnect";
 import LoansPage from "./pages/Loans";
 import NoticesPage from "./pages/Notices";
 import ProfilePage from "./pages/Profile";
+import AriaAkinator from "./pages/AriaAkinator";
 import CADashboard from "./pages/ca/CADashboard";
 import CAFraudShield from "./pages/ca/CAFraudShield";
 import CAApprovalRequests from "./pages/ca/CAApprovalRequests";
@@ -40,6 +41,7 @@ export default function App() {
         {/* ── Public ───────────────────────────────────────────────── */}
         <Route path="/" element={<Landing />} />
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/aria" element={<AriaAkinator />} />
 
         {/* ── Business owner ───────────────────────────────────────── */}
         <Route path="/dashboard" element={<ProtectedRoute noCA><Dashboard /></ProtectedRoute>} />
@@ -51,7 +53,6 @@ export default function App() {
         <Route path="/loans" element={<ProtectedRoute noCA><LoansPage /></ProtectedRoute>} />
         <Route path="/notices" element={<ProtectedRoute noCA><NoticesPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-        // Inside your routes:
         <Route path="/ca/approval-requests" element={<CAApprovalRequests />} />
 
         {/* ── CA — flat paths, both aliases work ───────────────────── */}
