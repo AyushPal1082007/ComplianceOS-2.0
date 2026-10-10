@@ -1,0 +1,1 @@
+2026-10-10 | Copilot | Added SENTINEL source safeguards, TinyFish adapter, Prisma regulation tracking models, and manual run/test wiring. | complyos-backend-express/src/services/tinyfish.js, complyos-backend-express/src/agents/sentinel/**, complyos-backend-express/prisma/schema.prisma, complyos-backend-express/package.json

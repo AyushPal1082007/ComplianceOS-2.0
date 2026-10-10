@@ -35,8 +35,9 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **Start**: `npm start` (starts node on `src/server.js`)
 - **Generate Prisma Client**: `npm run prisma:generate` (`npx prisma generate`)
 - **Database Push**: `npx prisma db push`
+- **Manual SENTINEL Run**: `npm run sentinel:run`
 - **Seed DB**: `node src/data/seed.js`
-- **Run Tests**: `npm test` (`node tests/testSuite.js`)
+- **Run Tests**: `npm test` (`node tests/testSuite.js && node src/agents/sentinel/__tests__/sentinel.test.js`)
 
 #### Frontend (`complyos-frontend`)
 - **Install**: `npm install`
@@ -63,11 +64,13 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - `complyos-backend-express/`: Primary Node.js/Express ES6 backend.
 - `complyos-backend-express/prisma/`: Prisma schema definition (`schema.prisma`) for PostgreSQL.
 - `complyos-backend-express/src/agents/`: JavaScript multi-agent modules (ARIA, VEDA, SCOUT, SENTINEL, PATHWAY).
+- `complyos-backend-express/src/agents/sentinel/`: SENTINEL source config, fetch, normalize, diff, classify, matcher, alert builder, review and test fixtures.
 - `complyos-backend-express/src/data/`: Static MSME scheme database (`schemes.json`) and seeder script (`seed.js`).
 - `complyos-backend-express/src/jobs/`: Scheduled cron jobs (`cronJobs.js`, `deadlineReminder.js`, `sentinelCrawler.js`).
 - `complyos-backend-express/src/middleware/`: Express middleware (`auth.js` for JWT, `errorHandler.js`).
 - `complyos-backend-express/src/routes/`: Domain route handlers (`auth.js`, `business.js`, `compliance.js`, etc.).
-- `complyos-backend-express/src/services/`: External integrations (Cloudinary, Razorpay, WhatsApp, Bhashini).
+- `complyos-backend-express/src/services/`: External integrations (Cloudinary, Razorpay, WhatsApp, Bhashini, TinyFish).
+- `complyos-backend-express/src/services/tinyfish.js`: TinyFish adapter for search/fetch/agent calls with rate limits and block detection.
 - `complyos-backend-express/src/utils/`: Deterministic compliance score and penalty formulas (`complianceCalculators.js`).
 - `complyos-backend-express/tests/`: Integration test suite (`testSuite.js`).
 - `complyos-frontend/`: React 18 + Vite client application.
@@ -106,7 +109,14 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **`complyos-backend-express/src/agents/aria.js`**: Conversational intake logic, interactive onboarding, intent parsing.
 - **`complyos-backend-express/src/agents/veda.js`**: OCR extraction, document type recognition, notice parser.
 - **`complyos-backend-express/src/agents/scout.js`**: MSME scheme matcher comparing business turnover/sector against eligibility criteria.
-- **`complyos-backend-express/src/agents/sentinel.js`**: Regulatory calendar tracker and crawler for statutory updates.
+- **`complyos-backend-express/src/agents/sentinel.js`**: High-level sentinel wrapper and trigger entry point.
+- **`complyos-backend-express/src/agents/sentinel/*`**: Source config, fetch, normalize, diff, classify, profile matching, alert building, review queue helpers, and tests.
+- **`complyos-backend-express/src/services/tinyfish.js`**: Search/fetch/agent adapter with block checks, retry logic, rate limits, and daily agent cap control.
+
+### Prisma Data Models: Alert Routing
+- **`SentinelAlert`**: User-facing alert model—stores displayed regulatory alerts with title, summary, source URL, simulated label. Written by SENTINEL pipeline for UI rendering and user notifications.
+- **`RegulationAlert`**: Delivery tracking model—links a (user, regulation change) pair; tracks whether a user was alerted for a specific change. Used for deduplication and audit.
+- **`Notification`**: Generic in-app system notification model—stores general (non-regulation) messages, reminders, and broadcasts.
 - **`complyos-backend-express/src/agents/pathway.js`**: Step-by-step resolution pathways for pending tax demands and notice replies.
 - **`complyos-backend-express/src/utils/complianceCalculators.js`**: Ground-truth mathematical engine for compliance scores and penalty deductions.
 - **`complyos-backend-express/src/db.js`**: Singleton PrismaClient connection pool.
@@ -115,13 +125,46 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 
 ## 6. Data Models and API Routes
 
+### Environment Variable Names
+- `TINYFISH_API_KEY`
+- `TINYFISH_AGENT_DAILY_CAP`
+
+### SENTINEL Flow
+1. Trigger: manual `npm run sentinel:run` or API route that calls `runSentinelCrawl()`.
+2. `src/agents/sentinel/sources.json` defines each source and skips entries whose URL starts with `TODO_VERIFY_OFFICIAL_URL`.
+3. TinyFish fetches and validates the page; blocked/captcha/error pages are rejected.
+4. Text is normalized and compared to the last stored snapshot using diff logic.
+5. A change is classified, then reviewed for confidence and quote validity.
+6. `matchProfiles()` decides which active profiles are in scope, based on explicit fields only.
+7. `buildAlert()` creates the alert only when sourceUrl, lastVerified, quote, and confidence gates pass.
+
+### Safety Warnings
+- No alert without `sourceUrl` and `lastVerified`.
+- `TODO_VERIFY_OFFICIAL_URL` placeholders are skipped; no live source calls are attempted while placeholders remain.
+- The LLM never decides user targeting; code in `matchProfiles.js` and `buildAlert.js` decides that.
+- Only official sources are allowed in production; simulated alerts must be labeled as such.
+- Simulated alerts are labeled in backend code, not frontend.
+
+### How to Add a New Regulation Source
+1. Edit `complyos-backend-express/src/agents/sentinel/sources.json`.
+2. Verify the official URL first before enabling it.
+3. Use the same `id`, `url`, `type`, `stateScope`, `fetchVia`, `checkEvery`, and `simulated` fields.
+4. Do not use or keep a `TODO_VERIFY_OFFICIAL_URL` entry for live monitoring.
+
+
 ### Prisma Relational Models
 | Model | Key Fields | Purpose |
 |---|---|---|
 | `User` | `id, email, phone, passwordHash, fullName` | Relational entity for user |
 | `BusinessProfile` | `id, userId, businessName, gstin, pan` | Relational entity for businessprofile |
-| `Document` | `id, userId, filename, cloudinaryUrl, cloudinaryId` | Relational entity for document |
-| `ComplianceDeadline` | `id, userId, title, description, deadlineDate` | Relational entity for compliancedeadline |
+| `Document` | `id, userId, filename, cloudinaryUrl, cloudinaryId` | Uploaded document and OCR evidence |
+| `RegulationSource` | `id, url, type, stateScope, fetchVia, checkEvery, simulated, enabled` | Source registry for monitored official or simulated pages |
+| `RegulationSnapshot` | `id, sourceId, hash, text, fetchedAt` | Last-known content snapshot per source |
+| `RegulationChange` | `id, sourceId, snapshotId, changedParagraphs, status, classification, quoteVerified, simulated` | Change record awaiting or after review |
+| `Alert` | `id, userId, changeId, status, sentAt, isDigest` | Delivery record for targeted SENTINEL alerts |
+| `TinyFishCall` | `id, endpoint, costClass, status, durationMs, sourceId` | Request audit trail for TinyFish calls |
+
+`RegulationSource` -> `RegulationSnapshot` -> `RegulationChange` -> `Alert`, with `TinyFishCall` linked to a source when available. | Relational entity for document || `ComplianceDeadline` | `id, userId, title, description, deadlineDate` | Relational entity for compliancedeadline |
 | `Scheme` | `id, name, nameHindi, description, descriptionHindi` | Relational entity for scheme |
 | `SchemeMatch` | `id, businessId, schemeId, matchScore, criteriaMetCount` | Relational entity for schemematch |
 | `SentinelAlert` | `id, userId, title, titleHindi, summary` | Relational entity for sentinelalert |
