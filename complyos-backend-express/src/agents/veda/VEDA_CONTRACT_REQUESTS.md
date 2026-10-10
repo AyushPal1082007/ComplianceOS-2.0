@@ -35,3 +35,10 @@ This document records architectural requests and gaps outside VEDA's ownership z
 - **Current State**: Parent graph state is pending.
 - **Request**: Backend lead to pass Postgres checkpointer and parent `runId` as `thread_id` into `vedaNode` to enable multi-turn interrupt/resume persistence across HTTP/WebSocket requests.
 - **Temporary Resolution**: VEDA supports in-memory `MemorySaver` by default and accepts injected checkpointers via `buildVedaGraph({ checkpointer })`.
+
+---
+
+## 5. Document Route to VEDA Subgraph Integration
+- **Current State**: `POST /api/documents/upload` passes a file `Buffer` to `src/agents/veda.js`, which uploads it and persists the document, extracted data, profile fields, and deadlines. The new `src/agents/veda/index.js` entry accepts a document URL or OCR text and returns the generic `AgentOutput` contract; it does not return the extracted document payload or perform those persistence operations.
+- **Request**: Backend lead and document-route owner to define the migration adapter contract: who uploads the buffer through `src/services/cloudinaryService.js`, how VEDA's document type and extracted fields are exposed for persistence, how existing endpoint response fields are preserved, and how confirmation/resume is persisted across requests.
+- **Blocker**: Do not replace the route's `processDocument` call with `run()` until this contract is agreed. A direct import swap would lose document persistence and change the endpoint response shape.
