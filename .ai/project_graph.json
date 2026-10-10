@@ -32,6 +32,214 @@
     ],
     "confidence": 1.0
   },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/entry.ts",
+    "type": "file",
+    "name": "entry.ts",
+    "file": "complyos-backend-express/src/agents/scout/entry.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Selects the real or mock SCOUT runner from SCOUT_REAL.",
+    "tags": ["agents", "backend", "scout", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/index.ts",
+    "type": "file",
+    "name": "index.ts",
+    "file": "complyos-backend-express/src/agents/scout/index.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Exports the real SCOUT run function from runner.ts.",
+    "tags": ["agents", "backend", "scout", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/mock.ts",
+    "type": "file",
+    "name": "mock.ts",
+    "file": "complyos-backend-express/src/agents/scout/mock.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Returns static SCOUT output selected from fixtures.",
+    "tags": ["agents", "backend", "scout", "mock", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+    "type": "file",
+    "name": "schemas.ts",
+    "file": "complyos-backend-express/src/agents/scout/schemas.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Defines SCOUT profile, scheme, match, verification, explanation, and eval schemas/types.",
+    "tags": ["agents", "backend", "scout", "schema", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/loadSchemes.ts",
+    "type": "file",
+    "name": "loadSchemes.ts",
+    "file": "complyos-backend-express/src/agents/scout/loadSchemes.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Loads and validates scheme JSON from the schemes directory.",
+    "tags": ["agents", "backend", "scout", "schemes", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/engine/match.ts",
+    "type": "file",
+    "name": "match.ts",
+    "file": "complyos-backend-express/src/agents/scout/engine/match.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Pure deterministic scheme criteria matcher.",
+    "tags": ["agents", "backend", "scout", "engine", "matching", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/engine/missingFields.ts",
+    "type": "file",
+    "name": "missingFields.ts",
+    "file": "complyos-backend-express/src/agents/scout/engine/missingFields.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Ranks missing profile fields across possible matches by scheme priority.",
+    "tags": ["agents", "backend", "scout", "engine", "aria", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/engine/teaser.ts",
+    "type": "file",
+    "name": "teaser.ts",
+    "file": "complyos-backend-express/src/agents/scout/engine/teaser.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Defines core profile fields and builds localized SCOUT teasers.",
+    "tags": ["agents", "backend", "scout", "engine", "aria", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/engine/explain.ts",
+    "type": "file",
+    "name": "explain.ts",
+    "file": "complyos-backend-express/src/agents/scout/engine/explain.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Runs injected LLM explanations with validation, retries, cache, and fallback.",
+    "tags": ["agents", "backend", "scout", "engine", "llm", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/engine/explainCheck.ts",
+    "type": "file",
+    "name": "explainCheck.ts",
+    "file": "complyos-backend-express/src/agents/scout/engine/explainCheck.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Pure validator for explanation claims, numbers, names, and URLs.",
+    "tags": ["agents", "backend", "scout", "engine", "validation", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/engine/templateExplain.ts",
+    "type": "file",
+    "name": "templateExplain.ts",
+    "file": "complyos-backend-express/src/agents/scout/engine/templateExplain.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Builds code-only explanation fallbacks in supported languages.",
+    "tags": ["agents", "backend", "scout", "engine", "fallback", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/verify/verifyScheme.ts",
+    "type": "file",
+    "name": "verifyScheme.ts",
+    "file": "complyos-backend-express/src/agents/scout/verify/verifyScheme.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Compares normalized source hashes and returns stale copies/review items on change.",
+    "tags": ["agents", "backend", "scout", "verify", "tinyfish", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/verify/runVerify.ts",
+    "type": "file",
+    "name": "runVerify.ts",
+    "file": "complyos-backend-express/src/agents/scout/verify/runVerify.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Runs sequential freshness checks with per-domain pacing and a report.",
+    "tags": ["agents", "backend", "scout", "verify", "jobs", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/verify/normalize.ts",
+    "type": "file",
+    "name": "normalize.ts",
+    "file": "complyos-backend-express/src/agents/scout/verify/normalize.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Strips markup/noise and normalizes fetched source text.",
+    "tags": ["agents", "backend", "scout", "verify", "normalization", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/verify/computeBaseline.ts",
+    "type": "file",
+    "name": "computeBaseline.ts",
+    "file": "complyos-backend-express/src/agents/scout/verify/computeBaseline.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Computes and prints a source baseline length/hash with an injected client.",
+    "tags": ["agents", "backend", "scout", "verify", "baseline", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/verify/discover.ts",
+    "type": "file",
+    "name": "discover.ts",
+    "file": "complyos-backend-express/src/agents/scout/verify/discover.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Discovers, filters, and deduplicates official scheme candidates.",
+    "tags": ["agents", "backend", "scout", "verify", "discovery", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/verify/draftExtract.ts",
+    "type": "file",
+    "name": "draftExtract.ts",
+    "file": "complyos-backend-express/src/agents/scout/verify/draftExtract.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Builds evidence-grounded, non-live scheme drafts using injected clients.",
+    "tags": ["agents", "backend", "scout", "verify", "drafts", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/verify/runDiscovery.ts",
+    "type": "file",
+    "name": "runDiscovery.ts",
+    "file": "complyos-backend-express/src/agents/scout/verify/runDiscovery.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Orchestrates discovery and persists draft JSON under SCOUT drafts/.",
+    "tags": ["agents", "backend", "scout", "verify", "discovery", "drafts", "typescript"],
+    "confidence": 1.0
+  },
+  {
+    "id": "file:complyos-backend-express/src/agents/scout/eval/runEval.ts",
+    "type": "file",
+    "name": "runEval.ts",
+    "file": "complyos-backend-express/src/agents/scout/eval/runEval.ts",
+    "line": 1,
+    "signature": null,
+    "summary": "Computes matching metrics, confusion matrix, and dangerous errors from supplied labels.",
+    "tags": ["agents", "backend", "scout", "eval", "typescript"],
+    "confidence": 1.0
   "commands": {
     "express_backend": {
       "install": "npm install",
@@ -12714,6 +12922,174 @@
         "file": "complyos-frontend/vite.config.js",
         "imported": "vite"
       }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/entry.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/index.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/entry.ts", "imported": "./index.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/entry.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/mock.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/entry.ts", "imported": "./mock.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/loadSchemes.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/loadSchemes.ts", "imported": "./schemas.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/engine/match.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/engine/match.ts", "imported": "../schemas.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/engine/missingFields.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/engine/missingFields.ts", "imported": "../schemas.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/engine/teaser.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/engine/teaser.ts", "imported": "../schemas.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/engine/explain.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/engine/explainCheck.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/engine/explain.ts", "imported": "./explainCheck.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/engine/explain.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/engine/templateExplain.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/engine/explain.ts", "imported": "./templateExplain.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/engine/explain.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/engine/explain.ts", "imported": "../schemas.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/engine/explainCheck.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/engine/explainCheck.ts", "imported": "../schemas.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/engine/templateExplain.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/engine/templateExplain.ts", "imported": "../schemas.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/verifyScheme.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/verify/normalize.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/verifyScheme.ts", "imported": "./normalize.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/verifyScheme.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/verifyScheme.ts", "imported": "../schemas.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/runVerify.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/verify/verifyScheme.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/runVerify.ts", "imported": "./verifyScheme.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/runVerify.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/runVerify.ts", "imported": "../schemas.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/computeBaseline.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/loadSchemes.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/computeBaseline.ts", "imported": "../loadSchemes.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/computeBaseline.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/verify/normalize.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/computeBaseline.ts", "imported": "./normalize.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/discover.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/verify/draftSchema.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/discover.ts", "imported": "./draftSchema.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/draftExtract.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/verify/normalize.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/draftExtract.ts", "imported": "./normalize.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/draftExtract.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/draftExtract.ts", "imported": "../schemas.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/runDiscovery.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/verify/discover.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/runDiscovery.ts", "imported": "./discover.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/verify/runDiscovery.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/verify/draftExtract.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/verify/runDiscovery.ts", "imported": "./draftExtract.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/eval/runEval.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/engine/match.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/eval/runEval.ts", "imported": "../engine/match.ts" }
+    },
+    {
+      "source": "file:complyos-backend-express/src/agents/scout/eval/runEval.ts",
+      "target": "file:complyos-backend-express/src/agents/scout/schemas.ts",
+      "type": "imports",
+      "confidence": 1.0,
+      "evidence": { "file": "complyos-backend-express/src/agents/scout/eval/runEval.ts", "imported": "../schemas.ts" }
     }
   ],
   "hotspots": [
