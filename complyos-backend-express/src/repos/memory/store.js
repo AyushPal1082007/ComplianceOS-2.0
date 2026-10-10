@@ -11,6 +11,10 @@ export const memoryStore = {
   schemeMatches: new Map(),
   sentinelAlerts: new Map(),
   regulationAlerts: new Map(),
+  notifications: new Map(),
+  ariaSessions: new Map(),
+  subscriptions: new Map(),
+  payments: new Map(),
   traces: [],
 };
 
@@ -27,6 +31,10 @@ export function clearMemoryStore() {
   memoryStore.schemeMatches.clear();
   memoryStore.sentinelAlerts.clear();
   memoryStore.regulationAlerts.clear();
+  memoryStore.notifications.clear();
+  memoryStore.ariaSessions.clear();
+  memoryStore.subscriptions.clear();
+  memoryStore.payments.clear();
   memoryStore.traces.length = 0;
 }
 

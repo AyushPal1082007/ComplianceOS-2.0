@@ -33,7 +33,10 @@ export async function saveFromVeda(userId, output) {
   if (!hasConsent) throw new Error('Consent is required before document persistence');
 
   const masked = {
+    ...(output.id ? { id: output.id } : {}),
     filename: output.filename || 'compliance-document',
+    cloudinaryUrl: output.cloudinaryUrl || null,
+    cloudinaryId: output.cloudinaryId || null,
     documentType: output.documentType || null,
     ocrText: output.ocrText ? maskDocumentText(output.ocrText) : null,
     extractedData: output.extractedData ? maskStructured(output.extractedData) : undefined,
@@ -42,6 +45,13 @@ export async function saveFromVeda(userId, output) {
     processedByVeda: true,
   };
   if (usesMemoryRepository()) return memoryDocumentRepo.saveFromVeda(userId, masked);
+  if (masked.id) {
+    return prisma.document.upsert({
+      where: { id: masked.id },
+      create: { userId, ...masked },
+      update: { ...masked, userId },
+    });
+  }
   return prisma.document.create({ data: { userId, ...masked } });
 }
 

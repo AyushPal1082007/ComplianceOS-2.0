@@ -58,7 +58,7 @@ export function buildMessages(
     const benefit = match.benefit.includes('TODO(owner)')
       ? copy.benefitPending
       : match.benefit;
-    const explanation = explanationTexts.get(match.schemeId);
+    const explanation = match.result === 'possible' ? undefined : explanationTexts.get(match.schemeId);
 
     return {
       title: match.name[lang === 'hi' ? 'hi' : 'en'],
@@ -67,6 +67,8 @@ export function buildMessages(
         explanation,
       ].filter(Boolean).join('\n'),
       tags,
+      sourceUrl: match.sourceUrl,
+      lastVerified: match.lastVerified,
     };
   });
 

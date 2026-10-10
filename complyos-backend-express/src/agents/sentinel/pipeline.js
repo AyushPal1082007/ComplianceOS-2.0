@@ -10,9 +10,35 @@ import { normalizeSourceText } from './normalize.js';
 import { diffText } from './diff.js';
 import { classifyChange } from './classify.js';
 import { matchProfiles } from './matchProfiles.js';
-import { buildAlert } from './buildAlert.js';
+import { deliverApprovedChange } from '../../graph/nodes/sentinelDeliveryNode.js';
+import * as profileRepo from '../../repos/profileRepo.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+async function loadMatchingProfiles() {
+  const rows = [];
+  let cursor = null;
+  while (true) {
+    const page = await profileRepo.loadForMatching({ cursor, limit: 1000 });
+    rows.push(...page.map((row) => {
+      const profileValues = Object.fromEntries(Object.entries(row.profile || {}).map(([key, field]) => [
+        key,
+        field && typeof field === 'object' && 'value' in field ? field.value : field,
+      ]));
+      const businessProfile = row.businessProfile || {};
+      return {
+        ...profileValues,
+        ...businessProfile,
+        id: row.user.id,
+        user: row.user,
+        profile: { ...businessProfile, ...profileValues, id: businessProfile.id || row.user.id },
+      };
+    }));
+    if (page.length < 1000) break;
+    cursor = page[page.length - 1].user.id;
+  }
+  return rows;
+}
 
 export async function loadSources() {
   const sourceJsonPath = path.join(__dirname, 'sources.json');
@@ -110,8 +136,8 @@ export async function runSingleSource(source) {
       };
     }
 
-    const matchedProfiles = matchProfiles(profiles || [], change.affects || {});
-    const alerts = [];
+    const profiles = await loadMatchingProfiles();
+    const matchedProfiles = matchProfiles(profiles, change.affects || {});
 
     // Create RegulationChange record for tracking the change
     let regulationChange = null;
@@ -133,56 +159,14 @@ export async function runSingleSource(source) {
       logger.warn('Regulation change persistence skipped', { sourceId: source.id, error: error.message });
     }
 
-    for (const profile of matchedProfiles) {
-      const builtAlert = buildAlert({
-        user: profile.user,
+    const delivery = regulationChange
+      ? await deliverApprovedChange({
         source,
-        change,
-        profile,
-        simulated: Boolean(source.simulated),
-      });
-
-      alerts.push(builtAlert);
-
-      // Write to SentinelAlert for user-facing display
-      try {
-        if (prisma && typeof prisma.sentinelAlert?.create === 'function') {
-          await prisma.sentinelAlert.create({
-            data: {
-              userId: builtAlert.userId,
-              title: builtAlert.title,
-              summary: builtAlert.summary,
-              sourceUrl: builtAlert.sourceUrl,
-              lastVerifiedAt: new Date(builtAlert.lastVerified),
-              isSimulated: builtAlert.isSimulated,
-              affectedAttributes: builtAlert.affectedAttributes,
-              status: builtAlert.status,
-            },
-          });
-        }
-      } catch (error) {
-        logger.warn('SentinelAlert persistence skipped', { userId: builtAlert.userId, sourceId: source.id, error: error.message });
-      }
-
-      // Write to RegulationAlert for change-delivery tracking (if RegulationChange was created)
-      if (regulationChange) {
-        try {
-          if (prisma && typeof prisma.regulationAlert?.create === 'function') {
-            await prisma.regulationAlert.create({
-              data: {
-                userId: builtAlert.userId,
-                changeId: regulationChange.id,
-                status: 'sent',
-                sentAt: new Date(),
-              },
-            });
-          }
-        } catch (error) {
-          logger.warn('RegulationAlert persistence skipped', { userId: builtAlert.userId, changeId: regulationChange.id, error: error.message });
-        }
-      }
-    }
-
+        change: { ...change, simulated: Boolean(source.simulated) },
+        changeId: regulationChange.id,
+        profiles,
+      })
+      : { sent: 0, digest: 0 };
 
     if (matchedProfiles.length === 0) {
       logger.info('No profiles matched the SENTINEL change criteria', { sourceId: source.id, change: change.title });
@@ -192,8 +176,9 @@ export async function runSingleSource(source) {
 
     return {
       sourceId: source.id,
-      status: matchedProfiles.length ? 'ALERTED' : 'NO_MATCH',
-      alerts: alerts.length,
+      status: delivery.sent ? 'ALERTED' : delivery.digest ? 'DIGEST_QUEUED' : 'NO_MATCH',
+      alerts: delivery.sent,
+      digest: delivery.digest,
       change,
     };
   } catch (error) {

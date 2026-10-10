@@ -113,7 +113,9 @@ test('scheme with placeholder sourceUrl is not displayed or claimed', async () =
     input('SCHEME_REQUEST'),
   );
 
-  assert.deepEqual(output.messages, []);
+  assert.equal(output.status, 'FAILED');
+  assert.equal(output.messages.length, 1);
+  assert.doesNotMatch(output.messages[0]?.type === 'text' ? output.messages[0].text : '', /TODO|scheme/i);
   assert.deepEqual(output.claims, []);
 });
 

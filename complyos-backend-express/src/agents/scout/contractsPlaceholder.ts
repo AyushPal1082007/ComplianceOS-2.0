@@ -42,7 +42,7 @@ export type OutboundMessage =
   | {
       type: 'list';
       text: string;
-      items: Array<{ title: string; details: string; tags: string[] }>;
+      items: Array<{ title: string; details: string; tags: string[]; sourceUrl: string; lastVerified: string }>;
     };
 
 export type AgentOutput = {
@@ -62,6 +62,8 @@ const OutboundMessageSchema = z.discriminatedUnion('type', [
       title: z.string(),
       details: z.string(),
       tags: z.array(z.string()),
+      sourceUrl: z.string().url(),
+      lastVerified: z.string().min(1),
     }).strict()),
   }).strict(),
 ]);

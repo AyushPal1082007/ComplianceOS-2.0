@@ -21,6 +21,20 @@ export async function findOrCreateByPhone(phone, channel) {
   return user;
 }
 
+export async function findByPhone(phone) {
+  const normalized = String(phone || '').replace(/\D/g, '');
+  if (!normalized) return null;
+  return [...memoryStore.users.values()].find((user) => user.phone === normalized) || null;
+}
+
+export async function setConsent(userId, consentGiven, consentAt = new Date()) {
+  const user = memoryStore.users.get(userId);
+  if (!user) throw new Error('User not found while updating consent');
+  const updated = { ...user, consentGiven, consentAt: consentGiven ? consentAt : null };
+  memoryStore.users.set(userId, updated);
+  return updated;
+}
+
 export async function anonymizeUser(userId) {
   const user = memoryStore.users.get(userId);
   if (!user) return null;
@@ -36,4 +50,4 @@ export async function anonymizeUser(userId) {
   return anonymized;
 }
 
-export default { findOrCreateByPhone, anonymizeUser };
+export default { findOrCreateByPhone, findByPhone, setConsent, anonymizeUser };

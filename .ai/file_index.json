@@ -4245,5 +4245,77 @@
     "imports": ["../engine/match.ts", "../schemas.ts"],
     "key_symbols": ["runEval", "formatEvalReport"],
     "tags": ["agents", "backend", "scout", "eval", "typescript"]
+  },
+  {
+    "path": "complyos-backend-express/src/orchestrator/handleEvent.js",
+    "language": "JavaScript",
+    "lines_of_code": 195,
+    "hash": "90fc9b788229a0d3c602c9e72c9c66f57c8484d0",
+    "summary": "Validates and orchestrates inbound events with consent, per-user locking, idempotency, graph execution, and persistence.",
+    "summary_confidence": 1.0,
+    "exports": ["handleEvent"],
+    "imports": ["../contracts/common.js", "../graph/runGraph.js", "./userLock.js"],
+    "key_symbols": ["handleEvent"],
+    "tags": ["backend", "express", "orchestrator", "events"]
+  },
+  {
+    "path": "complyos-backend-express/src/graph/runGraph.js",
+    "language": "JavaScript",
+    "lines_of_code": 87,
+    "hash": "be5013a850f195ad381b8d74ef6125476bc4aa7a",
+    "summary": "Routes event state through consent, deletion, ARIA, VEDA, SCOUT, PATHWAY, and delivery nodes.",
+    "summary_confidence": 1.0,
+    "exports": ["runGraph"],
+    "imports": ["./router.js", "./nodes/ariaNode.js", "./nodes/vedaNode.js", "./nodes/scoutNode.js"],
+    "key_symbols": ["runGraph"],
+    "tags": ["backend", "express", "graph", "orchestration"]
+  },
+  {
+    "path": "complyos-backend-express/src/graph/nodes/vedaNode.js",
+    "language": "JavaScript",
+    "lines_of_code": 281,
+    "hash": "31d0873ddec87003531bf2f2c86cdb5cee87caca",
+    "summary": "Runs VEDA document processing, profile merge, pending-thread resume, quota accounting, and SCOUT refresh.",
+    "summary_confidence": 1.0,
+    "exports": ["vedaNode", "EXPIRED_TEXT", "pendingTtlMinutes"],
+    "imports": ["../../agents/veda/index.js", "../../profile/mergePolicy.js", "./scoutNode.js", "./quota.js"],
+    "key_symbols": ["vedaNode", "isExpired", "recordProcessedDocument"],
+    "tags": ["backend", "express", "graph", "veda"]
+  },
+  {
+    "path": "complyos-backend-express/src/graph/nodes/sentinelDeliveryNode.js",
+    "language": "JavaScript",
+    "lines_of_code": 120,
+    "hash": "d29dacc4c741b7e42672a05195810b55fc53ee61",
+    "summary": "Delivers approved SENTINEL changes with label validation, deduplication, daily cap, and digest routing.",
+    "summary_confidence": 1.0,
+    "exports": ["deliverApprovedChange", "sentinelDeliveryNode", "validateSimulationLabel"],
+    "imports": [],
+    "key_symbols": ["deliverApprovedChange", "sentinelDeliveryNode"],
+    "tags": ["backend", "express", "graph", "sentinel", "delivery"]
+  },
+  {
+    "path": "complyos-backend-express/src/delete/deleteUserData.js",
+    "language": "JavaScript",
+    "lines_of_code": 104,
+    "hash": "a50bb00b6badf0a92b1e8ac123cef3a05b5518d7",
+    "summary": "Deletes user-owned data and media while anonymizing the user and retaining consent/payment records.",
+    "summary_confidence": 1.0,
+    "exports": ["deleteUserData"],
+    "imports": [],
+    "key_symbols": ["deleteUserData"],
+    "tags": ["backend", "express", "deletion", "privacy"]
+  },
+  {
+    "path": "complyos-backend-express/src/agents/sentinel/pipeline.js",
+    "language": "JavaScript",
+    "lines_of_code": 210,
+    "hash": "7e39ed957a8049946019e50d45bef8c330920f10",
+    "summary": "Runs SENTINEL source crawling, review, matching, and guarded delivery.",
+    "summary_confidence": 1.0,
+    "exports": ["loadSources", "persistSnapshot", "getLatestSnapshot", "runSingleSource", "runSentinelCrawl"],
+    "imports": ["../../repos/profileRepo.js", "./delivery.js"],
+    "key_symbols": ["runSentinelCrawl", "runSingleSource"],
+    "tags": ["backend", "express", "sentinel", "pipeline"]
   }
 ]

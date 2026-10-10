@@ -81,7 +81,7 @@ export const InboundEventSchema = z.object({
   userId: z.string().optional(),
   phone: z.string().optional(),
   receivedAt: z.union([z.string(), z.date()]),
-  type: z.enum(['TEXT', 'VOICE', 'OPTION_TAP', 'DOCUMENT', 'CONSENT', 'CONFIRM_ACTION', 'MENU', 'DELETE_CONFIRM']),
+  type: z.enum(['START', 'TEXT', 'VOICE', 'OPTION_TAP', 'DOCUMENT', 'CONSENT', 'CONFIRM_ACTION', 'MENU', 'DELETE_CONFIRM']),
   text: z.string().optional(),
   audio: z.object({
     buffer: z.instanceof(Uint8Array).optional(),
@@ -105,7 +105,16 @@ export const ConversationStateSchema = z.object({
     threadId: z.string(),
     cardId: z.string(),
     startedAt: z.string(),
+    documentId: z.string().optional(),
+    documentUrl: z.string().optional(),
+    cloudinaryId: z.string().optional(),
+    filename: z.string().optional(),
   }).optional(),
+  pendingProfileConflicts: z.array(z.object({
+    key: z.string(),
+    existingValue: z.unknown(),
+    proposedValue: z.unknown(),
+  })).default([]),
   pendingDelete: z.boolean().optional(),
   outstandingCards: z.record(z.string(), z.enum(['ARIA', 'VEDA', 'MENU', 'SYSTEM'])).default({}),
   language: z.enum(['hi', 'en', 'hinglish']).default('hinglish'),
@@ -114,7 +123,10 @@ export const ConversationStateSchema = z.object({
     docsThisMonth: z.object({ month: z.string(), count: z.number().int().nonnegative() }),
     schemeMatchesShown: z.number().int().nonnegative(),
   }).default({ docsThisMonth: { month: '', count: 0 }, schemeMatchesShown: 0 }),
-  flags: z.object({ introduced: z.boolean().default(false) }).default({ introduced: false }),
+  flags: z.object({
+    introduced: z.boolean().default(false),
+    processedDocumentIds: z.array(z.string()).default([]),
+  }).default({ introduced: false, processedDocumentIds: [] }),
 }).passthrough();
 
 export {

@@ -11,6 +11,17 @@ import { AgentOutputSchema } from '../stubs/contracts.stub.js';
 import { run } from '../index.js';
 import { FIXTURES } from '../fixtures/samples.js';
 
+async function runMock(input) {
+  const previous = process.env.VEDA_REAL;
+  process.env.VEDA_REAL = 'false';
+  try {
+    return await run(input);
+  } finally {
+    if (previous === undefined) delete process.env.VEDA_REAL;
+    else process.env.VEDA_REAL = previous;
+  }
+}
+
 describe('Contracts & Schema Conformance (AgentOutput)', () => {
   test('run() with valid fixture produces schema-valid AgentOutput', async () => {
     const input = {
@@ -45,7 +56,7 @@ describe('Contracts & Schema Conformance (AgentOutput)', () => {
       },
     };
 
-    const output = await run(input);
+    const output = await runMock(input);
     const parsed = AgentOutputSchema.safeParse(output);
     assert.equal(parsed.success, true, `Schema validation failed: ${JSON.stringify(parsed.error?.issues)}`);
     assert.equal(output.status, 'OK');
@@ -68,7 +79,7 @@ describe('Contracts & Schema Conformance (AgentOutput)', () => {
       locale: 'hinglish',
     };
 
-    const output = await run(input);
+    const output = await runMock(input);
     const parsed = AgentOutputSchema.safeParse(output);
     assert.equal(parsed.success, true);
     assert.equal(output.status, 'NEEDS_INPUT');
@@ -88,7 +99,7 @@ describe('Contracts & Schema Conformance (AgentOutput)', () => {
       locale: 'hinglish',
     };
 
-    const output = await run(input);
+    const output = await runMock(input);
     const parsed = AgentOutputSchema.safeParse(output);
     assert.equal(parsed.success, true);
     assert.equal(output.status, 'DEGRADED');

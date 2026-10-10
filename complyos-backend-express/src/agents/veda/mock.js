@@ -6,6 +6,7 @@
 
 import { FIXTURES } from './fixtures/samples.js';
 import { AgentOutputSchema } from './stubs/contracts.stub.js';
+import { getTextMessage } from './messages/index.js';
 
 /**
  * Return schema-valid mock AgentOutput for an input event
@@ -17,6 +18,41 @@ export function runMock(input = {}) {
   const sampleKey = event.sampleKey || 'gst_cert_valid';
   const sample = FIXTURES[sampleKey] || FIXTURES.gst_cert_valid;
   const now = new Date().toISOString();
+  const mime = (event.mime || event.mimeType || 'image/jpeg').toLowerCase();
+  const trace = [{
+    runId: input.runId || 'mock-run',
+    agent: 'VEDA',
+    node: 'mock',
+    startedAt: now,
+    durationMs: 0,
+    inputSummary: 'Mock mode execution',
+    outputSummary: 'Mock output generated successfully',
+    status: 'done',
+  }];
+  const costs = { llmTokens: 0, tinyfishAgentCalls: 0 };
+
+  if (!event.ocrText && !['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf'].includes(mime)) {
+    return AgentOutputSchema.parse({
+      status: 'DEGRADED',
+      profilePatch: {},
+      messages: [getTextMessage('unsupported_mime', input.locale || 'hinglish')],
+      claims: [],
+      calendarItems: [],
+      trace,
+      costs,
+    });
+  }
+  if (event.ocrText && event.ocrText.trim().length < 15) {
+    return AgentOutputSchema.parse({
+      status: 'NEEDS_INPUT',
+      profilePatch: {},
+      messages: [getTextMessage('unclear_photo', input.locale || 'hinglish')],
+      claims: [],
+      calendarItems: [],
+      trace,
+      costs,
+    });
+  }
 
   const profilePatch = {
     gstin: {
@@ -118,19 +154,6 @@ export function runMock(input = {}) {
     },
   ];
 
-  const trace = [
-    {
-      runId: input.runId || 'mock-run',
-      agent: 'VEDA',
-      node: 'mock',
-      startedAt: now,
-      durationMs: 5,
-      inputSummary: 'Mock mode execution',
-      outputSummary: 'Mock output generated successfully',
-      status: 'done',
-    },
-  ];
-
   const output = {
     status: 'OK',
     profilePatch,
@@ -138,10 +161,7 @@ export function runMock(input = {}) {
     claims,
     calendarItems,
     trace,
-    costs: {
-      llmTokens: 0,
-      tinyfishAgentCalls: 0,
-    },
+    costs,
   };
 
   return AgentOutputSchema.parse(output);
