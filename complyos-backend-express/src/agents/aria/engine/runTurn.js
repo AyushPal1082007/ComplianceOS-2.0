@@ -2,6 +2,7 @@ import logger from '../../../logger.js';
 import { AgentOutputSchema } from '../../../contracts/aria.js';
 import { QUESTIONS, QUESTION_BY_ID } from '../questionBank/loader.js';
 import { CORE_FIELDS, EXTENDED_FIELDS, DEFAULT_MAX_QUESTIONS } from '../config.js';
+import ARIA_MESSAGES from '../config/messages.js';
 import { ingest } from './ingest.js';
 import { classifyIntent, normalizeIntentText } from './classifyIntent.js';
 import { extractSlots } from './extractSlots.js';
@@ -12,21 +13,6 @@ import { applyAnswer, markSkipped, newSession, snapshotSession, undo } from './s
 import { renderQuestion, renderReveal, renderWelcome, renderWhy, renderNotUnderstood } from './render.js';
 import { quoteExists } from './update-utils.js';
 
-const OFF_TOPIC = {
-  hi: 'मैं अभी सिर्फ आपकी जानकारी समझ रही हूँ। पहले प्रोफ़ाइल पूरी कर लें, फिर आपके सवाल पर मदद मिलेगी।',
-  en: 'I am collecting your business profile right now. Let us finish that first, then I can help route your question.',
-  hinglish: 'Main abhi sirf aapki jaankari samajh rahi hoon. Pehle profile poori kar lein, phir aapke sawaal par madad milegi.',
-};
-const SAFE_ERROR = {
-  hi: 'अभी तकनीकी दिक्कत है। कृपया थोड़ी देर बाद फिर कोशिश करें।',
-  en: 'A technical issue occurred. Please try again shortly.',
-  hinglish: 'Abhi technical dikkat hai. Thodi der baad phir try karein.',
-};
-const DISCLAIMER = {
-  hi: 'यह जानकारी केवल समझने के लिए है, पेशेवर सलाह नहीं।',
-  en: 'This information is for understanding only, not professional advice.',
-  hinglish: 'Yeh jaankari sirf samajhne ke liye hai, professional salaah nahi.',
-};
 
 function trace(runId, node, startedAt, inputSummary, outputSummary, status = 'done', error) {
   return {
@@ -185,8 +171,8 @@ export async function runTurn(input = {}, options = {}) {
     const ingestStarted = Date.now();
     const ingested = await (options.ingest || ingest)(event, options.ingestOptions || options);
     record('ingest', ingestStarted, { type: event.type }, { needsInput: Boolean(ingested.needsInput), via: ingested.turn?.via, ...(ingested.transcript?.text ? { transcript: ingested.transcript.text } : {}) }, 'done');
-    if (ingested.needsInput) {
-      messages.push({ type: 'text', text: `${ingested.message}\n${DISCLAIMER[session.language]}` });
+        if (ingested.needsInput) {
+      messages.push({ type: 'text', text: `${ingested.message}\n${ARIA_MESSAGES.DISCLAIMER[session.language]}` });
       if (ingested.transcript?.text) traces.push(trace(runId, 'ingest', ingestStarted, { type: event.type }, { transcript: ingested.transcript.text }, 'done'));
       return makeOutput({ status: 'NEEDS_INPUT', messages, trace: traces, costs: { llmTokens }, session: previousSession });
     }
@@ -209,7 +195,7 @@ export async function runTurn(input = {}, options = {}) {
       return makeOutput({ messages: [], trace: traces, costs: { llmTokens }, session, escalate: 'DELETE_REQUEST' });
     }
     if (classified.intent === 'off_topic') {
-      messages.push({ type: 'text', text: OFF_TOPIC[session.language] || OFF_TOPIC.hinglish });
+      messages.push({ type: 'text', text: ARIA_MESSAGES.OFF_TOPIC[session.language] || ARIA_MESSAGES.OFF_TOPIC.hinglish });
     } else if (classified.intent === 'why') {
       if (question) messages.push(renderWhy(question, session.language));
     } else if (classified.intent === 'back') {
@@ -296,7 +282,7 @@ export async function runTurn(input = {}, options = {}) {
     if (session.phase === 'reveal') {
       messages.push(renderReveal(profileSummary(profile), session));
     } else if (session.phase === 'done') {
-      messages.push({ type: 'text', text: `Agar GST ya Udyam certificate ki photo bhejein, to main sab verify kar dungi.\n${DISCLAIMER[session.language]}` });
+      messages.push({ type: 'text', text: `Agar GST ya Udyam certificate ki photo bhejein, to main sab verify kar dungi.\n${ARIA_MESSAGES.DISCLAIMER[session.language]}` });
     } else if (session.reasking) {
       const redoQuestion = currentQuestion(session, profile);
       renderQuestionWithIntro(redoQuestion, session, messages, profile);
@@ -338,6 +324,6 @@ export async function runTurn(input = {}, options = {}) {
   } catch (error) {
     logger.warn('ARIA per-turn processing failed', { runId, error: error.name || 'Error' });
     const failedTrace = [...traces, trace(runId, 'error', Date.now(), { userId }, {}, 'error', error.message)];
-    return makeOutput({ status: 'DEGRADED', profilePatch: {}, messages: [{ type: 'text', text: SAFE_ERROR[previousSession.language] || SAFE_ERROR.hinglish }], trace: failedTrace, costs: { llmTokens }, session: previousSession });
+    return makeOutput({ status: 'DEGRADED', profilePatch: {}, messages: [{ type: 'text', text: ARIA_MESSAGES.SAFE_ERROR[previousSession.language] || ARIA_MESSAGES.SAFE_ERROR.hinglish }], trace: failedTrace, costs: { llmTokens }, session: previousSession });
   }
 }

@@ -34,6 +34,8 @@ const config = {
     translateModel: 'mayura:v1', // Translation model
   },
 
+  // GCP Vision — NO LONGER NEEDED (using free Tesseract.js instead)
+  // Kept for reference only - can be removed in future cleanup
   gcp: {
     credentialsFile: process.env.GOOGLE_APPLICATION_CREDENTIALS || './gcp-credentials.json',
     projectId: process.env.GCP_PROJECT_ID || '',

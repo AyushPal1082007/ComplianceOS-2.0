@@ -1,11 +1,10 @@
 'use strict';
 /**
  * ComplianceOS — VEDA Agent (Vision and Evidence Document Analyzer)
- * Phone photo or PDF → Google Cloud Vision OCR → Groq JSON extraction
+ * Phone photo or PDF → Tesseract.js (FREE) or pdf-parse → Groq JSON extraction
  * Field-level confidence scoring → Calendar items + Health Score
  * Per PDF Section 7: "Works on 30 sample docs; low-confidence fields flagged"
  */
-import vision from '@google-cloud/vision';
 import Groq from 'groq-sdk';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -13,19 +12,9 @@ import config from '../config.js';
 import logger from '../logger.js';
 import prisma from '../db.js';
 import cloudinaryService from '../services/cloudinaryService.js';
+import { extractText } from '../services/vision.js';
 
 const groq = new Groq({ apiKey: config.groq.apiKey });
-
-// Initialize Google Vision client
-let visionClient;
-try {
-  visionClient = new vision.ImageAnnotatorClient({
-    keyFilename: config.gcp.credentialsFile,
-    projectId: config.gcp.projectId,
-  });
-} catch (err) {
-  logger.warn('Google Vision client init failed — OCR will be unavailable', { error: err.message });
-}
 
 // ── VEDA Extraction Prompt ────────────────────────────────────────────────────
 
@@ -73,32 +62,28 @@ Document OCR Text:
 
 // ── Extract text via Google Cloud Vision ──────────────────────────────────────
 
-async function extractTextFromImage(imageBuffer) {
-  if (!visionClient) {
-    throw new Error('Google Cloud Vision is not configured');
-  }
-
-  const [result] = await visionClient.textDetection({ image: { content: imageBuffer } });
-  const detections = result.textAnnotations;
-
-  if (!detections || detections.length === 0) {
+/**
+ * Extract text from image or PDF using free OCR
+ * Uses Tesseract.js for images, pdf-parse for text-based PDFs
+ */
+async function extractTextFromFile(fileBuffer, mimeType) {
+  logger.info('Extracting text from document', { mimeType, size: fileBuffer.length });
+  
+  const result = await extractText(fileBuffer, mimeType);
+  
+  if (!result.text || result.text.trim().length < 10) {
+    logger.warn('Extracted text too short or empty', { 
+      length: result.text?.length,
+      needsManualOCR: result.needsManualOCR 
+    });
     return { text: '', confidence: 0 };
   }
-
-  // First annotation is the full document text
-  const fullText = detections[0].description || '';
   
-  // Calculate average confidence from individual word detections
-  const wordConfidences = detections
-    .slice(1)
-    .map(d => d.confidence || 0.8)
-    .filter(c => c > 0);
-  
-  const avgConfidence = wordConfidences.length > 0
-    ? wordConfidences.reduce((a, b) => a + b, 0) / wordConfidences.length
-    : 0.8;
-
-  return { text: fullText, confidence: avgConfidence };
+  return { 
+    text: result.text, 
+    confidence: result.confidence,
+    pages: result.pages,
+  };
 }
 
 // ── Extract structured data via Groq ─────────────────────────────────────────
@@ -141,18 +126,18 @@ async function processDocument(fileBuffer, filename, mimeType, userId) {
     });
     traceSteps.push({ agent: 'VEDA', step: 'cloudinary_upload', status: 'done', url: cloudResult.secure_url });
 
-    // Step 2: OCR via Google Cloud Vision
-    traceSteps.push({ agent: 'VEDA', step: 'google_vision_ocr', status: 'started' });
-    const { text: ocrText, confidence: ocrConfidence } = await extractTextFromImage(fileBuffer);
+    // Step 2: Extract text (FREE - Tesseract.js for images, pdf-parse for PDFs)
+    traceSteps.push({ agent: 'VEDA', step: 'text_extraction', status: 'started' });
+    const { text: ocrText, confidence: ocrConfidence, pages } = await extractTextFromFile(fileBuffer, mimeType);
     traceSteps.push({ 
-      agent: 'VEDA', step: 'google_vision_ocr', status: 'done',
-      textLength: ocrText.length, confidence: ocrConfidence,
+      agent: 'VEDA', step: 'text_extraction', status: 'done',
+      textLength: ocrText.length, confidence: ocrConfidence, pages,
     });
 
     if (!ocrText || ocrText.trim().length < 10) {
       return {
         success: false,
-        error: 'Document text could not be read. Please upload a clearer image.',
+        error: 'Document text could not be read. Please upload a clearer image or text-based PDF.',
         traceSteps,
       };
     }
@@ -299,5 +284,5 @@ async function processDocument(fileBuffer, filename, mimeType, userId) {
   }
 }
 
-export { processDocument, extractTextFromImage, extractStructuredData };
-export default { processDocument, extractTextFromImage, extractStructuredData };
+export { processDocument, extractTextFromFile, extractStructuredData };
+export default { processDocument, extractTextFromFile, extractStructuredData };

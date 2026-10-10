@@ -1,14 +1,11 @@
 import { runTurn } from './engine/runTurn.js';
 import transcriptFixtures from './fixtures/transcripts.json' with { type: 'json' };
+import ARIA_MESSAGES from './config/messages.js';
 
-const FIXTURE_UPDATES = {
-  'main Kanpur mein kapde ki dukaan chalata hoon, GST hai': [
-    { field: 'state', value: 'Kanpur', confidence: 1, quote: 'Kanpur', via: 'text' },
-    { field: 'sector', value: 'trader', confidence: 1, quote: 'dukaan chalata hoon', via: 'text' },
-    { field: 'subSector', value: 'textile', confidence: 1, quote: 'kapde', via: 'text' },
-    { field: 'gstRegistered', value: true, confidence: 1, quote: 'GST hai', via: 'text' },
-  ],
-};
+// Dynamic fixture updates - loaded from external config or database
+const FIXTURE_UPDATES = process.env.ARIA_FIXTURE_UPDATES 
+  ? JSON.parse(process.env.ARIA_FIXTURE_UPDATES)
+  : {};
 
 export async function runMock(input = {}, options = {}) {
   const fixtureUpdates = input.event?.mockUpdates || FIXTURE_UPDATES[input.event?.text];
@@ -21,7 +18,7 @@ export async function runMock(input = {}, options = {}) {
       const text = event.transcript || event.mockTranscript || fixture.text;
       const transcript = { ...fixture, text };
       if (!transcript.text.trim() || transcript.confidence < (Number(process.env.ARIA_MIN_ASR_CONFIDENCE) || 0.5)) {
-        return { needsInput: true, transcript, message: 'Awaaz saaf nahi aayi, dobara bhejein ya type karein.' };
+        return { needsInput: true, transcript, message: ARIA_MESSAGES.NOT_UNDERSTOOD[input.locale || 'hinglish'] };
       }
       return { turn: { text: transcript.text, via: 'voice', confidence: transcript.confidence, quoteSource: transcript.text, transcriptId: `mock-${event.fixtureId || 'voice-hi'}` }, transcript };
     }),
