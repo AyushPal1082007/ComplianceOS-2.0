@@ -1,0 +1,23 @@
+{
+  "id": "up-msme-policy-2022",
+  "name": {
+    "en": "TODO(owner)",
+    "hi": "TODO(owner)"
+  },
+  "level": "state",
+  "state": "TODO(owner)",
+  "benefit": "TODO(owner)",
+  "criteria": [
+    {
+      "field": "TODO(owner)",
+      "eq": "TODO(owner)"
+    }
+  ],
+  "priority": 0,
+  "applyUrl": "TODO(owner)",
+  "sourceUrl": "TODO(owner)",
+  "retrievedOn": "TODO(owner)",
+  "checkedBy": "TODO(owner)",
+  "sourceHash": "TODO(owner)",
+  "status": "stale"
+}

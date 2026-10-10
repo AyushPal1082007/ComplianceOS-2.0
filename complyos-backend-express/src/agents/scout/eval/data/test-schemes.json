@@ -1,0 +1,86 @@
+[
+  {
+    "id": "test-up-manufacturer",
+    "name": { "en": "TEST Scheme UP Manufacturer", "hi": "TEST योजना UP निर्माता" },
+    "level": "state",
+    "state": "Uttar Pradesh",
+    "benefit": "TEST ONLY: synthetic benefit placeholder.",
+    "criteria": [
+      { "field": "state", "eq": "Uttar Pradesh" },
+      { "field": "sector", "eq": "manufacturer" }
+    ],
+    "priority": 5,
+    "applyUrl": "https://example.invalid/test-up-manufacturer/apply",
+    "sourceUrl": "https://example.invalid/test-up-manufacturer/source",
+    "retrievedOn": "2026-10-10T00:00:00.000Z",
+    "checkedBy": "TEST_ONLY",
+    "sourceHash": "test-source-hash-up-manufacturer",
+    "status": "active"
+  },
+  {
+    "id": "test-maharashtra-trader",
+    "name": { "en": "TEST Scheme Maharashtra Trader", "hi": "TEST योजना महाराष्ट्र व्यापारी" },
+    "level": "state",
+    "state": "Maharashtra",
+    "benefit": "TEST ONLY: synthetic benefit placeholder.",
+    "criteria": [
+      { "field": "state", "eq": "Maharashtra" },
+      { "field": "sector", "eq": "trader" }
+    ],
+    "priority": 4,
+    "applyUrl": "https://example.invalid/test-maharashtra-trader/apply",
+    "sourceUrl": "https://example.invalid/test-maharashtra-trader/source",
+    "retrievedOn": "2026-10-10T00:00:00.000Z",
+    "checkedBy": "TEST_ONLY",
+    "sourceHash": "test-source-hash-maharashtra-trader",
+    "status": "active"
+  },
+  {
+    "id": "test-gst-registered",
+    "name": { "en": "TEST Scheme GST Registered", "hi": "TEST योजना GST पंजीकृत" },
+    "level": "central",
+    "state": "all",
+    "benefit": "TEST ONLY: synthetic benefit placeholder.",
+    "criteria": [{ "field": "gstRegistered", "eq": true }],
+    "priority": 3,
+    "applyUrl": "https://example.invalid/test-gst-registered/apply",
+    "sourceUrl": "https://example.invalid/test-gst-registered/source",
+    "retrievedOn": "2026-10-10T00:00:00.000Z",
+    "checkedBy": "TEST_ONLY",
+    "sourceHash": "test-source-hash-gst-registered",
+    "status": "active"
+  },
+  {
+    "id": "test-udyam-turnover",
+    "name": { "en": "TEST Scheme Udyam Turnover", "hi": "TEST योजना उद्यम कारोबार" },
+    "level": "central",
+    "state": "all",
+    "benefit": "TEST ONLY: synthetic benefit placeholder.",
+    "criteria": [
+      { "field": "udyamRegistered", "eq": true },
+      { "field": "turnoverBand", "in": ["lt20L", "20L_40L", "40L_1_5Cr"] }
+    ],
+    "priority": 2,
+    "applyUrl": "https://example.invalid/test-udyam-turnover/apply",
+    "sourceUrl": "https://example.invalid/test-udyam-turnover/source",
+    "retrievedOn": "2026-10-10T00:00:00.000Z",
+    "checkedBy": "TEST_ONLY",
+    "sourceHash": "test-source-hash-udyam-turnover",
+    "status": "active"
+  },
+  {
+    "id": "test-women-led",
+    "name": { "en": "TEST Scheme Women Led", "hi": "TEST योजना महिला नेतृत्व" },
+    "level": "central",
+    "state": "all",
+    "benefit": "TEST ONLY: synthetic benefit placeholder.",
+    "criteria": [{ "field": "womenLed", "eq": true }],
+    "priority": 1,
+    "applyUrl": "https://example.invalid/test-women-led/apply",
+    "sourceUrl": "https://example.invalid/test-women-led/source",
+    "retrievedOn": "2026-10-10T00:00:00.000Z",
+    "checkedBy": "TEST_ONLY",
+    "sourceHash": "test-source-hash-women-led",
+    "status": "active"
+  }
+]
