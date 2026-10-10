@@ -1,6 +1,9 @@
 -- Local review only. Inspect the preview before executing the UPDATE.
 -- Allowed official domain roots and their subdomains:
 --   gov.in, nic.in, odopup.in
+-- Table/column names are unverified against the deployment's prisma/schema.prisma and database.
+-- Repository mapping checked: Scheme -> schemes; sourceUrl -> source_url;
+-- checkedBy -> checked_by; isActive -> is_active; id and name are unchanged.
 BEGIN;
 
 CREATE TEMP TABLE scheme_deactivation_targets ON COMMIT DROP AS
@@ -27,9 +30,11 @@ classified AS (
     CASE
       WHEN NULLIF(BTRIM(source_url), '') IS NULL
         OR source_url ~* 'TODO[[:space:]]*[(][[:space:]]*owner[[:space:]]*[)]'
+        OR source_url ~* 'TODO_VERIFY_OFFICIAL_URL'
         THEN 'missing or placeholder source_url'
       WHEN NULLIF(BTRIM(checked_by), '') IS NULL
         OR checked_by ~* 'TODO[[:space:]]*[(][[:space:]]*owner[[:space:]]*[)]'
+        OR checked_by ~* 'TODO_VERIFY_OFFICIAL_URL'
         THEN 'missing or placeholder checked_by'
       WHEN source_host IS NULL
         OR NOT EXISTS (
@@ -55,4 +60,5 @@ UPDATE schemes
 SET is_active = FALSE
 WHERE id IN (SELECT id FROM scheme_deactivation_targets);
 
-COMMIT;
+-- Switch to COMMIT only after reviewing the preview.
+ROLLBACK;
