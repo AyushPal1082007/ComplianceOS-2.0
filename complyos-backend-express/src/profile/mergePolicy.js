@@ -1,16 +1,12 @@
 import { PROFILE_FIELD_KEYS } from '../contracts/profileFields.js';
 
 const FIELD_KEYS = new Set(PROFILE_FIELD_KEYS);
-const NON_FIELD_KEYS = new Set([
-  'completeness',
-  'preferredLanguage',
-  'healthScore',
-  'penaltyAtRisk',
-  'schemeHeadroom',
-]);
+const LANGUAGE_VALUES = new Set(['hi', 'en', 'hinglish']);
+const VERIFIED_METRICS = new Set(['healthScore', 'penaltyAtRisk', 'schemeHeadroom']);
+const ARIA_SOURCES = new Set(['aria_text', 'aria_voice', 'aria_option']);
 
 function asField(value) {
-  if (value && typeof value === 'object' && 'status' in value) {
+  if (value && typeof value === 'object' && 'value' in value) {
     return {
       value: value.value ?? null,
       status: value.status || 'EMPTY',
@@ -35,13 +31,20 @@ function equalValues(left, right) {
   return String(left).trim().toLowerCase() === String(right).trim().toLowerCase();
 }
 
+function sameField(left, right) {
+  const { updatedAt: _leftUpdatedAt, ...leftValue } = left;
+  const { updatedAt: _rightUpdatedAt, ...rightValue } = right;
+  return JSON.stringify(leftValue) === JSON.stringify(rightValue);
+}
+
 export function mergeProfile(current = {}, patch = {}, { origin = 'aria' } = {}) {
   const profile = {};
   for (const key of FIELD_KEYS) {
     profile[key] = asField(current[key]);
   }
 
-  for (const key of NON_FIELD_KEYS) {
+  if (LANGUAGE_VALUES.has(current.preferredLanguage)) profile.preferredLanguage = current.preferredLanguage;
+  for (const key of VERIFIED_METRICS) {
     if (Object.hasOwn(current, key)) profile[key] = current[key];
   }
 
@@ -50,8 +53,13 @@ export function mergeProfile(current = {}, patch = {}, { origin = 'aria' } = {})
   const now = new Date().toISOString();
 
   for (const [key, candidate] of Object.entries(patch || {})) {
-    if (NON_FIELD_KEYS.has(key)) {
-      profile[key] = candidate;
+    if (key === 'completeness') continue;
+    if (key === 'preferredLanguage') {
+      if (LANGUAGE_VALUES.has(candidate)) profile.preferredLanguage = candidate;
+      continue;
+    }
+    if (VERIFIED_METRICS.has(key)) {
+      if (origin === 'veda_doc' || origin === 'orchestrator') profile[key] = candidate;
       continue;
     }
     if (!FIELD_KEYS.has(key) || !candidate || typeof candidate !== 'object' || !('value' in candidate)) {
@@ -61,6 +69,28 @@ export function mergeProfile(current = {}, patch = {}, { origin = 'aria' } = {})
     const existing = profile[key];
     const incoming = asField(candidate);
     if (incoming.value === null || incoming.value === undefined) continue;
+
+    if (existing.evidence?.conflict === true && origin !== 'user_confirmed') {
+      continue;
+    }
+
+    if (origin === 'user_confirmed') {
+      const evidence = { ...(existing.evidence || {}) };
+      delete evidence.conflict;
+      const next = {
+        ...incoming,
+        status: 'VERIFIED',
+        source: 'user_confirmed',
+        evidence: Object.keys(evidence).length ? evidence : undefined,
+        updatedAt: now,
+      };
+      if (!sameField(existing, next)) {
+        profile[key] = next;
+        changedKeys.push(key);
+      }
+      continue;
+    }
+
     if (origin !== 'veda_doc' && origin !== 'user_confirmed' && existing.status === 'VERIFIED') {
       if (!equalValues(existing.value, incoming.value)) {
         const question = `Aapne ${key} ke liye alag value di hai. Kaunsa sahi hai?`;
@@ -69,6 +99,7 @@ export function mergeProfile(current = {}, patch = {}, { origin = 'aria' } = {})
           status: 'NEEDS_CONFIRMATION',
           evidence: {
             ...(existing.evidence || {}),
+            conflict: true,
             verifiedValue: existing.value,
             proposedValue: incoming.value,
           },
@@ -87,6 +118,7 @@ export function mergeProfile(current = {}, patch = {}, { origin = 'aria' } = {})
         status: 'NEEDS_CONFIRMATION',
         evidence: {
           ...(existing.evidence || {}),
+          conflict: true,
           verifiedValue: existing.value,
           proposedValue: incoming.value,
           documentEvidence: incoming.evidence,
@@ -105,8 +137,9 @@ export function mergeProfile(current = {}, patch = {}, { origin = 'aria' } = {})
         status: 'NEEDS_CONFIRMATION',
         evidence: {
           ...(existing.evidence || {}),
+          conflict: true,
           selfReportedValue: existing.value,
-          proposedDocumentValue: incoming.value,
+          proposedValue: incoming.value,
           documentEvidence: incoming.evidence,
         },
         updatedAt: now,
@@ -116,7 +149,7 @@ export function mergeProfile(current = {}, patch = {}, { origin = 'aria' } = {})
       continue;
     }
 
-    if (equalValues(existing.value, incoming.value) && existing.status === 'VERIFIED' && origin !== 'user_confirmed') {
+    if (equalValues(existing.value, incoming.value) && existing.status === 'VERIFIED') {
       continue;
     }
 
@@ -130,10 +163,14 @@ export function mergeProfile(current = {}, patch = {}, { origin = 'aria' } = {})
     const next = {
       ...incoming,
       status: nextStatus,
-      source: origin === 'user_confirmed' ? 'user_confirmed' : origin === 'veda_doc' ? 'veda_doc' : incoming.source,
+      source: origin === 'veda_doc'
+        ? 'veda_doc'
+        : origin === 'aria'
+          ? (ARIA_SOURCES.has(candidate.source) ? candidate.source : 'aria_text')
+          : incoming.source,
       updatedAt: now,
     };
-    if (JSON.stringify(existing) !== JSON.stringify(next)) {
+    if (!sameField(existing, next)) {
       profile[key] = next;
       changedKeys.push(key);
     }

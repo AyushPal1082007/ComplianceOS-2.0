@@ -62,14 +62,16 @@ test('merge policy ignores non-fields, protects verified values, and records con
     state: { value: 'Maharashtra', status: 'SELF_REPORTED', source: 'aria_text' },
     completeness: { core: 0.9, extended: 0.2 },
     preferredLanguage: 'en',
+    healthScore: 1,
   }, { origin: 'aria' });
   assert.equal(ariaResult.profile.state.value, 'Uttar Pradesh');
   assert.equal(ariaResult.profile.state.status, 'NEEDS_CONFIRMATION');
-  assert.equal(ariaResult.profile.completeness.core, 0.9);
+  assert.equal(ariaResult.profile.completeness, undefined);
   assert.equal(ariaResult.profile.preferredLanguage, 'en');
   assert.deepEqual(ariaResult.changedKeys, ['state']);
   assert.equal(ariaResult.conflicts[0].proposedValue, 'Maharashtra');
-  assert.equal(Object.hasOwn(ariaResult.profile, 'completeness'), true);
+  assert.equal(ariaResult.profile.healthScore, undefined);
+  assert.equal(ariaResult.profile.state.evidence.conflict, true);
 
   const vedaResult = mergeProfile(current, {
     district: {
@@ -83,7 +85,7 @@ test('merge policy ignores non-fields, protects verified values, and records con
   assert.equal(vedaResult.profile.district.value, 'Kanpur');
   assert.equal(vedaResult.profile.district.status, 'NEEDS_CONFIRMATION');
   assert.equal(vedaResult.profile.district.evidence.selfReportedValue, 'Kanpur');
-  assert.equal(vedaResult.profile.district.evidence.proposedDocumentValue, 'Lucknow');
+  assert.equal(vedaResult.profile.district.evidence.proposedValue, 'Lucknow');
   assert.equal(vedaResult.conflicts.length, 1);
 
   const confirmed = mergeProfile(vedaResult.profile, {
@@ -92,6 +94,122 @@ test('merge policy ignores non-fields, protects verified values, and records con
   assert.equal(confirmed.profile.district.value, 'Lucknow');
   assert.equal(confirmed.profile.district.status, 'VERIFIED');
   assert.equal(confirmed.profile.district.source, 'user_confirmed');
+});
+
+test('repeated ARIA conflict preserves the verified value without adding another conflict', () => {
+  const original = {
+    state: { value: 'Uttar Pradesh', status: 'VERIFIED', confidence: 1, source: 'veda_doc' },
+  };
+  const first = mergeProfile(original, {
+    state: { value: 'Maharashtra', status: 'SELF_REPORTED', source: 'aria_text' },
+  }, { origin: 'aria' });
+  const repeated = mergeProfile(first.profile, {
+    state: { value: 'Maharashtra', status: 'SELF_REPORTED', source: 'aria_text' },
+  }, { origin: 'aria' });
+
+  assert.equal(first.conflicts.length, 1);
+  assert.equal(repeated.conflicts.length, 0);
+  assert.equal(repeated.profile.state.value, 'Uttar Pradesh');
+  assert.equal(repeated.profile.state.evidence.verifiedValue, 'Uttar Pradesh');
+  assert.equal(repeated.profile.state.evidence.proposedValue, 'Maharashtra');
+  assert.equal(repeated.profile.state.evidence.conflict, true);
+});
+
+test('VEDA cannot overwrite a field while its conflict is pending', () => {
+  const conflicted = mergeProfile({
+    district: { value: 'Kanpur', status: 'SELF_REPORTED', source: 'aria_text' },
+  }, {
+    district: { value: 'Lucknow', status: 'VERIFIED', source: 'veda_doc' },
+  }, { origin: 'veda_doc' });
+  const retried = mergeProfile(conflicted.profile, {
+    district: { value: 'Agra', status: 'VERIFIED', source: 'veda_doc' },
+  }, { origin: 'veda_doc' });
+
+  assert.equal(conflicted.profile.district.evidence.conflict, true);
+  assert.equal(retried.profile.district.value, 'Kanpur');
+  assert.equal(retried.profile.district.evidence.proposedValue, 'Lucknow');
+  assert.equal(retried.conflicts.length, 0);
+  assert.deepEqual(retried.changedKeys, []);
+});
+
+test('user confirmation resolves conflicts by keeping the old value or choosing the new value', () => {
+  const original = {
+    state: { value: 'Uttar Pradesh', status: 'VERIFIED', source: 'veda_doc' },
+    district: { value: 'Kanpur', status: 'SELF_REPORTED', source: 'aria_text' },
+  };
+  const conflicted = mergeProfile(original, {
+    state: { value: 'Maharashtra', status: 'SELF_REPORTED' },
+  }, { origin: 'aria' });
+  const documentConflict = mergeProfile(conflicted.profile, {
+    district: { value: 'Lucknow', status: 'VERIFIED', source: 'veda_doc' },
+  }, { origin: 'veda_doc' });
+  const resolved = mergeProfile(documentConflict.profile, {
+    state: { value: 'Uttar Pradesh' },
+    district: { value: 'Lucknow' },
+  }, { origin: 'user_confirmed' });
+
+  assert.equal(resolved.profile.state.value, 'Uttar Pradesh');
+  assert.equal(resolved.profile.state.status, 'VERIFIED');
+  assert.notEqual(resolved.profile.state.evidence?.conflict, true);
+  assert.equal(resolved.profile.district.value, 'Lucknow');
+  assert.equal(resolved.profile.district.status, 'VERIFIED');
+  assert.notEqual(resolved.profile.district.evidence?.conflict, true);
+});
+
+test('identical field values do not report changes solely due to updatedAt', () => {
+  const result = mergeProfile({
+    sector: {
+      value: 'manufacturing',
+      status: 'SELF_REPORTED',
+      confidence: 1,
+      source: 'aria_text',
+      updatedAt: '2026-10-01T00:00:00.000Z',
+    },
+  }, {
+    sector: {
+      value: 'manufacturing',
+      status: 'SELF_REPORTED',
+      confidence: 1,
+      source: 'aria_text',
+      updatedAt: '2026-10-02T00:00:00.000Z',
+    },
+  }, { origin: 'aria' });
+
+  assert.deepEqual(result.changedKeys, []);
+});
+
+test('ARIA ignores derived fields and only accepts supported preferred languages', () => {
+  const result = mergeProfile({ preferredLanguage: 'hi' }, {
+    completeness: { core: 1, extended: 1 },
+    preferredLanguage: 'fr',
+    healthScore: 100,
+    penaltyAtRisk: 0,
+    schemeHeadroom: 50,
+  }, { origin: 'aria' });
+  assert.equal(result.profile.completeness, undefined);
+  assert.equal(result.profile.preferredLanguage, 'hi');
+  assert.equal(result.profile.healthScore, undefined);
+  assert.equal(result.profile.penaltyAtRisk, undefined);
+  assert.equal(result.profile.schemeHeadroom, undefined);
+});
+
+test('ARIA-origin fields cannot claim document or user-confirmed provenance', () => {
+  const result = mergeProfile({}, {
+    sector: {
+      value: 'manufacturing',
+      status: 'SELF_REPORTED',
+      source: 'veda_doc',
+    },
+    district: {
+      value: 'Kanpur',
+      status: 'VERIFIED',
+      source: 'user_confirmed',
+    },
+  }, { origin: 'aria' });
+
+  assert.equal(result.profile.sector.source, 'aria_text');
+  assert.equal(result.profile.district.source, 'aria_text');
+  assert.equal(result.profile.district.status, 'SELF_REPORTED');
 });
 
 test('projection maps bands without writing them into numeric legacy columns', () => {
