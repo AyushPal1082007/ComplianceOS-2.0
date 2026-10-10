@@ -27,7 +27,7 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **Primary Backend**: Node.js (ES6 Modules, `"type": "module"`), Express.js, Prisma ORM, PostgreSQL.
 - **Frontend**: React 18, Vite, Tailwind CSS, Zustand, Lucide React, Axios.
 - **Legacy Backend**: Python 3.10+, FastAPI, SQLAlchemy, asyncpg, Celery, Redis, Pydantic.
-- **AI & Integrations**: Google Gemini API, Groq SDK, Bhashini (multilingual Indian NLP), Cloudinary, Razorpay.
+- **AI & Integrations**: Google Gemini API, Groq SDK, Sarvam AI (Indian sovereign speech/NLP — replaces Bhashini), Cloudinary, Razorpay.
 - **Background Tasks**: Node-cron (Express backend) and Celery workers (Python backend).
 
 ### Commands
@@ -39,8 +39,9 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **Start**: `npm start` (starts node on `src/server.js`)
 - **Generate Prisma Client**: `npm run prisma:generate` (`npx prisma generate`)
 - **Database Push**: `npx prisma db push`
+- **Manual SENTINEL Run**: `npm run sentinel:run`
 - **Seed DB**: `node src/data/seed.js`
-- **Run Tests**: `npm test` (`node tests/testSuite.js`)
+- **Run Tests**: `npm test` (`node tests/testSuite.js && node src/agents/sentinel/__tests__/sentinel.test.js`)
 
 #### Frontend (`complyos-frontend`)
 
@@ -70,6 +71,7 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - `complyos-backend-express/`: Primary Node.js/Express ES6 backend.
 - `complyos-backend-express/prisma/`: Prisma schema definition (`schema.prisma`) for PostgreSQL.
 - `complyos-backend-express/src/agents/`: JavaScript multi-agent modules (ARIA, VEDA, SCOUT, SENTINEL, PATHWAY).
+- `complyos-backend-express/src/agents/sentinel/`: SENTINEL source config, fetch, normalize, diff, classify, matcher, alert builder, review and test fixtures.
 - `complyos-backend-express/src/agents/scout/`: TypeScript SCOUT matcher, runner, schemas, mock, and fixtures.
 - `complyos-backend-express/src/agents/scout/engine/`: deterministic matching, ARIA feedback, messages, and checked explanations.
 - `complyos-backend-express/src/agents/scout/schemes/`: scheme records loaded by SCOUT.
@@ -82,7 +84,9 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - `complyos-backend-express/src/jobs/`: Scheduled cron jobs (`cronJobs.js`, `deadlineReminder.js`, `sentinelCrawler.js`).
 - `complyos-backend-express/src/middleware/`: Express middleware (`auth.js` for JWT, `errorHandler.js`).
 - `complyos-backend-express/src/routes/`: Domain route handlers (`auth.js`, `business.js`, `compliance.js`, etc.).
-- `complyos-backend-express/src/services/`: External integrations (Cloudinary, Razorpay, WhatsApp, Bhashini).
+- `complyos-backend-express/src/services/`: External integrations (Cloudinary, Razorpay, WhatsApp, Sarvam AI, TinyFish). `bhashiniService.js` is retained but no longer used in active routes.
+- `complyos-backend-express/src/services/sarvamService.js`: Sarvam AI adapter for Hindi ASR (`saarika:v1`), TTS (`bulbul:v1`), and translation (`mayura:v1`). Graceful demo-fallback when `SARVAM_API_KEY` is unset.
+- `complyos-backend-express/src/services/tinyfish.js`: TinyFish adapter for search/fetch/agent calls with rate limits and block detection.
 - `complyos-backend-express/src/utils/`: Deterministic compliance score and penalty formulas (`complianceCalculators.js`).
 - `complyos-backend-express/tests/`: Integration test suite (`testSuite.js`).
 - `complyos-frontend/`: React 18 + Vite client application.
@@ -127,7 +131,16 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **`complyos-backend-express/src/agents/scout/engine/match.ts`**: Pure deterministic criteria matching; unknown criteria remain `possible`.
 - **`complyos-backend-express/src/agents/scout/verify/runVerify.ts`**: Injected-client freshness checks returning stale copies and review items without persistence.
 - **`complyos-backend-express/src/agents/scout/verify/runDiscovery.ts`**: Injected discovery/draft pipeline; persists generated JSON only under SCOUT `drafts/`.
-- **`complyos-backend-express/src/agents/sentinel.js`**: Regulatory calendar tracker and crawler for statutory updates.
+- **`complyos-backend-express/src/agents/sentinel.js`**: High-level sentinel wrapper and trigger entry point.
+- **`complyos-backend-express/src/agents/sentinel/*`**: Source config, fetch, normalize, diff, classify, profile matching, alert building, review queue helpers, and tests.
+- **`complyos-backend-express/src/services/sarvamService.js`**: Sarvam AI — Hindi/Indic speech-to-text, TTS, and translation. Used by `routes/business.js` `/aria/voice` endpoint. Key: `SARVAM_API_KEY`. No separate npm package — calls `api.sarvam.ai` via axios.
+- **`complyos-backend-express/src/services/tinyfish.js`**: Search/fetch/agent adapter with block checks, retry logic, rate limits, and daily agent cap control.
+
+### Prisma Data Models: Alert Routing
+
+- **`SentinelAlert`**: User-facing alert model—stores displayed regulatory alerts with title, summary, source URL, simulated label. Written by SENTINEL pipeline for UI rendering and user notifications.
+- **`RegulationAlert`**: Delivery tracking model—links a (user, regulation change) pair; tracks whether a user was alerted for a specific change. Used for deduplication and audit.
+- **`Notification`**: Generic in-app system notification model—stores general (non-regulation) messages, reminders, and broadcasts.
 - **`complyos-backend-express/src/agents/pathway.js`**: Step-by-step resolution pathways for pending tax demands and notice replies.
 - **`complyos-backend-express/src/utils/complianceCalculators.js`**: Ground-truth mathematical engine for compliance scores and penalty deductions.
 - **`complyos-backend-express/src/db.js`**: Singleton PrismaClient connection pool.
@@ -135,6 +148,37 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 ---
 
 ## 6. Data Models and API Routes
+
+### Environment Variable Names
+
+- `TINYFISH_API_KEY`
+- `TINYFISH_AGENT_DAILY_CAP`
+- `SARVAM_API_KEY` — Sarvam AI subscription key (get from dashboard.sarvam.ai). Used in `sarvamService.js` for ASR/TTS/translate. Omitting activates demo fallback.
+
+### SENTINEL Flow
+
+1. Trigger: manual `npm run sentinel:run` or API route that calls `runSentinelCrawl()`.
+2. `src/agents/sentinel/sources.json` defines each source and skips entries whose URL starts with `TODO_VERIFY_OFFICIAL_URL`.
+3. TinyFish fetches and validates the page; blocked/captcha/error pages are rejected.
+4. Text is normalized and compared to the last stored snapshot using diff logic.
+5. A change is classified, then reviewed for confidence and quote validity.
+6. `matchProfiles()` decides which active profiles are in scope, based on explicit fields only.
+7. `buildAlert()` creates the alert only when sourceUrl, lastVerified, quote, and confidence gates pass.
+
+### Safety Warnings
+
+- No alert without `sourceUrl` and `lastVerified`.
+- `TODO_VERIFY_OFFICIAL_URL` placeholders are skipped; no live source calls are attempted while placeholders remain.
+- The LLM never decides user targeting; code in `matchProfiles.js` and `buildAlert.js` decides that.
+- Only official sources are allowed in production; simulated alerts must be labeled as such.
+- Simulated alerts are labeled in backend code, not frontend.
+
+### How to Add a New Regulation Source
+
+1. Edit `complyos-backend-express/src/agents/sentinel/sources.json`.
+2. Verify the official URL first before enabling it.
+3. Use the same `id`, `url`, `type`, `stateScope`, `fetchVia`, `checkEvery`, and `simulated` fields.
+4. Do not use or keep a `TODO_VERIFY_OFFICIAL_URL` entry for live monitoring.
 
 ### Prisma Relational Models
 
@@ -179,6 +223,7 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 ## 7. Dependency Graph Summary
 
 - **Express Backend Core Dependencies**: `express`, `@prisma/client`, `cors`, `dotenv`, `jsonwebtoken`, `bcryptjs`, `ws`, `node-cron`, `multer`, `@google/genai`, `cloudinary`, `razorpay`, `axios`.
+- **Sarvam AI**: No separate npm package needed — API calls made via `axios` to `https://api.sarvam.ai`. Auth via `api-subscription-key` header.
 - **Frontend Core Dependencies**: `react`, `react-dom`, `react-router-dom`, `zustand`, `lucide-react`, `axios`, `groq-sdk`, `tailwindcss`.
 - **Legacy Python Dependencies**: `fastapi`, `uvicorn`, `sqlalchemy`, `asyncpg`, `celery`, `redis`, `pydantic`.
 

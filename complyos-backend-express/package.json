@@ -7,7 +7,8 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "prisma:generate": "prisma generate",
-    "test": "node tests/testSuite.js"
+    "sentinel:run": "node --input-type=module -e \"import('./src/agents/sentinel/index.js').then(({ runSentinelCrawl }) => runSentinelCrawl().then((result) => { console.log(JSON.stringify(result, null, 2)); }).catch((err) => { console.error(err); process.exit(1); }))\"",
+    "test": "node tests/testSuite.js && node src/agents/sentinel/__tests__/sentinel.test.js"
   },
   "keywords": [],
   "author": "Divyank Richhariya",
@@ -15,6 +16,8 @@
   "type": "module",
   "dependencies": {
     "@google-cloud/vision": "^6.1.1",
+    "@langchain/core": "^1.2.17",
+    "@langchain/langgraph": "^1.4.21",
     "@prisma/client": "^6.19.3",
     "axios": "^1.20.0",
     "bcryptjs": "^3.0.3",

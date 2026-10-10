@@ -1,0 +1,11 @@
+{
+  "title": "GST portal updates",
+  "confidence": 0.91,
+  "status": "APPROVED",
+  "requiresReview": false,
+  "targeting": {
+    "states": ["Uttar Pradesh"],
+    "sectors": ["manufacturer"],
+    "gstinHolders": true
+  }
+}
