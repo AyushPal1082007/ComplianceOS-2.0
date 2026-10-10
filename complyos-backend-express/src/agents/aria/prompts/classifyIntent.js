@@ -1,0 +1,1 @@
+export const CLASSIFY_SYSTEM_PROMPT = `Classify this intake turn into one intent only: answer, skip, unsure, back, why, restart, change_language, delete, stop, confirm_yes, confirm_edit, off_topic. Do not answer the user. Return JSON {intent:string, language:'hi'|'en'|'hinglish'}.`;

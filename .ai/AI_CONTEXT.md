@@ -36,6 +36,8 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **Generate Prisma Client**: `npm run prisma:generate` (`npx prisma generate`)
 - **Database Push**: `npx prisma db push`
 - **Manual SENTINEL Run**: `npm run sentinel:run`
+- **ARIA Tests**: `npm run test:aria`
+- **ARIA Evals**: `npm run eval:aria:turns`, `npm run eval:aria:slots`, `npm run eval:aria:wer`, `npm run eval:aria:taps`
 - **Seed DB**: `node src/data/seed.js`
 - **Run Tests**: `npm test` (`node tests/testSuite.js && node src/agents/sentinel/__tests__/sentinel.test.js`)
 
@@ -89,20 +91,10 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 ---
 
 ## 4. Key Entry Points and Main Flows
-- **Express Backend Entry (`complyos-backend-express/src/server.js`)**: Imports `app.js`, initializes HTTP and WebSocket servers, connects to Prisma via `db.js`, starts cron jobs via `cronJobs.js`, and binds port 5000.
-- **Frontend Entry (`complyos-frontend/src/main.jsx`)**: Mounts `App.jsx`, providing routing via React Router and wrapping views with layout components and Zustand store state.
-- **Intake & Chat Flow**:
-  1. User triggers ARIA chat via `ComplianceChatbot.jsx` or `/onboarding`.
-  2. Frontend connects to WebSocket (`ariaSocket.js`) or calls `/api/aria`.
-  3. `aria.js` processes input with Gemini/Groq prompt constraints and returns structured onboarding or compliance recommendations.
-- **Document & OCR Flow**:
-  1. User drops document in `VEDAUploader.jsx` (`/documents`).
-  2. File uploads to `/api/documents/upload`, persisted to Cloudinary/storage.
-  3. `veda.js` performs vision extraction (extracting GSTIN, period, tax demand, penalty).
-  4. Extracted data updates `Document` and `ComplianceRecord` in Prisma, updating the compliance score.
-- **CA Workflow**:
-  1. Business user requests CA review via `/api/ca/request`.
-  2. CA views queue in `CAApprovalRequests.jsx` and runs audit checks using `CAFraudShield.jsx`.
+- **Backend**: `src/server.js` initializes Express, HTTP/WebSocket, Prisma and cron jobs. Frontend starts at `complyos-frontend/src/main.jsx`.
+- **ARIA**: Route callers still use legacy `src/agents/aria.js`; new per-turn `src/agents/aria/index.js` is exposed through `src/graph/nodes/aria.node.js`. Parent owns persistence.
+- **VEDA**: `/api/documents/upload` still calls legacy `src/agents/veda.js`; the new subgraph is `src/agents/veda/`. Migration/persistence gaps are in `VEDA_CONTRACT_REQUESTS.md`.
+- **CA**: `/api/ca/request` creates engagements consumed by CA portal pages.
 
 ---
 
@@ -176,28 +168,18 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 | `Subscription` | `id, userId, plan, razorpaySubId, razorpayCustomerId` | Relational entity for subscription |
 | `ARIASession` | `id, userId, sessionId, messages` | Relational entity for ariasession |
 
+### SENTINEL Safety
+- Skip `TODO_VERIFY_OFFICIAL_URL` sources until official URLs are confirmed.
+- Require source metadata for alerts; code chooses user targeting. Mark simulated alerts in backend output.
+
+### Core Prisma Models
+`User`, `BusinessProfile`, `Document`, `ComplianceDeadline`, `Scheme`, `SchemeMatch`, `SentinelAlert`, `RegulationSource`, `RegulationSnapshot`, `RegulationChange`, `Alert`, `TinyFishCall`, `Notification`, `Subscription`, `ARIASession`.
 
 ### Key Express Endpoints
-| Method | Route | Source | Description |
-|---|---|---|---|
-| `POST` | `/api/auth/register` | `routes/auth.js` | Register new user and business profile |
-| `POST` | `/api/auth/login` | `routes/auth.js` | User login and JWT token issuance |
-| `GET` | `/api/auth/me` | `routes/auth.js` | Get authenticated user session details |
-| `GET` | `/api/business/profile` | `routes/business.js` | Retrieve business details and GSTIN/PAN |
-| `PUT` | `/api/business/profile` | `routes/business.js` | Update business profile details |
-| `GET` | `/api/compliance/status` | `routes/compliance.js` | Get compliance checklist and score |
-| `GET` | `/api/compliance/calendar` | `routes/compliance.js` | Upcoming statutory deadlines (GST/TDS) |
-| `POST` | `/api/compliance/calculate` | `routes/compliance.js` | Trigger compliance penalty calculation |
-| `POST` | `/api/documents/upload` | `routes/documents.js` | Upload tax/statutory document (Cloudinary) |
-| `GET` | `/api/documents` | `routes/documents.js` | List uploaded documents and OCR status |
-| `GET` | `/api/documents/:id/ocr` | `routes/documents.js` | Fetch VEDA OCR extracted metadata |
-| `GET` | `/api/ca/directory` | `routes/ca.js` | List verified Chartered Accountants |
-| `POST` | `/api/ca/request` | `routes/ca.js` | Create engagement request with a CA |
-| `GET` | `/api/notifications` | `routes/notifications.js` | Fetch notifications and alerts |
-| `PUT` | `/api/notifications/:id/read` | `routes/notifications.js` | Mark notification as read |
-| `GET` | `/api/agent-trace` | `routes/agentTrace.js` | Multi-agent execution log stream |
-| `GET` | `/api/admin/metrics` | `routes/admin.js` | System performance and user metrics |
-
+- Auth: `/api/auth/register`, `/api/auth/login`, `/api/auth/me`.
+- Business/compliance: `/api/business/profile`, `/api/compliance/status`, `/api/compliance/calendar`, `/api/compliance/calculate`.
+- Documents/CA: `/api/documents/upload`, `/api/documents`, `/api/ca/directory`, `/api/ca/request`.
+- Operations: `/api/notifications`, `/api/agent-trace`, `/api/admin/metrics`.
 
 ---
 
@@ -250,9 +232,13 @@ The repository is currently undergoing a phased migration from a legacy Python/F
 - **Migration Status**: Follow `MIGRATION_PLAN.md`. All active development must happen in `complyos-backend-express`. Do not add new features to `complyos-backend` (Python).
 - **Prisma Generation**: Always run `npm run prisma:generate` after updating `schema.prisma`.
 - **Ground Truth Numbers**: AI agents must never hallucinate tax penalties or interest calculations. Always delegate math to `complianceCalculators.js`.
+- **ARIA Safety**: Keep option taps deterministic; redact Aadhaar/PAN/OTP/password text before Groq; require verbatim evidence quotes; derive numeric bands in code; never overwrite `VERIFIED` fields. Do not enable live Sarvam calls until verified.
 - **Protected Files**: Do not manually modify `package-lock.json` or `.prisma` client builds.
 
 ---
 
-## 10. How Future Agents Should Use This File
-Read this file first. Do not scan the whole repo. Use `.ai/file_index.json` and `.ai/project_graph.json` only via grep/jq lookups, never load them in full. Open source files only when needed for the task. After major changes (new routes, models, modules, commands), update this file.
+## 10. Agent Workflow and Context Maintenance
+- Before starting work, read `.ai/AI_CONTEXT.md`. Explore only the files needed for the task; do not scan the whole repository.
+- Use `.ai/file_index.json` and `.ai/project_graph.json` only for targeted `rg`/`jq` lookups; never load either file in full.
+- If a task changes a route, model, module, component, command, environment variable, or dependency, update this file and add one dated line to `.ai/CHANGELOG.md` in the same change.
+- Replace outdated context instead of only appending. Keep this file under approximately 4,000 tokens. Never put secrets or `.env` values here, and do not paste large code blocks.
