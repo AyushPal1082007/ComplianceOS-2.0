@@ -53,6 +53,13 @@ export async function runGraph(initialState) {
   if (route === 'aria') {
     output = await ariaNode(state);
     state = combine(state, output);
+    if (output.escalate === 'DELETE_REQUEST') {
+      const deletion = await deleteGuardNode({
+        ...state,
+        event: { ...state.event, action: 'DELETE_REQUEST' },
+      }, { removeData: state.services?.deleteUserData });
+      return combine(state, deletion);
+    }
     if (isAriaFinish(state.event)) {
       const scout = await scoutNode({ ...state, event: { type: 'SCHEME_REQUEST' } }, 'SCHEME_REQUEST');
       state = combine(state, scout);

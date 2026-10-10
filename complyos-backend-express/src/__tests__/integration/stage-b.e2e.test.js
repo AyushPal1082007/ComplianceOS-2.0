@@ -8,6 +8,7 @@ import { withUserLock } from '../../orchestrator/userLock.js';
 import { run as runAria } from '../../agents/aria/index.js';
 import { deliverApprovedChange } from '../../graph/nodes/sentinelDeliveryNode.js';
 import { vedaNode } from '../../graph/nodes/vedaNode.js';
+import { isDeleteRequest, routeEvent } from '../../graph/router.js';
 import * as consentRepo from '../../repos/consentRepo.js';
 import * as conversationRepo from '../../repos/conversationRepo.js';
 import * as profileRepo from '../../repos/profileRepo.js';
@@ -91,6 +92,132 @@ function scoutRunner(calls, output = {}) {
     };
   };
 }
+
+test('delete request phrases match without intercepting unrelated invoice questions', () => {
+  for (const text of ['mera data hatao', 'डिलीट', 'मेरा डेटा हटाओ', 'मेरा डेटा हटाएँ', 'मेरा डेटा हटाएं']) {
+    assert.equal(isDeleteRequest({ type: 'TEXT', text }), true, `${text} should request deletion`);
+  }
+  assert.equal(isDeleteRequest({ type: 'TEXT', text: 'delete' }), true);
+  assert.equal(isDeleteRequest({ type: 'TEXT', text: 'remove my data' }), true);
+  assert.equal(isDeleteRequest({ type: 'TEXT', text: 'how do I delete a GST invoice' }), false);
+});
+
+test('ARIA reveal-card confirmation is routed to ARIA using its recorded owner', async () => {
+  reset();
+  const user = createUser();
+  let ariaCalls = 0;
+  let vedaCalls = 0;
+  const aria = async () => {
+    ariaCalls++;
+    return {
+      status: 'OK',
+      profilePatch: {},
+      session: { phase: 'done', language: 'hinglish' },
+      messages: [{ type: 'text', text: 'Done.' }],
+      claims: [],
+      trace: [],
+    };
+  };
+  const first = await handleEvent({
+    userId: user.id, externalId: 'router-aria-reveal', type: 'TEXT', text: 'hello',
+  }, {
+    agentRunners: {
+      aria: async () => ({
+        status: 'NEEDS_CONFIRMATION',
+        profilePatch: {},
+        session: { phase: 'reveal', language: 'hinglish' },
+        messages: [{ type: 'confirm_card', id: 'aria-reveal', text: 'Confirm?', actions: [{ id: 'finish', label: 'Finish' }] }],
+        claims: [],
+        trace: [],
+      }),
+    },
+  });
+  assert.equal(first.status, 'NEEDS_CONFIRMATION');
+  assert.equal((await conversationRepo.load(user.id)).state.outstandingCards['aria-reveal'], 'ARIA');
+
+  const confirmed = await handleEvent({
+    userId: user.id, externalId: 'router-aria-confirm', type: 'CONFIRM_ACTION',
+    card: { cardId: 'aria-reveal', actionId: 'finish' },
+  }, {
+    agentRunners: {
+      aria,
+      veda: async () => { vedaCalls++; throw new Error('ARIA card was routed to VEDA'); },
+      scout: async () => ({ status: 'OK', messages: [{ type: 'text', text: 'No results.' }], claims: [], trace: [] }),
+    },
+  });
+  assert.equal(confirmed.status, 'OK');
+  assert.equal(ariaCalls, 1);
+  assert.equal(vedaCalls, 0);
+  assert.equal(routeEvent({
+    event: { type: 'CONFIRM_ACTION', card: { cardId: 'untracked', actionId: 'confirm' } },
+    conversation: { outstandingCards: {} },
+  }), 'veda');
+});
+
+test('ARIA voice DELETE_REQUEST escalation is handed to the delete guard', async () => {
+  reset();
+  const user = createUser();
+  const result = await handleEvent({
+    userId: user.id,
+    externalId: 'router-voice-delete',
+    type: 'VOICE',
+    text: 'delete',
+    audio: { mime: 'audio/wav' },
+  }, {
+    agentRunners: {
+      aria: async () => ({
+        status: 'NEEDS_CONFIRMATION',
+        escalate: 'DELETE_REQUEST',
+        profilePatch: {},
+        messages: [],
+        claims: [],
+        trace: [{
+          runId: 'voice-delete',
+          agent: 'ARIA',
+          node: 'classify',
+          startedAt: new Date().toISOString(),
+          durationMs: 0,
+          inputSummary: 'voice request',
+          outputSummary: { escalate: 'DELETE_REQUEST' },
+          status: 'NEEDS_CONFIRMATION',
+        }],
+      }),
+    },
+  });
+  assert.equal(result.status, 'NEEDS_CONFIRMATION');
+  assert.equal(result.messages[0]?.id, 'delete-confirm');
+  assert.equal((await conversationRepo.load(user.id)).state.pendingDelete, true);
+});
+
+test('replacing an ARIA card removes its stale card id from outstanding ownership', async () => {
+  reset();
+  const user = createUser();
+  let ariaCalls = 0;
+  const aria = async () => {
+    ariaCalls++;
+    const cardId = ariaCalls === 1 ? 'aria-question-one' : 'aria-question-two';
+    return {
+      status: 'NEEDS_INPUT',
+      profilePatch: {},
+      session: { phase: 'asking', language: 'hinglish' },
+      messages: [{ type: 'option_card', id: cardId, text: 'Choose?', options: [{ id: 'next', label: 'Next' }] }],
+      claims: [],
+      trace: [],
+    };
+  };
+  await handleEvent({
+    userId: user.id, externalId: 'router-card-one', type: 'TEXT', text: 'hello',
+  }, { agentRunners: { aria } });
+  assert.equal((await conversationRepo.load(user.id)).state.outstandingCards['aria-question-one'], 'ARIA');
+
+  await handleEvent({
+    userId: user.id, externalId: 'router-card-two', type: 'OPTION_TAP',
+    card: { cardId: 'aria-question-one', actionId: 'next' },
+  }, { agentRunners: { aria } });
+  const outstanding = (await conversationRepo.load(user.id)).state.outstandingCards;
+  assert.equal(outstanding['aria-question-one'], undefined);
+  assert.equal(outstanding['aria-question-two'], 'ARIA');
+});
 
 test('S1: first inbound is consent-only; acceptance records consent before ARIA starts', async () => {
   reset();

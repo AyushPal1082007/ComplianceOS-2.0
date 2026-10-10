@@ -18,11 +18,21 @@ export async function ariaNode(state) {
   }
 
   const merged = mergeProfile(state.profile, output.profilePatch || {}, { origin: 'aria' });
+  const replacementCards = (output.messages || [])
+    .filter((message) => ['option_card', 'confirm_card', 'list'].includes(message.type) && typeof message.id === 'string');
+  const outstandingCards = { ...(state.conversation.outstandingCards || {}) };
+  if (replacementCards.length) {
+    for (const [cardId, owner] of Object.entries(outstandingCards)) {
+      if (owner === 'ARIA') delete outstandingCards[cardId];
+    }
+  }
+  for (const message of replacementCards) outstandingCards[message.id] = 'ARIA';
   const conversation = {
     ...state.conversation,
     ariaSession: output.session || state.conversation.ariaSession,
     phase: output.session?.phase === 'done' ? 'home' : 'intake',
     language: output.session?.language || state.conversation.language,
+    outstandingCards,
   };
 
   return {
@@ -33,6 +43,7 @@ export async function ariaNode(state) {
     messages: output.messages || [],
     claims: output.claims || [],
     trace: output.trace || [],
+    escalate: output.escalate,
   };
 }
 
