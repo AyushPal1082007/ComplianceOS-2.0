@@ -113,8 +113,14 @@
     {
       "path": "complyos-backend-express/prisma/schema.prisma",
       "language": "Prisma",
-      "loc": 299,
-      "summary": "Prisma ORM schema defining database models (User, BusinessProfile, Document, ComplianceDeadline, Scheme)."
+      "loc": 384,
+      "summary": "Prisma ORM schema defining database models including RegulationSource, RegulationSnapshot, RegulationChange, RegulationAlert, TinyFishCall, and the existing app models."
+    },
+    {
+      "path": "complyos-backend-express/src/services/tinyfish.js",
+      "language": "JavaScript",
+      "loc": 220,
+      "summary": "TinyFish adapter for source fetching, block detection, retry logic, and the low daily call cap default."
     },
     {
       "path": "complyos-backend-express/src/agents/aria.js",

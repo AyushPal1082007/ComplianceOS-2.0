@@ -98,9 +98,9 @@
   {
     "path": "complyos-backend-express/prisma/schema.prisma",
     "language": "Prisma",
-    "lines_of_code": 299,
+    "lines_of_code": 384,
     "hash": "7011aafd4b31649bc71a7f833f7fd9106be0195c",
-    "summary": "Prisma ORM schema defining database models (User, BusinessProfile, Document, ComplianceDeadline, Scheme).",
+    "summary": "Prisma ORM schema defining database models including RegulationSource, RegulationSnapshot, RegulationChange, Alert, TinyFishCall, and the existing app models.",
     "summary_confidence": 1.0,
     "exports": [
       "User",
@@ -110,6 +110,11 @@
       "Scheme",
       "SchemeMatch",
       "SentinelAlert",
+      "RegulationSource",
+      "RegulationSnapshot",
+      "RegulationChange",
+      "RegulationAlert",
+      "TinyFishCall",
       "CAClientMap",
       "Notification",
       "Subscription",
@@ -124,6 +129,11 @@
       "Scheme",
       "SchemeMatch",
       "SentinelAlert",
+      "RegulationSource",
+      "RegulationSnapshot",
+      "RegulationChange",
+      "RegulationAlert",
+      "TinyFishCall",
       "CAClientMap",
       "Notification",
       "Subscription",
@@ -134,6 +144,27 @@
       "express",
       "node",
       "prisma"
+    ]
+  },
+  {
+    "path": "complyos-backend-express/src/services/tinyfish.js",
+    "language": "JavaScript",
+    "lines_of_code": 220,
+    "summary": "TinyFish adapter with request sanitization, rate limiting, block checks, and a low daily call budget default.",
+    "summary_confidence": 1.0,
+    "exports": [
+      "withBlockCheck",
+      "sanitizeTinyfishError"
+    ],
+    "imports": [],
+    "key_symbols": [
+      "withBlockCheck",
+      "sanitizeTinyfishError"
+    ],
+    "tags": [
+      "backend",
+      "node",
+      "sentinel"
     ]
   },
   {

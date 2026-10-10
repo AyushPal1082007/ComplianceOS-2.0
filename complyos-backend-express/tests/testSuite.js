@@ -1,19 +1,18 @@
-'use strict';
 /**
  * ComplianceOS — Automated Verification Test Suite
  * Validates deterministic compliance calculators, SCOUT rules engine,
  * PATHWAY checklists, ARIA validators, and Express API routing.
  */
-const assert = require('assert');
-const {
+import assert from 'node:assert/strict';
+import {
   gstLateFee,
   calculateHealthScore,
   calculatePenaltyAtRisk,
   getGSTDueDates,
-} = require('../src/utils/complianceCalculators');
-const { scoutSchemes } = require('../src/agents/scout');
-const { getPathway, listPathways, OFFICIAL_LINKS } = require('../src/agents/pathway');
-const { PROFILE_SLOTS } = require('../src/agents/aria');
+} from '../src/utils/complianceCalculators.js';
+import { scoutSchemes } from '../src/agents/scout.js';
+import { getPathway, listPathways, OFFICIAL_LINKS } from '../src/agents/pathway.js';
+import { PROFILE_SLOTS } from '../src/agents/aria.js';
 
 async function runTests() {
   console.log('====================================================');
