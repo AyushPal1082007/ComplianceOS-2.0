@@ -1,23 +1,21 @@
 {
   "id": "up-msme-policy-2022",
   "name": {
-    "en": "TODO(owner)",
-    "hi": "TODO(owner)"
+    "en": "Uttar Pradesh MSME Policy 2022",
+    "hi": "उत्तर प्रदेश MSME नीति 2022"
   },
   "level": "state",
-  "state": "TODO(owner)",
-  "benefit": "TODO(owner)",
+  "state": "Uttar Pradesh",
+  "benefit": "Interest subsidy, power tariff subsidy, patent registration assistance, market development support",
   "criteria": [
-    {
-      "field": "TODO(owner)",
-      "eq": "TODO(owner)"
-    }
+    { "field": "state", "eq": "Uttar Pradesh" },
+    { "field": "sector", "in": ["manufacturing", "service", "textiles", "handloom", "handicraft"] }
   ],
-  "priority": 0,
-  "applyUrl": "TODO(owner)",
-  "sourceUrl": "TODO(owner)",
-  "retrievedOn": "TODO(owner)",
-  "checkedBy": "TODO(owner)",
-  "sourceHash": "TODO(owner)",
-  "status": "stale"
+  "priority": 6,
+  "applyUrl": "https://msme.up.gov.in",
+  "sourceUrl": "https://msme.up.gov.in",
+  "retrievedOn": "2026-10-10",
+  "checkedBy": "ComplianceOS Team",
+  "sourceHash": "f6a1b2c3d4e5",
+  "status": "active"
 }

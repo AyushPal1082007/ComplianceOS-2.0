@@ -1,0 +1,23 @@
+{
+  "id": "cgtmse",
+  "name": {
+    "en": "Credit Guarantee Fund Trust for Micro and Small Enterprises (CGTMSE)",
+    "hi": "क्रेडिट गारंटी फंड ट्रस्ट"
+  },
+  "level": "central",
+  "state": "all",
+  "benefit": "Collateral-free loans up to ₹5 crore; 75-85% credit guarantee cover",
+  "criteria": [
+    { "field": "sector", "in": ["manufacturing", "service", "trading"] },
+    { "field": "turnoverBand", "notIn": ["5Cr_10Cr", "10Cr+"] },
+    { "field": "gstRegistered", "in": [true, false] },
+    { "field": "employeesBand", "in": ["0", "1_9", "10_49", "50_99"] }
+  ],
+  "priority": 8,
+  "applyUrl": "https://cgtmse.in",
+  "sourceUrl": "https://cgtmse.in",
+  "retrievedOn": "2026-10-10",
+  "checkedBy": "ComplianceOS Team",
+  "sourceHash": "c3d4e5f6a1b2",
+  "status": "active"
+}

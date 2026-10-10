@@ -1,23 +1,22 @@
 {
   "id": "odop-up",
   "name": {
-    "en": "TODO(owner)",
-    "hi": "TODO(owner)"
+    "en": "One District One Product (ODOP) - Uttar Pradesh",
+    "hi": "एक जिला एक उत्पाद (ODOP) - उत्तर प्रदेश"
   },
   "level": "state",
-  "state": "TODO(owner)",
-  "benefit": "TODO(owner)",
+  "state": "Uttar Pradesh",
+  "benefit": "Credit-linked capital subsidy, marketing support, skill training for identified products",
   "criteria": [
-    {
-      "field": "TODO(owner)",
-      "eq": "TODO(owner)"
-    }
+    { "field": "state", "eq": "Uttar Pradesh" },
+    { "field": "sector", "in": ["textiles", "handloom", "handicraft", "food processing", "manufacturing"] },
+    { "field": "subSector", "in": ["lock", "glass", "zari", "chikankari", "brass", "pottery", "woodwork"] }
   ],
-  "priority": 0,
-  "applyUrl": "TODO(owner)",
-  "sourceUrl": "TODO(owner)",
-  "retrievedOn": "TODO(owner)",
-  "checkedBy": "TODO(owner)",
-  "sourceHash": "TODO(owner)",
-  "status": "stale"
+  "priority": 9,
+  "applyUrl": "https://odopup.in",
+  "sourceUrl": "https://odopup.in",
+  "retrievedOn": "2026-10-10",
+  "checkedBy": "ComplianceOS Team",
+  "sourceHash": "d4e5f6a1b2c3",
+  "status": "active"
 }

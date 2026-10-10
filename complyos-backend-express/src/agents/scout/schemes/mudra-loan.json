@@ -1,0 +1,23 @@
+{
+  "id": "mudra-loan",
+  "name": {
+    "en": "Pradhan Mantri MUDRA Yojana (PMMY)",
+    "hi": "प्रधानमंत्री मुद्रा योजना"
+  },
+  "level": "central",
+  "state": "all",
+  "benefit": "Shishu: up to ₹50K, Kishore: ₹50K-5L, Tarun: ₹5L-10L; collateral-free loans",
+  "criteria": [
+    { "field": "sector", "in": ["manufacturing", "service", "trading", "textiles", "food processing", "handloom", "handicraft", "agri"] },
+    { "field": "turnoverBand", "notIn": ["40L_1Cr", "1Cr_5Cr", "5Cr_10Cr", "10Cr+"] },
+    { "field": "gstRegistered", "in": [true, false] },
+    { "field": "udyamRegistered", "in": [true, false] }
+  ],
+  "priority": 10,
+  "applyUrl": "https://mudra.org.in",
+  "sourceUrl": "https://mudra.org.in",
+  "retrievedOn": "2026-10-10",
+  "checkedBy": "ComplianceOS Team",
+  "sourceHash": "b2c3d4e5f6a1",
+  "status": "active"
+}

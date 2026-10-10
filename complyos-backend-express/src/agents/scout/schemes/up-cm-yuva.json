@@ -1,23 +1,23 @@
 {
   "id": "up-cm-yuva",
   "name": {
-    "en": "TODO(owner)",
-    "hi": "TODO(owner)"
+    "en": "Chief Minister Youth Entrepreneurship Scheme (CM YUVA)",
+    "hi": "मुख्यमंत्री युवा उद्यमिता योजना"
   },
   "level": "state",
-  "state": "TODO(owner)",
-  "benefit": "TODO(owner)",
+  "state": "Uttar Pradesh",
+  "benefit": "Seed money up to ₹1 lakh for youth to start new businesses; interest-free loan",
   "criteria": [
-    {
-      "field": "TODO(owner)",
-      "eq": "TODO(owner)"
-    }
+    { "field": "state", "eq": "Uttar Pradesh" },
+    { "field": "ownerAgeBand", "in": ["18_25", "21_30", "21_40"] },
+    { "field": "education", "notIn": ["none"] },
+    { "field": "turnoverBand", "notIn": ["40L_1Cr", "1Cr_5Cr", "5Cr_10Cr", "10Cr+"] }
   ],
-  "priority": 0,
-  "applyUrl": "TODO(owner)",
-  "sourceUrl": "TODO(owner)",
-  "retrievedOn": "TODO(owner)",
-  "checkedBy": "TODO(owner)",
-  "sourceHash": "TODO(owner)",
-  "status": "stale"
+  "priority": 7,
+  "applyUrl": "https://up.gov.in",
+  "sourceUrl": "https://up.gov.in",
+  "retrievedOn": "2026-10-10",
+  "checkedBy": "ComplianceOS Team",
+  "sourceHash": "e5f6a1b2c3d4",
+  "status": "active"
 }

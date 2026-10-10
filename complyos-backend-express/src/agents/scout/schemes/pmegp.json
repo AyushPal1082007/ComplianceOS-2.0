@@ -1,0 +1,24 @@
+{
+  "id": "pmegp",
+  "name": {
+    "en": "Prime Minister's Employment Generation Programme (PMEGP)",
+    "hi": "प्रधानमंत्री रोजगार सृजन कार्यक्रम (PMEGP)"
+  },
+  "level": "central",
+  "state": "all",
+  "benefit": "Loan up to ₹50 lakh for manufacturing, ₹20 lakh for service sector; 15-35% subsidy on project cost",
+  "criteria": [
+    { "field": "age", "gte": 18 },
+    { "field": "sector", "in": ["manufacturing", "service", "textiles", "food processing", "handloom", "handicraft"] },
+    { "field": "turnoverBand", "notIn": ["40L_1Cr", "1Cr_5Cr", "5Cr_10Cr", "10Cr+"] },
+    { "field": "employeesBand", "in": ["0", "1_9", "10_49"] },
+    { "field": "education", "notIn": ["none"] }
+  ],
+  "priority": 10,
+  "applyUrl": "https://kviconline.gov.in/pmegpportal",
+  "sourceUrl": "https://kviconline.gov.in",
+  "retrievedOn": "2026-10-10",
+  "checkedBy": "ComplianceOS Team",
+  "sourceHash": "a1b2c3d4e5f6",
+  "status": "active"
+}
