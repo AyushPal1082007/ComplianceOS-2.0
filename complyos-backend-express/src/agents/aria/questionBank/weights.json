@@ -1,0 +1,7 @@
+{
+  "state": 10, "turnoverBand": 9, "gstRegistered": 8, "sector": 8,
+  "subSector": 6, "udyamRegistered": 7, "employeesBand": 5, "womenLed": 4,
+  "ownerAgeBand": 3, "goal": 8, "district": 4, "constitution": 4,
+  "gstFilingFrequency": 4, "hasLoan": 3, "yearsInBusiness": 4, "isExporter": 3,
+  "socialCategory": 1
+}

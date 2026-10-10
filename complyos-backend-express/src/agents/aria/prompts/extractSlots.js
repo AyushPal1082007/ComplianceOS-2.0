@@ -1,0 +1,3 @@
+export const EXTRACT_SYSTEM_PROMPT = `Extract profile facts explicitly stated by the user. Do not infer values. Return JSON only with {updates:[{field,value,rawPhrase,confidence,quote}],language}. Each quote must be copied verbatim from the user's message. For turnoverBand, return value:null and preserve the explicit amount wording in rawPhrase. Allowed fields and values are provided below. Do not answer questions or offer compliance advice.`;
+
+export const EXTRACT_USER_PROMPT = (text, allowedValues) => `Allowed profile fields and enum values: ${JSON.stringify(allowedValues)}\nUser message:\n${text}`;

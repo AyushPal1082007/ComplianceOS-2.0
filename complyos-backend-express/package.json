@@ -8,7 +8,12 @@
     "dev": "nodemon src/server.js",
     "prisma:generate": "prisma generate",
     "sentinel:run": "node --input-type=module -e \"import('./src/agents/sentinel/index.js').then(({ runSentinelCrawl }) => runSentinelCrawl().then((result) => { console.log(JSON.stringify(result, null, 2)); }).catch((err) => { console.error(err); process.exit(1); }))\"",
-    "test": "node tests/testSuite.js && node src/agents/sentinel/__tests__/sentinel.test.js"
+    "test": "node tests/testSuite.js && node src/agents/sentinel/__tests__/sentinel.test.js",
+    "test:aria": "node --test \"src/agents/aria/__tests__/*.test.js\"",
+    "eval:aria:turns": "node src/agents/aria/eval/turns-to-complete.js",
+    "eval:aria:slots": "node src/agents/aria/eval/slot-accuracy.js",
+    "eval:aria:wer": "node src/agents/aria/eval/wer.js",
+    "eval:aria:taps": "node src/agents/aria/eval/zero-llm-on-tap.js"
   },
   "keywords": [],
   "author": "Divyank Richhariya",

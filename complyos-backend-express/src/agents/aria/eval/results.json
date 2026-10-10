@@ -1,0 +1,98 @@
+{
+  "zeroLlmOnTap": {
+    "measuredAt": "2026-10-10T12:30:43.218Z",
+    "status": "measured",
+    "optionTaps": 76,
+    "llmCalls": 0
+  },
+  "turnsToComplete": {
+    "measuredAt": "2026-10-10T12:30:43.709Z",
+    "status": "measured",
+    "summary": {
+      "tap": {
+        "personas": 2,
+        "averageTurns": 8
+      },
+      "text": {
+        "personas": 3,
+        "averageTurns": 6.333333333333333
+      },
+      "voice": {
+        "personas": 5,
+        "averageTurns": 6.6
+      }
+    },
+    "results": [
+      {
+        "id": "tap-01",
+        "mode": "tap",
+        "turns": 8,
+        "coreCompleteness": 0.8
+      },
+      {
+        "id": "tap-02",
+        "mode": "tap",
+        "turns": 8,
+        "coreCompleteness": 0.8
+      },
+      {
+        "id": "text-01",
+        "mode": "text",
+        "turns": 5,
+        "coreCompleteness": 0.8
+      },
+      {
+        "id": "text-02",
+        "mode": "text",
+        "turns": 7,
+        "coreCompleteness": 0.8
+      },
+      {
+        "id": "text-03",
+        "mode": "text",
+        "turns": 7,
+        "coreCompleteness": 0.8
+      },
+      {
+        "id": "voice-01",
+        "mode": "voice",
+        "turns": 7,
+        "coreCompleteness": 0.8
+      },
+      {
+        "id": "voice-02",
+        "mode": "voice",
+        "turns": 7,
+        "coreCompleteness": 0.8
+      },
+      {
+        "id": "voice-03",
+        "mode": "voice",
+        "turns": 6,
+        "coreCompleteness": 0.8
+      },
+      {
+        "id": "voice-04",
+        "mode": "voice",
+        "turns": 7,
+        "coreCompleteness": 0.8
+      },
+      {
+        "id": "voice-05",
+        "mode": "voice",
+        "turns": 6,
+        "coreCompleteness": 0.8
+      }
+    ]
+  },
+  "slotAccuracy": {
+    "measuredAt": "2026-10-10T12:30:44.235Z",
+    "status": "skipped",
+    "reason": "Set ARIA_REAL=true and GROQ_API_KEY to measure live extraction."
+  },
+  "wer": {
+    "measuredAt": "2026-10-10T12:30:44.596Z",
+    "status": "skipped",
+    "reason": "No labeled audio fixtures exist."
+  }
+}

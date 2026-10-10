@@ -1,0 +1,13 @@
+{
+  "skip": {"hi":["छोड़ो","आगे"],"hinglish":["skip","chhodo","aage"],"en":["skip"]},
+  "unsure": {"hi":["पता नहीं"],"hinglish":["pata nahi","maloom nahi"],"en":["not sure","don't know"]},
+  "back": {"hi":["पीछे"],"hinglish":["peeche","wapas","undo"],"en":["back","undo"]},
+  "why": {"hi":["क्यों"],"hinglish":["kyun","kyu"],"en":["why"]},
+  "restart": {"hi":["दोबारा शुरू"],"hinglish":["dobara shuru","restart"],"en":["restart","start over"]},
+  "change_language": {"hi":["हिंदी में"],"hinglish":["english mein","hindi mein"],"en":["change language"]},
+  "delete": {"hi":["हटाओ","मिटाओ","डिलीट"],"hinglish":["delete","hatao","mitao"],"en":["delete"]},
+  "stop": {"hi":["बस","रुको"],"hinglish":["bas","enough","ruko"],"en":["stop","enough"]},
+  "confirm_yes": {"hi":["हाँ","सही"],"hinglish":["haan","sahi","ha"],"en":["yes","correct"]},
+  "confirm_edit": {"hi":["बदलो"],"hinglish":["badlo","galat","nahi sahi"],"en":["change","edit","wrong"]},
+  "off_topic": {"hi":["नोटिस का जवाब","टैक्स कितना"],"hinglish":["notice ka jawab","tax kitna","compliance advice"],"en":["what tax","compliance advice","how do i file"]}
+}
