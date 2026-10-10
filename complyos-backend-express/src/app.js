@@ -4,30 +4,29 @@
  * PERN Stack: PostgreSQL + Express + React + Node.js
  * Per PDF Section 8: Architecture and Technology Stack
  */
-require('express-async-errors');
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const { rateLimit } = require('express-rate-limit');
+import 'express-async-errors';
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import { rateLimit } from 'express-rate-limit';
 
-const config = require('./config');
-const logger = require('./logger');
-const errorHandler = require('./middleware/errorHandler');
+import config from './config.js';
+import logger from './logger.js';
+import errorHandler from './middleware/errorHandler.js';
 
-// ── Routes ────────────────────────────────────────────────────────────────────
-const authRoutes = require('./routes/auth');
-const businessRoutes = require('./routes/business');
-const documentRoutes = require('./routes/documents');
-const complianceRoutes = require('./routes/compliance');
-const schemeRoutes = require('./routes/schemes');
-const sentinelRoutes = require('./routes/sentinel');
-const caRoutes = require('./routes/ca');
-const notificationRoutes = require('./routes/notifications');
-const whatsappRoutes = require('./routes/whatsapp');
-const paymentRoutes = require('./routes/payments');
-const adminRoutes = require('./routes/admin');
-const agentTraceRoutes = require('./routes/agentTrace');
+import authRoutes from './routes/auth.js';
+import businessRoutes from './routes/business.js';
+import documentRoutes from './routes/documents.js';
+import complianceRoutes from './routes/compliance.js';
+import schemeRoutes from './routes/schemes.js';
+import sentinelRoutes from './routes/sentinel.js';
+import caRoutes from './routes/ca.js';
+import notificationRoutes from './routes/notifications.js';
+import whatsappRoutes from './routes/whatsapp.js';
+import paymentRoutes from './routes/payments.js';
+import adminRoutes from './routes/admin.js';
+import agentTraceRoutes from './routes/agentTrace.js';
 
 const app = express();
 
@@ -43,7 +42,7 @@ app.use(cors({
 
 // ── Rate limiting (Groq free tier: 30 RPM max) ────────────────────────────────
 const globalLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
+  windowMs: 60 * 1000,
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,
@@ -52,7 +51,7 @@ const globalLimiter = rateLimit({
 
 const aiLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 25, // under 30 RPM per Groq free tier
+  max: 25,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'AI rate limit reached. Please wait a moment.' },
@@ -60,11 +59,11 @@ const aiLimiter = rateLimit({
 
 app.use(globalLimiter);
 
-// ── Request parsing ───────────────────────────────────────────────────────────
+// ── Request parsing ────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// ── HTTP logging ──────────────────────────────────────────────────────────────
+// ── HTTP logging ─────────────────────────────────────────────────────────
 app.use(morgan(config.env === 'production' ? 'combined' : 'dev'));
 
 // ── Health check (no auth, no rate limit) ────────────────────────────────────
@@ -78,7 +77,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// ── API Routes ────────────────────────────────────────────────────────────────
+// ── API Routes ──────────────────────────────────────────────────────────
 app.use('/auth', authRoutes);
 app.use('/api/business', businessRoutes);
 app.use('/api/documents', aiLimiter, documentRoutes);
@@ -94,7 +93,7 @@ app.use('/api/agent-trace', agentTraceRoutes);
 // WhatsApp webhook (no rate limit — Meta sends bursts)
 app.use('/webhook/whatsapp', whatsappRoutes);
 
-// ── 404 handler ───────────────────────────────────────────────────────────────
+// ── 404 handler ──────────────────────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found', path: req.path });
 });
@@ -102,4 +101,4 @@ app.use((req, res) => {
 // ── Global error handler ──────────────────────────────────────────────────────
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

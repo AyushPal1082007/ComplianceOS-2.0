@@ -9,17 +9,17 @@
  * - CA Pro: ₹1599/mo (up to 100 clients, flat SaaS fee)
  * Strictly zero commission on CA fees per ICAI Ethics Code.
  */
-const express = require('express');
-const { v4: uuidv4 } = require('uuid');
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
-const { authenticate } = require('../middleware/auth');
-const prisma = require('../db');
-const config = require('../config');
-const {
+import { authenticate } from '../middleware/auth.js';
+import prisma from '../db.js';
+import config from '../config.js';
+import {
   createOrder,
   verifyPaymentSignature,
   calculatePlanAmount,
-} = require('../services/razorpayService');
+} from '../services/razorpayService.js';
 
 const router = express.Router();
 
@@ -118,7 +118,6 @@ router.post('/create-order', authenticate, async (req, res) => {
     return res.status(400).json({ error: 'Valid plan is required' });
   }
 
-  // Check if business profile is women-led
   const profile = await prisma.businessProfile.findUnique({
     where: { userId: req.user.id },
   });
@@ -147,14 +146,13 @@ router.post('/verify', authenticate, async (req, res) => {
     return res.status(400).json({ error: 'Invalid payment signature' });
   }
 
-  // Update user subscription plan
   await prisma.user.update({
     where: { id: req.user.id },
     data: { plan: plan || 'growth' },
   });
 
   const periodEnd = new Date();
-  periodEnd.setDate(periodEnd.getDate() + 30); // 30-day billing cycle
+  periodEnd.setDate(periodEnd.getDate() + 30);
 
   await prisma.subscription.upsert({
     where: { userId: req.user.id },
@@ -186,4 +184,4 @@ router.post('/webhook', async (req, res) => {
   res.status(200).json({ status: 'received' });
 });
 
-module.exports = router;
+export default router;

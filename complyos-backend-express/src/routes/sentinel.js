@@ -5,14 +5,15 @@
  * LLM attribute tagging → Hyper-targeted Hindi alerts.
  * Includes demo simulation per PDF Section 7 & Prototype evaluation.
  */
-const express = require('express');
-const { authenticate } = require('../middleware/auth');
-const prisma = require('../db');
-const {
+import express from 'express';
+
+import { authenticate } from '../middleware/auth.js';
+import prisma from '../db.js';
+import {
   runSentinelCrawl,
   injectSimulatedAlert,
   MONITORED_SOURCES,
-} = require('../agents/sentinel');
+} from '../agents/sentinel.js';
 
 const router = express.Router();
 
@@ -79,7 +80,6 @@ router.post('/simulate', authenticate, async (req, res) => {
 // ── POST /api/sentinel/crawl — Trigger crawler across official sources ────────
 
 router.post('/crawl', authenticate, async (req, res) => {
-  // Can be called by admin or authenticated test
   const results = await runSentinelCrawl();
 
   res.json({
@@ -106,4 +106,4 @@ router.get('/sources', async (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

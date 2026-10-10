@@ -2,15 +2,14 @@
 /**
  * ComplianceOS — Server Entry Point
  */
-const app = require('./app');
-const config = require('./config');
-const logger = require('./logger');
-const prisma = require('./db');
-const { startSentinelJob } = require('./jobs/sentinelCrawler');
-const { startDeadlineReminderJob } = require('./jobs/deadlineReminder');
+import app from './app.js';
+import config from './config.js';
+import logger from './logger.js';
+import prisma from './db.js';
+import { startSentinelJob } from './jobs/sentinelCrawler.js';
+import { startDeadlineReminderJob } from './jobs/deadlineReminder.js';
 
 async function main() {
-  // Test DB connection
   try {
     await prisma.$connect();
     logger.info('PostgreSQL connected via Prisma');
@@ -19,7 +18,6 @@ async function main() {
     process.exit(1);
   }
 
-  // Start background jobs (BullMQ)
   try {
     startSentinelJob();
     startDeadlineReminderJob();
@@ -28,7 +26,6 @@ async function main() {
     logger.warn('Background jobs failed to start (Redis may be unavailable)', { error: err.message });
   }
 
-  // Start HTTP server
   const server = app.listen(config.port, () => {
     logger.info(`ComplianceOS API running`, {
       port: config.port,
@@ -37,7 +34,6 @@ async function main() {
     });
   });
 
-  // Graceful shutdown
   const shutdown = async (signal) => {
     logger.info(`${signal} received — shutting down gracefully`);
     server.close(async () => {

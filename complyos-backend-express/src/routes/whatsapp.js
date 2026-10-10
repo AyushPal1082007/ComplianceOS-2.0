@@ -4,15 +4,16 @@
  * Handles Meta Cloud API webhooks for voice notes, document photos, and text queries.
  * Connects directly to ARIA, VEDA, SCOUT, and PATHWAY agents.
  */
-const express = require('express');
-const config = require('../config');
-const logger = require('../logger');
-const prisma = require('../db');
-const { ariaChat } = require('../agents/aria');
-const { processDocument } = require('../agents/veda');
-const { getPathway } = require('../agents/pathway');
-const { sendTextMessage, sendInteractiveButtons } = require('../services/whatsappService');
-const { transcribeHindi } = require('../services/bhashiniService');
+import express from 'express';
+
+import config from '../config.js';
+import logger from '../logger.js';
+import prisma from '../db.js';
+import { ariaChat } from '../agents/aria.js';
+import { processDocument } from '../agents/veda.js';
+import { getPathway } from '../agents/pathway.js';
+import { sendTextMessage, sendInteractiveButtons } from '../services/whatsappService.js';
+import { transcribeHindi } from '../services/bhashiniService.js';
 
 const router = express.Router();
 
@@ -35,7 +36,6 @@ router.get('/', (req, res) => {
 // ── POST /webhook/whatsapp — Inbound Meta Webhook Events ──────────────────────
 
 router.post('/', async (req, res) => {
-  // Always return 200 quickly to Meta to avoid retries
   res.sendStatus(200);
 
   const body = req.body;
@@ -50,21 +50,18 @@ router.post('/', async (req, res) => {
   }
 
   const msg = messages[0];
-  const fromPhone = msg.from; // User's WhatsApp number
+  const fromPhone = msg.from;
 
   try {
-    // Find or create user by phone
     let user = await prisma.user.findFirst({
       where: { phone: fromPhone },
       include: { businessProfile: true },
     });
 
-    // 1. Text message query
     if (msg.type === 'text') {
       const userText = msg.text.body;
       logger.info('Inbound WhatsApp text', { from: fromPhone, text: userText });
 
-      // Run ARIA slot-filling / query
       const ariaRes = await ariaChat(
         [{ role: 'user', content: userText }],
         user?.businessProfile || {}
@@ -74,7 +71,6 @@ router.post('/', async (req, res) => {
       return;
     }
 
-    // 2. Interactive button reply
     if (msg.type === 'interactive' && msg.interactive?.button_reply) {
       const btnId = msg.interactive.button_reply.id;
       logger.info('Inbound WhatsApp button click', { from: fromPhone, btnId });
@@ -92,17 +88,14 @@ router.post('/', async (req, res) => {
       } else if (btnId.startsWith('ca_')) {
         await sendTextMessage(
           fromPhone,
-          `🤝 *CA पार्टनर सहायता*\n\nआपकी कम्प्लायंस फ़ाइल तैयार है। आप हमारे सत्यापित CA पार्टनर से सीधे परामर्श ले सकते हैं:\n\n📞 CA राजेश अग्रवाल (कानपुर): 084219\n(शून्य प्लेटफ़ॉर्म कमीशन, पारदर्शी पेशेवर सेवा)`
+          `🤝 *CA पार्टनर सहायता*\n\nआपकी कम्प्लायंस फ़ाइल तैयार है।`
         );
       }
       return;
     }
 
-    // 3. Audio / Voice Note
     if (msg.type === 'audio' || msg.type === 'voice') {
       logger.info('Inbound WhatsApp voice note received', { from: fromPhone });
-      // In production: fetch media binary from Meta Graph API
-      // Here: invoke Bhashini speech recognition
       const fakeBuffer = Buffer.from('mock_voice_note');
       const bhashiniRes = await transcribeHindi(fakeBuffer, 'audio/ogg');
 
@@ -118,12 +111,11 @@ router.post('/', async (req, res) => {
       return;
     }
 
-    // 4. Image / Document Photo
     if (msg.type === 'image' || msg.type === 'document') {
       logger.info('Inbound WhatsApp document photo received', { from: fromPhone });
       await sendTextMessage(
         fromPhone,
-        `📄 आपका दस्तावेज़ प्राप्त हुआ है। VEDA एजेंट इसका विश्लेषण कर रहा है...\nकृपया कुछ क्षण प्रतीक्षा करें।`
+        `📄 आपका दस्तावेज़ प्राप्त हुआ है।`
       );
       return;
     }
@@ -131,7 +123,7 @@ router.post('/', async (req, res) => {
     logger.error('WhatsApp webhook processing error', { error: err.message, from: fromPhone });
     await sendTextMessage(
       fromPhone,
-      'माफ़ी, संदेश को प्रोसेस करने में कुछ समस्या आई। कृपया थोड़ी देर बाद पुनः प्रयास करें।'
+      'माफ़ी, संदेश को प्रोसेस करने में कुछ समस्या आई।'
     );
   }
 });
@@ -145,7 +137,6 @@ router.post('/simulate-incoming', async (req, res) => {
     return res.status(400).json({ error: 'message is required' });
   }
 
-  // Run ARIA for simulation
   const ariaRes = await ariaChat([{ role: 'user', content: message }], {});
 
   res.json({
@@ -158,4 +149,4 @@ router.post('/simulate-incoming', async (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

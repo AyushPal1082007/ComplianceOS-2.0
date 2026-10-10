@@ -5,10 +5,11 @@
  * ARIA · VEDA · SCOUT · SENTINEL · PATHWAY
  * Transparently reveals LLM model, execution latency, confidence gating, and statutory citations.
  */
-const express = require('express');
-const { authenticate } = require('../middleware/auth');
-const prisma = require('../db');
-const config = require('../config');
+import express from 'express';
+
+import { authenticate } from '../middleware/auth.js';
+import prisma from '../db.js';
+import config from '../config.js';
 
 const router = express.Router();
 
@@ -116,4 +117,4 @@ router.get('/', authenticate, async (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;
