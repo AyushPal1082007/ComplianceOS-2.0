@@ -73,6 +73,7 @@ model User {
   subscription    Subscription?
 
   @@map("users")
+  @@index([phone])
 }
 
 // ─── Business Profile ─────────────────────────────────────────────────────────
@@ -97,6 +98,8 @@ model BusinessProfile {
   healthScore     Int?     @map("health_score")  // 0-100 deterministic
   penaltyAtRisk   Float?   @map("penalty_at_risk")  // INR, deterministic
   schemeHeadroom  Int?     @map("scheme_headroom")  // count of eligible schemes
+  turnoverBand    String?  @map("turnover_band")
+  employeesBand   String?  @map("employees_band")
   ariaSessionId   String?  @map("aria_session_id")  // active ARIA slot-fill session
   profileComplete Boolean  @default(false) @map("profile_complete")
   createdAt       DateTime @default(now()) @map("created_at")
@@ -149,6 +152,7 @@ model ComplianceDeadline {
   sourceUrl       String?  @map("source_url")    // official govt link
   lastVerifiedAt  DateTime? @map("last_verified_at")
   sourceDocumentId String? @map("source_document_id")  // Document.id if from VEDA
+  dedupeKey       String?  @unique @map("dedupe_key")
   createdByAgent  String?  @map("created_by_agent")  // ARIA/VEDA/SENTINEL
   penaltyEstimate Float?   @map("penalty_estimate")  // INR, deterministic calc
   createdAt       DateTime @default(now()) @map("created_at")
@@ -220,13 +224,82 @@ model SentinelAlert {
   lastVerifiedAt  DateTime @map("last_verified_at")
   isSimulated     Boolean  @default(false) @map("is_simulated")  // demo label
   affectedAttributes Json? @map("affected_attributes")  // state/sector/turnover
+  changeId        String?  @map("change_id")
   status          AlertStatus @default(unread)
   createdAt       DateTime @default(now()) @map("created_at")
 
   // Relations
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([changeId])
   @@map("sentinel_alerts")
+}
+
+// ─── Orchestration Foundations ───────────────────────────────────────────────
+
+model ProfileField {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  key       String
+  value     Json?
+  status    String
+  confidence Float
+  source    String
+  evidence  Json?
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, key])
+  @@index([userId])
+  @@map("profile_fields")
+}
+
+model ConversationState {
+  userId        String   @id @map("user_id")
+  state         Json
+  version       Int      @default(0)
+  lastInboundAt DateTime? @map("last_inbound_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("conversation_states")
+}
+
+model InboundEvent {
+  id         String   @id @default(uuid())
+  channel    String
+  externalId String   @map("external_id")
+  userId     String?  @map("user_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([channel, externalId])
+  @@map("inbound_events")
+}
+
+model ConsentLog {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  action      String
+  textVersion String   @map("text_version")
+  channel     String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("consent_logs")
+}
+
+model AgentTraceEvent {
+  id         String   @id @default(uuid())
+  runId      String   @map("run_id")
+  userId     String?  @map("user_id")
+  agent      String
+  node       String
+  status     String
+  durationMs Int      @map("duration_ms")
+  summary    Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([runId])
+  @@index([userId, createdAt])
+  @@map("agent_trace_events")
 }
 
 // ─── Regulation Tracking ─────────────────────────────────────────────────────
